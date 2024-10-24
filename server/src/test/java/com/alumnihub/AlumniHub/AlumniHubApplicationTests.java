@@ -1,0 +1,13 @@
+package com.alumnihub.AlumniHub;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class AlumniHubApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
