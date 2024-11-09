@@ -20,8 +20,8 @@ public class NotificationService {
     public Notification createNotification(Notification notification) {
         return notificationRepository.save(notification);
     }
-    public void deleteNotification(Notification notification) {
-        notificationRepository.delete(notification);
+    public void deleteNotification(Long id) {
+        notificationRepository.deleteById(id);
     }
 }
 
