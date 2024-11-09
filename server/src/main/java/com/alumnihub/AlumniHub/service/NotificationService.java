@@ -13,15 +13,15 @@ public class NotificationService {
 
     @Autowired
     private NotificationRepository notificationRepository;
-
+    
     public Iterable<Notification> getAllNotification() {
         return notificationRepository.findAll();
     }
     public Notification createNotification(Notification notification) {
         return notificationRepository.save(notification);
     }
-    public void deleteNotification(Notification notification) {
-        notificationRepository.delete(notification);
+    public void deleteNotification(Long id) {
+        notificationRepository.deleteById(id);
     }
 }
 
