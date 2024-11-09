@@ -13,7 +13,7 @@ public class NotificationService {
 
     @Autowired
     private NotificationRepository notificationRepository;
-
+    
     public Iterable<Notification> getAllNotification() {
         return notificationRepository.findAll();
     }
