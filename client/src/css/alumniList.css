@@ -1,0 +1,101 @@
+.alumni-list-section {
+	--bs-body-bg: rgb(255, 255, 255);
+	--ezy-theme-color: rgb(13, 110, 253);
+	--ezy-theme-color-rgb: 13, 110, 253;
+	--ezy-card-bg: #f6f6f6;
+
+	background-color: var(--bs-body-bg);
+	color: var(--bs-body-color);
+	padding: 60px 0;
+	position: relative;
+}
+
+@media (min-width: 768px) {
+	.alumni-list-section {
+		padding: 100px 0;
+	}
+}
+
+
+.alumni-card {
+	overflow: hidden;
+	border: none;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	transition: transform 0.3s ease;
+  }
+  
+  .alumni-card:hover {
+	transform: translateY(-5px);
+  }
+  
+  .alumni-card img {
+	width: 100%;
+	height: 320px; 
+	object-fit: cover;
+  }
+  
+  .alumni-card-content {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	padding: 15px;
+	background: rgba(0, 0, 0, 0.5);
+	color: #fff;
+	text-align: center;
+  }
+  
+  .alumni-card-content h4 {
+	font-size: 1.2em; /* Default font size */
+  }
+  
+  .alumni-card-content p {
+	font-size: 0.9em;
+  }
+  
+  .alumni-card-details {
+	flex: 1;
+	padding: 0 10px;
+	text-align: center;
+  }
+  
+  .alumni-btn {
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	transition: background-color 0.3s;
+  }
+  
+  .alumni-btn:hover {
+	background-color: #0056b3;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 1199px) { /* Tablet */
+	.alumni-card img,
+	.alumni-card-content {
+	  height: 270px;
+	}
+	.alumni-card-content h4 {
+	  font-size: 1.1em;
+	}
+	.alumni-card-content p {
+	  font-size: 0.85em;
+	}
+  }
+  
+  @media (max-width: 767px) { /* Mobile */
+	.alumni-card img,
+	.alumni-card-content {
+	  height: 240px;
+	}
+	.alumni-card-content h4 {
+	  font-size: 1em; /* Smaller font for mobile */
+	}
+	.alumni-card-content p {
+	  font-size: 0.8em;
+	}
+	.alumni-btn {
+	  font-size: 0.85em;
+	}
+  }
+  
