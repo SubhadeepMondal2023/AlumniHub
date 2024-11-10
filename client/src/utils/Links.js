@@ -6,8 +6,8 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 export const quickLinks = [
-	{ value: "Home", href: "#!" },
-	{ value: "About Us", href: "#!" },
+	{ value: "Home", href: "/" },
+	{ value: "About Us", href: "/about" },
 	{ value: "Services", href: "#!" },
 ];
 
