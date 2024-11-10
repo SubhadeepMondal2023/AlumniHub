@@ -36,12 +36,24 @@ public class EventService {
 
     public Optional<Event> updateEvent(Long eventId, Event eventDetails) {
         return eventRepository.findById(eventId).map(event -> {
-            event.setEventName(eventDetails.getEventName());
-            event.setEventDescription(eventDetails.getEventDescription());
-            event.setEventDateAndTime(eventDetails.getEventDateAndTime());
-            event.setVenue(eventDetails.getVenue());
-            event.setCreatedBy(eventDetails.getCreatedBy());
-            event.setEventStatus(eventDetails.getEventStatus());
+            if (eventDetails.getEventName() != null) {
+                event.setEventName(eventDetails.getEventName());
+            }
+            if (eventDetails.getEventDescription() != null) {
+                event.setEventDescription(eventDetails.getEventDescription());
+            }
+            if (eventDetails.getEventDateAndTime() != null) {
+                event.setEventDateAndTime(eventDetails.getEventDateAndTime());
+            }
+            if (eventDetails.getVenue() != null) {
+                event.setVenue(eventDetails.getVenue());
+            }
+            if (eventDetails.getCreatedBy() != null) {
+                event.setCreatedBy(eventDetails.getCreatedBy());
+            }
+            if (eventDetails.getEventStatus() != null) {
+                event.setEventStatus(eventDetails.getEventStatus());
+            }
             return eventRepository.save(event);
         });
     }
@@ -58,7 +70,8 @@ public class EventService {
     }
 
     public List<Event> getMyEvents(String userId) {
-        // Implement logic to find events created or attended by userId, depending on requirements
-        return eventRepository.findByCreatedBy(userId);  // Assumes repository method for creator ID search
+        // Implement logic to find events created or attended by userId, depending on
+        // requirements
+        return eventRepository.findByCreatedBy(userId); // Assumes repository method for creator ID search
     }
 }
