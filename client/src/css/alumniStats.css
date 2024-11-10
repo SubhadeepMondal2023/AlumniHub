@@ -1,0 +1,25 @@
+.alumni-stats {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    background-color: #f8f9fa;
+ }
+ 
+ .alumni-stats h3 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 0;
+    transition: all 0.3s ease-in-out;
+ }
+ 
+ .alumni-stats p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-top: 10px;
+ }
+ 
+ .count-number {
+    font-size: 2.5rem;
+    color: #007bff;
+ }
+ 
