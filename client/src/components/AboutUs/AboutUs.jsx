@@ -1,5 +1,5 @@
 import React from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import "../../css/aboutUs.css";
 
@@ -80,6 +80,14 @@ const AboutUs = () => {
 						<StoryItem item={item} index={i + 1} />
 					</Row>
 				))}
+
+				<Row className="justify-content-center mt-5">
+					<Col xs="auto">
+						<Button className="faq-button" href="/faqs">
+							View FAQs
+						</Button>
+					</Col>
+				</Row>
 			</Container>
 		</section>
 	);

@@ -75,3 +75,19 @@
 .ezy__about6 img {
 	border-radius: 15px;
 }
+
+.faq-button {
+	background-color: var(--ezy-theme-color); /* Matches theme color */
+	color: white;
+	padding: 10px 20px;
+	font-weight: 500;
+	border-radius: 5px;
+	border: none;
+	transition: background-color 0.3s ease;
+}
+
+.faq-button:hover {
+	background-color: #0a6dc2; /* Darken slightly on hover */
+	color: #fff;
+	text-decoration: none;
+}
