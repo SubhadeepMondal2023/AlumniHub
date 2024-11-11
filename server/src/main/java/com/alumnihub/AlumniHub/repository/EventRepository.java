@@ -1,6 +1,13 @@
 package com.alumnihub.AlumniHub.repository;
 
+import java.util.List;
 
-public interface EventRepository {
-    // Add custom query methods if needed
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.alumnihub.AlumniHub.model.Event;
+
+public interface EventRepository extends JpaRepository<Event, Long> {
+
+    List<Event> findByCreatedBy(String userId);
+    
 }
