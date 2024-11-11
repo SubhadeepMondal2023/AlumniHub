@@ -18,7 +18,17 @@ public class EventService {
         return eventRepository.findById(eventId);
     }
 
-    public Event createEvent(Event event) {
+    public Event createEvent(Event event) throws Exception {
+        Optional<Event> existingEventByDateAndVenue = eventRepository
+                .findByEventDateAndTimeAndVenue(event.getEventDateAndTime(), event.getVenue());
+        if (existingEventByDateAndVenue.isPresent()) {
+            throw new Exception("An event at the same time and venue already exists.");
+        }
+        Optional<Event> existingEventByUserAndName = eventRepository.findByCreatedByAndEventName(event.getCreatedBy(),
+                event.getEventName());
+        if (existingEventByUserAndName.isPresent()) {
+            throw new Exception("An event with the same name by the same user already exists.");
+        }
         return eventRepository.save(event);
     }
 
@@ -58,10 +68,13 @@ public class EventService {
         });
     }
 
-    public Optional<Event> attendEvent(Long eventId, String attendee) {
+    public Optional<Event> attendEvent(Long eventId, Long userId) {
         return eventRepository.findById(eventId).map(event -> {
-            // Add logic to mark the event attended by the given attendee
-            return eventRepository.save(event);
+            if (!event.getAttendees().contains(userId)) {
+                event.getAttendees().add(userId);
+                eventRepository.save(event);
+            }
+            return event;
         });
     }
 
@@ -69,9 +82,7 @@ public class EventService {
         return eventRepository.findById(eventId);
     }
 
-    public List<Event> getMyEvents(String userId) {
-        // Implement logic to find events created or attended by userId, depending on
-        // requirements
-        return eventRepository.findByCreatedBy(userId); // Assumes repository method for creator ID search
+    public List<Event> getMyEvents(Long userId) {
+        return eventRepository.findByCreatedBy(userId);
     }
 }
