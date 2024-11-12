@@ -1,11 +1,14 @@
 package com.alumnihub.AlumniHub.model;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +25,9 @@ public class Event {
     private String eventDescription;
     private LocalDateTime eventDateAndTime;
     private String venue;
-    private String createdBy;
+    private Long createdBy;
     private String eventStatus;
+
+    @ElementCollection
+    private List<Long> attendees = new ArrayList<>();
 }
