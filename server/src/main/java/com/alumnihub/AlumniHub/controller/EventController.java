@@ -86,10 +86,10 @@ public class EventController {
         }
     }
 
-    @PostMapping("/{eventId}/attend")
-    public ResponseEntity<?> attendEvent(@PathVariable Long eventId, @RequestBody String attendee) {
+    @PostMapping("/{eventId}/attend/{userId}")
+    public ResponseEntity<?> attendEvent(@PathVariable Long eventId, @PathVariable Long userId) {
         try {
-            Optional<Event> event = eventService.attendEvent(eventId, attendee);
+            Optional<Event> event = eventService.attendEvent(eventId, userId);
             if (event.isPresent()) {
                 Map<String, Object> map = Map.of("success", true, "data", event.get());
                 return ResponseEntity.status(HttpStatus.OK).body(map);
@@ -108,7 +108,7 @@ public class EventController {
         try {
             Optional<Event> event = eventService.getEventAttendees(eventId);
             if (event.isPresent()) {
-                Map<String, Object> map = Map.of("success", true, "data", event.get());
+                Map<String, Object> map = Map.of("success", true, "data", event.get().getAttendees());
                 return ResponseEntity.status(HttpStatus.OK).body(map);
             } else {
                 Map<String, Object> map = Map.of("success", false, "message", "Event not found");
@@ -121,7 +121,7 @@ public class EventController {
     }
 
     @GetMapping("/my-events")
-    public ResponseEntity<?> getMyEvents(@RequestParam String userId) {
+    public ResponseEntity<?> getMyEvents(@RequestParam Long userId) {
         try {
             Map<String, Object> map = Map.of("success", true, "data", eventService.getMyEvents(userId));
             return ResponseEntity.status(HttpStatus.OK).body(map);
