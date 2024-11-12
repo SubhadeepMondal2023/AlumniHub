@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,18 +19,28 @@ public class Alumni {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer alumnId;
+    @Column(name = "AlumniId")
+    private Long alumniId;
 
     @OneToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "UserId", nullable = false)
     private User user;
 
+    @Column(name = "Phone")
     private String phone;
-    private String address;
-    private String linkedInProfile;
-    private String currentCompany;
-    private String designation;
-    private String location;
 
-    // Getters, setters, and constructors
+    @Column(name = "Address")
+    private String address;
+
+    @Column(name = "LinkedInProfile")
+    private String linkedInProfile;
+
+    @Column(name = "CurrentCompany")
+    private String currentCompany;
+
+    @Column(name = "Designation")
+    private String designation;
+
+    @Column(name = "Location")
+    private String location;
 }

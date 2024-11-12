@@ -1,5 +1,7 @@
 package com.alumnihub.AlumniHub.exception;
 
+import java.util.Map;
+
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception ex) {
         return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AlumniNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleAlumniNotFoundException(AlumniNotFoundException ex) {
+        Map<String, Object> errorResponse = Map.of(
+            "success", false,
+            "message", ex.getMessage(),
+            "status", HttpStatus.NOT_FOUND.value()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 }
 

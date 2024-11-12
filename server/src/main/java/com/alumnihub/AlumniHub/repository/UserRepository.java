@@ -1,6 +1,9 @@
 package com.alumnihub.AlumniHub.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository {
+import com.alumnihub.AlumniHub.model.User;
+
+public interface UserRepository extends JpaRepository<User, Long>{
     // Add custom query methods if needed
 }
