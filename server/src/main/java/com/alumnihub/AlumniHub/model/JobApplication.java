@@ -1,35 +1,43 @@
 package com.alumnihub.AlumniHub.model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "AlumniDetails")
+@Table(name = "JobApplication")
 @Getter
 @Setter
-public class Alumni {
+public class JobApplication {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer alumnId;
+    private int id;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "jobId", nullable = false)
+    private JobPost job;
+
+    @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 
-    private String phone;
-    private String address;
-    private String linkedInProfile;
-    private String currentCompany;
-    private String designation;
-    private String location;
+    private LocalDate applicationDate;
+
+    @Enumerated(EnumType.STRING)
+    private ApplicationStatus applicationStatus;
 
     // Getters, setters, and constructors
 }
+
+

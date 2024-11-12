@@ -5,31 +5,34 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "AlumniDetails")
+@Table(name = "JobPost")
 @Getter
 @Setter
-public class Alumni {
+public class JobPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer alumnId;
+    private int jobId;
 
-    @OneToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
-
-    private String phone;
-    private String address;
-    private String linkedInProfile;
-    private String currentCompany;
-    private String designation;
+    private String jobTitle;
+    private String company;
     private String location;
+    private String jobDescription;
+
+    @ManyToOne
+    @JoinColumn(name = "postedBy", nullable = false)
+    private User postedBy;
+
+    private Timestamp postDate;
+    private LocalDate applicationDeadline;
 
     // Getters, setters, and constructors
 }
