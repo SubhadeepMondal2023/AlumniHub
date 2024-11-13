@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavDropdown } from 'react-bootstrap'
-import "../../css/navbar.css"
+import "../../css/navbar.css";
+import { Link } from 'react-router-dom'
 
 
 const Dropdown = ({navlink,childlinks}) => {
@@ -13,9 +14,8 @@ const Dropdown = ({navlink,childlinks}) => {
         >
             {childlinks.map((childlink) => (
                 <NavDropdown.Item 
-                href={childlink.toLowerCase()}
                 className='nav-dropdown-item'    
-            >{childlink}</NavDropdown.Item>
+            ><Link to={`/${childlink.toLowerCase()}`}> {childlink}</Link></NavDropdown.Item>
             ))}
         </NavDropdown>
     )

@@ -9,7 +9,7 @@ import Login from './components/Auth/Login.jsx';
 import Register from './components/Auth/Register.jsx';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   return (
     <Router>
