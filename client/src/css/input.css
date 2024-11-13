@@ -1,0 +1,30 @@
+.inputGroup {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 1em 0;
+  position: relative;
+}
+
+.inputGroup input {
+  font-size: 100%;
+  padding: 0.8em;
+  outline: none;
+  border: 2px solid rgb(200, 200, 200);
+  background-color: transparent;
+  border-radius: 20px;
+  width: 100%;
+  transition: border-color 0.3s ease; /* Smooth transition */
+}
+
+.inputGroup label {
+  position: absolute;
+  left: 10px; /* Adjusted for better alignment */
+  padding: 0.2em;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  color: rgb(100, 100, 100);
+}
+
+.inputGroup :is(input:focus, input:not(:placeholder-shown)) ~ label {
+  transform: translateY(-20%) scale(0.8); /* Adjusted for better visibility */
+  color: rgb(50, 50, 150); /* Change label color when focused */
+}
