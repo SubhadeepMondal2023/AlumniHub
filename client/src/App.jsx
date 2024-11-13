@@ -4,21 +4,25 @@ import HeroPage from './components/HeroSection/HeroPage.jsx';
 import AboutUs from './components/AboutUs/AboutUs.jsx'; 
 import Footer from './components/Footer/Footer.jsx';
 import Faq from './components/AboutUs/Faq.jsx';
-import  Navbar from './components/Navbar/Navbar.jsx';
+import Navbar from './components/Navbar/Navbar.jsx';
+import Login from './components/Auth/Login.jsx';
+import Register from './components/Auth/Register.jsx';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   return (
-    <>
-      <Router>
-        <Navbar/>
-        <Routes>
-          <Route path="/" element={<HeroPage />} />
-          <Route path="/about" element={<AboutUs />} /> {/* New AboutUs route */}
-          <Route path="/faqs" element={<Faq />} />
-        </Routes>
-        <Footer />
-      </Router>
-    </>
+    <Router>
+      {isAuthenticated && <Navbar />}
+      <Routes>
+        <Route path="/" element={<HeroPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/about" element={<AboutUs />} /> 
+        <Route path="/faqs" element={<Faq />} />
+      </Routes>
+      <Footer />
+    </Router>
   );
 }
 
