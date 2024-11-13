@@ -1,0 +1,89 @@
+/* Navbar container styling */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 80px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 0 1.5rem;
+}
+
+/* Company name styling */
+.company-name {
+    display: flex;
+    align-items: center;
+    padding: 0; /* Ensure no extra padding */
+}
+
+.company-name a {
+    font-size: 2.2rem;
+    color: #333333;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Align the navbar and items */
+.company-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
+/* Navbar links styling */
+nav {
+    display: flex;
+    align-items: center;
+    gap: 1.3rem; /* Add space between links */
+}
+
+nav > a {
+    color: #000000;
+    text-decoration: none;
+    font-size: 1.4rem;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #0073e6;
+}
+
+/* Toggle button styling */
+.nav-btn {
+    display: none; /* Hide by default on larger screens */
+    padding: 5px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    color: #333333;
+    background: transparent;
+    font-size: 1.5rem;
+}
+
+@media only screen and (max-width: 800px) {
+    .nav-btn {
+        display: block;
+    }
+
+    header nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        flex-direction: column;
+        gap: 1.5rem;
+        justify-content: center;
+        background-color: #ffffff;
+        transform: translateY(-100vh);
+        transition: transform 0.5s ease-in-out;
+    }
+
+    header .responsive_nav {
+        transform: translateY(0);
+    }
+}
