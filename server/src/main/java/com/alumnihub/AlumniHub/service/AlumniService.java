@@ -32,15 +32,27 @@ public class AlumniService {
     }
 
     public Alumni createAlumni(Alumni alumni) {
+        // Validate input
+        if (alumni == null  || alumni.getUser().getUserId() == null) {
+            throw new IllegalArgumentException("Invalid alumni or user data provided");
+        }
+    
+        // Retrieve user
         User user = userRepository.findById(alumni.getUser().getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found"));
-
+    
+        // Check for existing alumni
         if (alumniRepository.existsByUser_UserId(user.getUserId())) {
             throw new IllegalArgumentException("Alumni profile already exists for this user");
         }
-
+    
+        // Link the validated user to the alumni entity
+        alumni.setUser(user);
+    
+        // Save and return the new alumni profile
         return alumniRepository.save(alumni);
     }
+    
 
     public List<Alumni> getAllAlumni(String location, String company) {
         List<Alumni> results;
@@ -82,6 +94,6 @@ public class AlumniService {
 
 
     public Optional<User> getUserById(Long userId) {
-        return alumniRepository.findByUser_UserId(userId);
+        return userRepository.findById(userId);
     }
 }

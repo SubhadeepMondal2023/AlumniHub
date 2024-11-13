@@ -53,9 +53,15 @@ public class AlumniController {
         return ResponseEntity.ok(successResponse);
     }
 
-    // CHANGES REQUIRED --->
     @PostMapping
     public ResponseEntity<?> createAlumni(@RequestBody Alumni alumni) {
+        if (alumni == null || alumni.getUser() == null || alumni.getUser().getUserId() == null) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Invalid input: Alumni or User data is missing"
+            ));
+        }
+
         try {
             // Check if user exists
             User user = alumniService.getUserById(alumni.getUser().getUserId())
@@ -69,17 +75,27 @@ public class AlumniController {
                 ));
             }
 
+            // Create new alumni profile
             Alumni newAlumni = alumniService.createAlumni(alumni);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newAlumni);
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "success", true,
+                "data", newAlumni
+            ));
         } catch (NotFoundException e) {
             return ResponseEntity.badRequest().body(Map.of(
                 "success", false,
                 "message", e.getMessage()
             ));
+        } catch (Exception e) {
+            // Catch unexpected exceptions to prevent HTTP 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "message", "An unexpected error occurred: " + e.getMessage()
+            ));
         }
     }
 
-    // CHANGES REQUIRED --->
+
     @PutMapping("/{alumniId}")
     public ResponseEntity<?> updateAlumni(@PathVariable Long alumniId, @RequestBody Alumni alumniDetails) {
         try {
