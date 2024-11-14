@@ -1,0 +1,99 @@
+.donation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f2f2f2;
+    flex-direction: column;
+}
+.donation-button {
+    margin: 20px;
+    padding: 10px 20px;
+}
+.donation-para-1 {
+    margin: 20px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+@media screen and (max-width: 768px) {
+    .donation-para-1 {
+        font-size: 16px;
+    }
+}
+
+.pros-cons-container {
+    margin-top: 2rem;
+    padding: 1rem;
+    text-align: center;
+}
+
+.pros-cons-card {
+    margin: 1rem 0;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pros-cons-header {
+    background-color: #0073e6;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.pros-cons-card ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    text-align: left;
+}
+
+.pros-cons-card li {
+    margin-bottom: 0.5rem;
+}
+.pros-cons-container {
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.pros-cons-card {
+    margin: 1rem 0;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.pros-cons-header {
+    background-color: #0073e6;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 0.75rem;
+    text-align: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.pros-cons-list {
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+}
+
+.pros-item,
+.cons-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.icon-pro {
+    color: #28a745;
+    margin-right: 0.5rem;
+}
+
+.icon-con {
+    color: #dc3545;
+    margin-right: 0.5rem;
+}
