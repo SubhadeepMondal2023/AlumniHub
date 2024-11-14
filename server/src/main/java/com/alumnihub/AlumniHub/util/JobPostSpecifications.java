@@ -6,28 +6,35 @@ import org.springframework.data.jpa.domain.Specification;
 public class JobPostSpecifications {
 
     public static Specification<JobPost> buildSearchSpecification(String jobTitle, String company, String location) {
+        return Specification.where(hasJobTitle(jobTitle))
+                .and(hasCompany(company))
+                .and(hasLocation(location));
+    }
+
+    private static Specification<JobPost> hasJobTitle(String jobTitle) {
         return (root, query, criteriaBuilder) -> {
-            Specification<JobPost> spec = Specification.where(null);
-
-            if (jobTitle != null && !jobTitle.trim().isEmpty()) {
-                spec = spec.and((root1, query1, criteriaBuilder1) ->
-                        criteriaBuilder1.like(criteriaBuilder1.lower(root1.get("jobTitle")),
-                                "%" + jobTitle.toLowerCase() + "%"));
+            if (jobTitle == null || jobTitle.trim().isEmpty()) {
+                return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
             }
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("jobTitle")), "%" + jobTitle.toLowerCase() + "%");
+        };
+    }
 
-            if (company != null && !company.trim().isEmpty()) {
-                spec = spec.and((root1, query1, criteriaBuilder1) ->
-                        criteriaBuilder1.like(criteriaBuilder1.lower(root1.get("company")),
-                                "%" + company.toLowerCase() + "%"));
+    private static Specification<JobPost> hasCompany(String company) {
+        return (root, query, criteriaBuilder) -> {
+            if (company == null || company.trim().isEmpty()) {
+                return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
             }
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("company")), "%" + company.toLowerCase() + "%");
+        };
+    }
 
-            if (location != null && !location.trim().isEmpty()) {
-                spec = spec.and((root1, query1, criteriaBuilder1) ->
-                        criteriaBuilder1.like(criteriaBuilder1.lower(root1.get("location")),
-                                "%" + location.toLowerCase() + "%"));
+    private static Specification<JobPost> hasLocation(String location) {
+        return (root, query, criteriaBuilder) -> {
+            if (location == null || location.trim().isEmpty()) {
+                return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
             }
-
-            return spec.toPredicate(root, query, criteriaBuilder);
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("location")), "%" + location.toLowerCase() + "%");
         };
     }
 }

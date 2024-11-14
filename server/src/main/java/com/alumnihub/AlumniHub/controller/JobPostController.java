@@ -4,7 +4,10 @@ import com.alumnihub.AlumniHub.exception.JobPostNotFoundException;
 import com.alumnihub.AlumniHub.exception.UnauthorizedException;
 import com.alumnihub.AlumniHub.model.JobPost;
 import com.alumnihub.AlumniHub.service.JobPostService;
+import com.alumnihub.AlumniHub.util.JobPostSpecifications;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,22 +23,21 @@ public class JobPostController {
     @Autowired
     private JobPostService jobPostService;
 
-    @GetMapping
-    public ResponseEntity<List<JobPost>> getAllJobs(
-            @RequestParam(required = false) String jobTitle,
-            @RequestParam(required = false) String company,
-            @RequestParam(required = false) String location) {
-        
-        List<JobPost> jobs = jobPostService.getAllJobPosts(jobTitle, company, location);
-        
-        if (jobs.isEmpty()) {
-            String message = (jobTitle != null || company != null || location != null)
-                ? "No jobs found matching the specified job title, company or location"
-                : "No job posts found in the system";
+   @GetMapping
+    public ResponseEntity<List<JobPost>> getAllJobPosts(
+        @RequestParam(required = false) String jobTitle,
+        @RequestParam(required = false) String company,
+        @RequestParam(required = false) String location) {
+
+        Specification<JobPost> specification = JobPostSpecifications.buildSearchSpecification(jobTitle, company, location);
+        List<JobPost> jobPosts = jobPostService.getAllJobPosts(specification);
+
+        if (jobPosts.isEmpty()) {
+            String message = "No job posts found matching the specified criteria";
             throw new JobPostNotFoundException(message);
         }
-        
-        return ResponseEntity.ok(jobs);
+
+        return ResponseEntity.ok(jobPosts);
     }
 
     @GetMapping("/{jobId}")

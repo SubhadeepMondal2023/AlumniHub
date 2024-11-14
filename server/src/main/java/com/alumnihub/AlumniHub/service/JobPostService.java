@@ -10,6 +10,7 @@ import com.alumnihub.AlumniHub.util.JobPostSpecifications;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,5 +80,9 @@ public class JobPostService {
                     jobPost.setApplicationDeadline(updatedJobPost.getApplicationDeadline());
                     return jobPostRepository.save(jobPost);
                 });
+    }
+
+    public List<JobPost> getAllJobPosts(Specification<JobPost> specification) {
+        return jobPostRepository.findAll(specification);
     }
 }
