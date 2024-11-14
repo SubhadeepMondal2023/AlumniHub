@@ -1,10 +1,10 @@
-/* Navbar container styling */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
     top: 0;
-    z-index: 100;
+    z-index: 20000; 
     width: 100%;
     height: 80px;
     background-color: #ffffff;
@@ -68,7 +68,7 @@ nav {
     color: #0073e6;
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 900px) {
     .nav-btn {
         display: block; /* Show toggle button on smaller screens */
     }
