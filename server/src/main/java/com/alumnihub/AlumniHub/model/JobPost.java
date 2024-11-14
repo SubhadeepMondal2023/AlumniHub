@@ -1,38 +1,49 @@
-// package com.alumnihub.AlumniHub.model;
+package com.alumnihub.AlumniHub.model;
 
-// import jakarta.persistence.Entity;
-// import jakarta.persistence.GeneratedValue;
-// import jakarta.persistence.GenerationType;
-// import jakarta.persistence.Id;
-// import jakarta.persistence.JoinColumn;
-// import jakarta.persistence.ManyToOne;
-// import jakarta.persistence.Table;
-// import java.sql.Timestamp;
-// import java.time.LocalDate;
-// import lombok.Getter;
-// import lombok.Setter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import lombok.Getter;
+import lombok.Setter;
 
-// @Entity
-// @Table(name = "JobPost")
-// @Getter
-// @Setter
-// public class JobPost {
+@Entity
+@Table(name = "JobPost")
+@Getter
+@Setter
+public class JobPost {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "JobId")
+    private Long jobId;
 
-//     @Id
-//     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//     private int jobId;
+    @Column(name = "JobTitle")
+    private String jobTitle;
 
-//     private String jobTitle;
-//     private String company;
-//     private String location;
-//     private String jobDescription;
+    @Column(name = "Company")
+    private String company;
 
-//     @ManyToOne
-//     @JoinColumn(name = "postedBy", nullable = false)
-//     private User postedBy;
+    @Column(name = "Location")
+    private String location;
 
-//     private Timestamp postDate;
-//     private LocalDate applicationDeadline;
+    @Column(name = "JobDescription")
+    private String jobDescription;
 
-//     // Getters, setters, and constructors
-// }
+    @ManyToOne
+    @JoinColumn(name = "PostedBy", nullable = false)
+    private User postedBy;
+
+    @Column(name = "PostDate")
+    private Timestamp postDate;
+
+    @Column(name = "ApplicationDeadline")
+    private LocalDate applicationDeadline;
+
+    // other fields or constructors
+}
