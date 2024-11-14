@@ -1,0 +1,39 @@
+.login-container, .register-container {
+    max-width: 400px;
+    margin: 3rem auto;
+    padding: 2rem;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9; /* Light background for better contrast */
+}
+
+.login-container h1, .register-container h1 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: #333; /* Darker text for better readability */
+}
+
+.login-container form, .register-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-links {
+    margin: 1rem 0; /* Space between links and button */
+}
+
+.login-container input, .register-container input,
+.login-container button, .register-container button {
+    margin-bottom: 1rem;
+}
+
+button {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}

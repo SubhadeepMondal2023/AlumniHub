@@ -5,18 +5,6 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import "../../css/banner.css";
 
-const SearchForm = () => (
-    <Form className="search-form">
-        <Form.Group className="mb-0">
-            <InputGroup>
-                <Form.Control type="email" placeholder="Enter Email" />
-                <Button variant="" className="ezy__header29-btn">
-                    <FontAwesomeIcon icon={faSearch} />
-                </Button>
-            </InputGroup>
-        </Form.Group>
-    </Form>
-);
 
 const Banner = () => {
     return (
@@ -27,7 +15,7 @@ const Banner = () => {
                     "url(https://cdn.easyfrontend.com/pictures/hero/hero_30.png)",
             }}
         >
-            <Button variant="outline-light" className="position-absolute top-0 end-0 m-3">
+            <Button variant="outline-light" href="/login" className="position-absolute top-0 end-0 m-3">
                 Login
             </Button>
 
@@ -42,10 +30,10 @@ const Banner = () => {
                         </p>
                         <Row className="justify-content-center">
                             <Col xs={12} md={8} className="d-flex justify-content-center gap-3">
-                                <Button variant="secondary" size="lg">
+                                <Button variant="secondary" href="/register" size="lg">
                                     Join Our Community
                                 </Button>
-                                <Button variant="outline-secondary" size="lg">
+                                <Button variant="outline-secondary" href="/login" size="lg">
                                     Login
                                 </Button>
                             </Col>

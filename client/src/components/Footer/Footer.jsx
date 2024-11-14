@@ -3,6 +3,7 @@ import { Col, Container, Nav, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { quickLinks, sociaIcons, jobInfo, contactUs, socialMedia, navigations } from "../../utils/Links.js";
 import '../../css/footer.css'
+import { Link } from "react-router-dom";
 
 import PropTypes from "prop-types";
 import SocialItem from "../common/SocialItem";
@@ -10,7 +11,7 @@ import SocialItem from "../common/SocialItem";
 
 const LinkMapping = ({ item }) => (
 	<li>
-		<a href={item.href}>{item.value}</a>
+		<Link to={item.href.toLowerCase()}>{item.value}</Link>
 	</li>
 );
 
