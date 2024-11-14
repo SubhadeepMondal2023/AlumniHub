@@ -7,6 +7,7 @@ import Faq from './components/AboutUs/Faq.jsx';
 import Navbar from './components/Navbar/Navbar.jsx';
 import Login from './components/Auth/Login.jsx';
 import Register from './components/Auth/Register.jsx';
+import Donation from './components/Donation/Donation.jsx';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -20,6 +21,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/about" element={<AboutUs />} /> 
         <Route path="/faqs" element={<Faq />} />
+        <Route path="/donation" element={<Donation />} />
       </Routes>
       <Footer />
     </Router>
