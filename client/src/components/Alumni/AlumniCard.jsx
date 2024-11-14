@@ -6,19 +6,18 @@ const AlumniCard = ({ alumni }) => {
   return (
     <Card className="alumni-card mt-4 mt-lg-0">
       <Card.Header className="position-relative p-0">
-        <img  src={alumni.img} alt={`${alumni.name}'s photo`} />
+        <img src={alumni.img} alt={`${alumni.name}'s photo`} />
       </Card.Header>
       
-      <Card.Body style={{
-        textAlign: "center"
-
-      }}>
-        <Card.Title>{alumni.name}</Card.Title>
-        <Card.Text>{alumni.bio}</Card.Text>
-        <Card.Title>{alumni.department}</Card.Title>
-        
-        <Card.Title>{alumni.job}</Card.Title>
-          <Card.Title>{alumni.skills}</Card.Title>
+      <Card.Body>
+        {
+          alumni &&
+          Object.keys(alumni).filter((key) => key !== "img" && key !== "id").map((key, index) => (
+            <Card.Title key={index}>
+              {key}:{alumni[key]}
+            </Card.Title>
+          ))
+        }
       </Card.Body>
     </Card>
   );
