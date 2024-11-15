@@ -1,39 +1,182 @@
-.login-container, .register-container {
-    max-width: 400px;
-    margin: 3rem auto;
+.login-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #c16c6f, #ab6b59, #a75790, #8169b9);
+    animation: gradientBG 6s ease infinite;
+}
+
+/* Adding animation to the background */
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.or-divider hr {
+    flex: 1;
+    border: none;
+    border-top: 5px solid #000000; /* Change to white */
+    margin: 0 10px;
+}
+
+.or-text {
+    font-size: 1rem;
+    color: hsl(0, 0%, 100%); /* Changed to white */
+}
+
+.login-container {
+    max-width: 500px;
     padding: 2rem;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    background-color: #f9f9f9; /* Light background for better contrast */
-}
-
-.login-container h1, .register-container h1 {
-    margin-bottom: 1.5rem;
-    font-size: 2rem;
-    color: #333; /* Darker text for better readability */
-}
-
-.login-container form, .register-container form {
+    background: linear-gradient(135deg, #905990, #5a8498);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: #ffffff; /* Ensure text contrasts well */
 }
 
-.login-links {
-    margin: 1rem 0; /* Space between links and button */
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: #ffffff; /* Text remains white */
 }
 
-.login-container input, .register-container input,
-.login-container button, .register-container button {
-    margin-bottom: 1rem;
+p {
+    font-size: 1rem;
+    margin-top: 1rem;
+    color: #ffffff; /* Changed to white */
+}
+
+p a {
+    color: #ffffff; /* Links pop with white text */
+    font-weight: bold;
 }
 
 button {
-    background-color: #007bff; /* Bootstrap primary color */
-    color: white;
+    font-weight: bold;
+    background-color: #ffe8e6; /* Strong orange for buttons */
+    color: #ffffff; /* Button text remains white */
+    border: none;
+    padding: 0.75rem 1.5rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+    background-color: #d94a3d; /* Slightly darker orange */
+}
+
+.register-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #c16c6f, #ab6b59, #a75790, #8169b9);
+    animation: gradientBGR 6s ease infinite;
+}
+
+/* Adding animation to the background */
+@keyframes gradientBGR {
+   0% {
+        background-position: 0% 50%;
+   }
+   50% {
+        background-position: 100% 50%;
+   }
+   100% {
+        background-position: 0% 50%;
+   }
+}
+
+.register-container {
+    max-width: 600px; /* Increased max width */
+    width: 90%; /* Use relative width for responsiveness */
+    padding: 2rem;
+    background: linear-gradient(135deg, #905990, #5a8498);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+}
+
+h1 {
+    font-size: 2.2rem; /* Adjust font size for better visibility */
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+p {
+    font-size: 1rem;
+    margin-top: 1rem;
+    color: #ffffff;
+}
+
+p a {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+button {
+    font-weight: bold;
+    background-color: #4370af;
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #5a719c;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+    .register-container {
+        padding: 1rem; /* Reduce padding for smaller screens */
+        width: 95%; /* Occupy most of the screen width */
+    }
+
+    h1 {
+        font-size: 1.8rem; /* Smaller font size for mobile */
+    }
+
+    button {
+        padding: 0.6rem 1.2rem; /* Reduce button size */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .register-container {
+        padding: 0.8rem;
+        width: 100%; /* Max out the container width */
+    }
+
+    h1 {
+        font-size: 1.5rem; /* Further reduce font size for smaller screens */
+    }
 }
