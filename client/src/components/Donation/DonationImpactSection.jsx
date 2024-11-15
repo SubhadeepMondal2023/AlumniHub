@@ -62,7 +62,7 @@ const ImpactItem = ({ impact }) => {
 			<Collapse in={isOpen}>
 				<div className="border-start border-3 border-info mb-3">
 					<div className="donation-impact-content px-4">
-						<p className="opacity-75 mb-0">{impact.description}</p>
+						<p className="opacity-75 mb-0 text-black">{impact.description}</p>
 					</div>
 				</div>
 			</Collapse>
