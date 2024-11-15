@@ -22,7 +22,7 @@ function Navbar() {
         </div>
         <div className="company-navbar">
           <nav ref={navref}>
-            <Link className="nav-link" to="/home">Home</Link>
+            <Link className="nav-link" to="/">Home</Link>
             <Link className="nav-link" to="/groups">Groups</Link>
             <Dropdown navlink={'Events'} childlinks={['reunion', 'workshop', 'Ted Talk', 'upcoming events', 'past events']} />
             <Link className="nav-link" to="/alumni">Alumni</Link>
