@@ -11,25 +11,27 @@ import Login from './components/Auth/Login.jsx';
 import Register from './components/Auth/Register.jsx';
 import Donation from './components/Donation/Donation.jsx';
 import NotificationList from './components/Notification/NotificationList.jsx'; 
+import AlumniPage from './components/Alumni/AlumniPage.jsx'; // Import AlumniPage
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   return (
     <Provider store={store}>
-    <Router>
-      {isAuthenticated && <Navbar />}
-      <Routes>
-        <Route path="/" element={<HeroPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/about" element={<AboutUs />} /> 
-        <Route path="/faqs" element={<Faq />} />
-        <Route path="/donation" element={<Donation />} />
-        <Route path="/notifications" element={<NotificationList />} />
-      </Routes>
-      <Footer />
-    </Router>
+      <Router>
+        {isAuthenticated && <Navbar />}
+        <Routes>
+          <Route path="/" element={<HeroPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/about" element={<AboutUs />} /> 
+          <Route path="/faqs" element={<Faq />} />
+          <Route path="/donation" element={<Donation />} />
+          <Route path="/notifications" element={<NotificationList />} />
+          <Route path="/alumni" element={<AlumniPage />} /> {/* Alumni Page route */}
+        </Routes>
+        <Footer />
+      </Router>
     </Provider>
   );
 }
