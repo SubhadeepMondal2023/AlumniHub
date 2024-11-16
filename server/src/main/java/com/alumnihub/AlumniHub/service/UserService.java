@@ -1,17 +1,27 @@
 package com.alumnihub.AlumniHub.service;
 
+import com.alumnihub.AlumniHub.util.JwtProvider;
 import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.alumnihub.AlumniHub.model.LoginRequest;
+import com.alumnihub.AlumniHub.model.Role;
 
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
 
     public Optional<User> getUser(Long userId) {
         return userRepository.findById(userId);
@@ -22,78 +32,66 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Login method
-    public Optional<User> login(String email, String password) {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+    @Autowired
+    private JwtProvider jwtProvider;
+
+    public String registerUser(User user) throws Exception {
+        if (userRepository.findByEmailAndRole(user.getEmail(), user.getRole()) != null) {
+            throw new Exception("Email is already registered!");
+        }
+
+        // Encode the password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Save the user directly
+        userRepository.save(user);
+
+        // Generate token
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return jwtProvider.generateToken(authentication);
+    }
+
+    public String loginUser(LoginRequest loginRequest) {
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+        Role role = loginRequest.getRole();
+
+        // Find user by email and role
+        User user = userRepository.findByEmailAndRole(email, role);
+        if (user == null) {
+            throw new BadCredentialsException("Invalid email or role!");
+        }
+
+        // Authenticate user
+        Authentication authentication = authenticate(email, password);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return jwtProvider.generateToken(authentication);
+    }
+
+    private Authentication authenticate(String email, String password) {
         Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent() && user.get().getPassword().equals(password)) {
-            return user;
+        if (user.isEmpty() || !passwordEncoder.matches(password, user.get().getPassword())) {
+            throw new BadCredentialsException("Invalid email or password!");
         }
-        return Optional.empty();
+        return new UsernamePasswordAuthenticationToken(email, null, null);
     }
 
-    // Get user profile by ID
-    public Optional<User> getMyProfile(Long userId) {
-        return userRepository.findById(userId);
-    }
+    public Optional<User> getUserFromToken(String token) {
+      
+        token = token.startsWith("Bearer ") ? token.substring(7) : token;
+        String email = jwtProvider.getEmailFromJwtToken(token);
 
-    // Update user profile
-    public Optional<User> updateProfile(Long userId, User user) {
-        Optional<User> existingUser = userRepository.findById(userId);
-        if (existingUser.isPresent()) {
-            User updatedUser = existingUser.get();
-            updatedUser.setFirstName(user.getFirstName());
-            updatedUser.setLastName(user.getLastName());
-            updatedUser.setEmail(user.getEmail());
-            userRepository.save(updatedUser);
-            return Optional.of(updatedUser);
-        }
-        return Optional.empty();
-    }
-
-    // Update user password
-    public boolean updatePassword(Long userId, String oldPassword, String newPassword) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent() && user.get().getPassword().equals(oldPassword)) {
-            user.get().setPassword(newPassword);
-            userRepository.save(user.get());
-            return true;
-        }
-        return false;
-    }
-
-    // Forgot password - generate OTP
-    public Optional<String> forgotPassword(String email) {
         Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()) {
-            String otp = generateOtp();
-            // Send OTP (implementation needed for actual sending)
-            return Optional.of(otp);
+        if (user.isEmpty()) {
+            throw new RuntimeException("User not found!");
         }
-        return Optional.empty();
-    }
-
-    // Reset password with OTP
-    public boolean resetPassword(String email, String otp, String newPassword) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()) {
-            user.get().setPassword(newPassword);
-            userRepository.save(user.get());
-            return true;
-        }
-        return false;
-    }
-
-    // Delete user account
-    public boolean deleteAccount(Long userId) {
-        if (userRepository.existsById(userId)) {
-            userRepository.deleteById(userId);
-            return true;
-        }
-        return false;
-    }
-
-    // Generate OTP (for demonstration purposes)
-    private String generateOtp() {
-        return String.valueOf((int) (Math.random() * 900000) + 100000);
+        return user;
     }
 }
