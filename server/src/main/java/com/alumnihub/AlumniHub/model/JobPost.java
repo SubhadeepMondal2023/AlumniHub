@@ -37,7 +37,7 @@ public class JobPost {
 
     @ManyToOne
     @JoinColumn(name = "PostedBy", nullable = false)
-    private User postedBy;
+    private User user;
 
     @Column(name = "PostDate")
     private Timestamp postDate;

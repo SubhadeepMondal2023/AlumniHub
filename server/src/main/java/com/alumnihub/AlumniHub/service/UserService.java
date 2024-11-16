@@ -13,6 +13,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public Optional<User> getUser(Long userId) {
+        return userRepository.findById(userId);
+    }
+
     // Register a new user
     public User register(User user) {
         return userRepository.save(user);
