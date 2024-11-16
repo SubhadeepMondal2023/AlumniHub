@@ -62,6 +62,7 @@ public class User {
     @Column(name = "Bio", columnDefinition = "TEXT")
     private String bio;
 
+    
     // other methods
 }
 

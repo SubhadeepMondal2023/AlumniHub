@@ -17,7 +17,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/signup")
+    
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUser(@PathVariable Long userId) {
+        Optional<User> userOpt = userService.getUser(userId);
+        if (userOpt.isPresent()) {
+            return ResponseEntity.ok(userOpt.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+    
+    @PostMapping("/register")
+    
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
             
