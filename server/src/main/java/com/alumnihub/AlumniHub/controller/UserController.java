@@ -42,7 +42,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
         try {
             String token = userService.loginUser(loginRequest);

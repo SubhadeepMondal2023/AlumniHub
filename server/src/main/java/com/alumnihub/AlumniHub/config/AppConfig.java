@@ -31,7 +31,7 @@ public class AppConfig {
                 .cors(cors -> cors.configurationSource(corsConfigarationSource())) // Enable CORS
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Use stateless sessions
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/signin","signup").permitAll() // Allow public access to login and register
+                        .requestMatchers("/login","/register").permitAll() // Allow public access to login and register
                         .requestMatchers("/api/**").authenticated() // Protect all other API endpoints
                         .anyRequest().permitAll() // Allow other non-API requests
                 )

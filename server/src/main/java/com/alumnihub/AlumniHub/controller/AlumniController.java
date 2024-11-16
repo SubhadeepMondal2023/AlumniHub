@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/alumni")
+@RequestMapping("/api/alumni")
 public class AlumniController {
 
     @Autowired

@@ -85,6 +85,7 @@ public class UserService {
 
     public Optional<User> getUserFromToken(String token) {
       
+        // String jwt = token.split(" ")[1];
         token = token.startsWith("Bearer ") ? token.substring(7) : token;
         String email = jwtProvider.getEmailFromJwtToken(token);
 

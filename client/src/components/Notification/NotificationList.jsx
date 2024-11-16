@@ -52,7 +52,7 @@ const NotificationList = () => {
         <Row className="justify-content-center text-center mb-5">
           <Col xs={12} md={8}>
             <h2 className="notifications-heading fw-bold mb-4">Notifications</h2>
-            <p className="notifications-sub-heading">
+            <p className="notifications-sub-heading" style={{color: "black"}}>
               Stay updated with the latest notifications from Alumni Hub. Mark your notifications as read to keep track.
             </p>
           </Col>

@@ -33,7 +33,7 @@ const StoryItem = ({ item, index }) => {
 					}`}
 				>
 					<h4 className="fw-bold mb-3">{title}</h4>
-					<p className="mb-0">{description}</p>
+					<p className="mb-0" style={{color: "black"}}>{description}</p>
 				</div>
 			</Col>
 			<Col
@@ -63,7 +63,7 @@ const AboutUs = () => {
 				<Row className="justify-content-center text-center mb-5">
 					<Col xs={12} md={8}>
 						<h2 className="ezy__about6-heading fw-bold mb-4">Our Story</h2>
-						<p className="ezy__about6-sub-heading">
+						<p className="ezy__about6-sub-heading" style={{color: "black"}}> 
 							Alumni Hub is a platform that builds bridges between alumni, creating
 							opportunities to connect, learn, and grow together. Our vision is to
 							empower alumni worldwide by fostering meaningful connections that 
