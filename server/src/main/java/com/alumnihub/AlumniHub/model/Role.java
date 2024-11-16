@@ -1,6 +1,11 @@
 package com.alumnihub.AlumniHub.model;
 
 public enum Role {
-    Admin,
-    Alumni
+    ADMIN,
+    ALUMNI;
+
+    Role parse(String string) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'parse'");
+    }
 }

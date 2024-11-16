@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,6 +35,7 @@ public class User {
     @Column(name = "Email", nullable = false, length = 150, unique = true)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "Password", nullable = false, length = 255)
     private String password;
 
@@ -63,7 +67,6 @@ public class User {
     private String bio;
 
     
-    // other methods
 }
 
 
