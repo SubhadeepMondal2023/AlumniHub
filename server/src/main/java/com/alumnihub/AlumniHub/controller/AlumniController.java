@@ -1,12 +1,9 @@
 package com.alumnihub.AlumniHub.controller;
 
-import com.alumnihub.AlumniHub.exception.AlumniAlreadyExistsException;
 import com.alumnihub.AlumniHub.exception.AlumniNotFoundException;
 import com.alumnihub.AlumniHub.exception.NotFoundException;
 import com.alumnihub.AlumniHub.model.Alumni;
 import com.alumnihub.AlumniHub.model.User;
-import com.alumnihub.AlumniHub.repository.AlumniRepository;
-import com.alumnihub.AlumniHub.repository.UserRepository;
 import com.alumnihub.AlumniHub.service.AlumniService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

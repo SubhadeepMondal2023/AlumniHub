@@ -34,16 +34,16 @@ public class JobPostService {
 
     public JobPost createJobPost(JobPost jobPost) {
         // Validate input
-        if (jobPost == null || jobPost.getPostedBy() == null || jobPost.getPostedBy().getUserId() == null) {
+        if (jobPost == null || jobPost.getUser() == null || jobPost.getUser().getUserId() == null) {
             throw new IllegalArgumentException("Invalid job post or user data provided");
         }
 
         // Retrieve user
-        User postedBy = userRepository.findById(jobPost.getPostedBy().getUserId())
+        User user = userRepository.findById(jobPost.getUser().getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         // Link the validated user to the job post entity
-        jobPost.setPostedBy(postedBy);
+        jobPost.setUser(user);
 
         // Save and return the new job post
         return jobPostRepository.save(jobPost);
