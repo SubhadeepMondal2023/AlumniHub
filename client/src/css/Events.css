@@ -1,0 +1,87 @@
+
+.ezy__clients8 {
+	/* Bootstrap variables */
+	--bs-body-bg: rgb(255, 255, 255);
+
+	/* Easy Frontend variables */
+	--ezy-theme-color: rgb(13, 110, 253);
+	--ezy-theme-color-rgb: 13, 110, 253;
+	--ezy-item-bg: #f4f7fd;
+
+	background-color: var(--bs-body-bg);
+	overflow: hidden;
+	padding: 60px 0;
+}
+
+@media (min-width: 768px) {
+  .ezy__clients8 {
+    padding: 100px 0;
+  }
+}
+
+
+/* Gray Block Style */
+.gray .ezy__clients8,
+.ezy__clients8.gray {
+	/* Bootstrap variables */
+	--bs-body-bg: rgb(246, 246, 246);
+
+	/* Easy Frontend variables */
+	--ezy-item-bg: #fff;
+}
+
+/* Dark Gray Block Style */
+.dark-gray .ezy__clients8,
+.ezy__clients8.dark-gray {
+	/* Bootstrap variables */
+	--bs-body-color: #ffffff;
+	--bs-body-bg: rgb(30, 39, 53);
+
+	/* Easy Frontenrgb(16, 26, 39)bles */
+	--ezy-item-bg: #263344;
+}
+
+/* Dark Block Style */
+.dark .ezy__clients8,
+.ezy__clients8.dark {
+	/* Bootstrap variables */
+	--bs-body-color: #ffffff;
+	--bs-body-bg: rgb(11, 23, 39);
+
+	/* Easy Frontend variables */
+	--ezy-item-bg: #162231;
+}
+
+.ezy__clients8-heading {
+	font-weight: bold;
+	font-size: 25px;
+	line-height: 25px;
+	color: #000000;
+}
+
+@media (min-width: 768px) {
+	.ezy__clients8-heading {
+		font-size: 35px;
+		line-height: 35px;
+	}
+}
+
+.ezy__clients8-sub-heading {
+	font-size: 18px;
+	line-height: 25px;
+	color: #000000;
+	opacity: 0.7;
+}
+
+.ezy__clients8-item {
+	background-color: var(--ezy-item-bg);
+	border-radius: 10px;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.ezy__clients8-img {
+	max-height: 50px;
+}
