@@ -1,93 +1,101 @@
 /* AboutUs.css */
-
 .ezy__about6 {
-	/* Bootstrap variables */
-	--bs-body-color: #1e2329;
-	--bs-body-bg: rgb(255, 255, 255);
-
-	/* Easy Frontend variables */
-	--ezy-theme-color: rgb(13, 110, 253);
-	--ezy-theme-color-rgb: 13, 110, 253;
-
-	background-color: var(--bs-body-bg);
-	color: var(--bs-body-color);
-	overflow: hidden;
-	padding: 60px 0;
+    --bs-body-color: #1e2329;
+    --bs-body-bg: rgb(255, 255, 255);
+    --ezy-theme-color: rgb(13, 110, 253);
+    --ezy-theme-color-rgb: 13, 110, 253;
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    overflow: hidden;
+    padding: 60px 0;
 }
 
 @media (min-width: 768px) {
-	.ezy__about6 {
-		padding: 100px 0;
-	}
-}
-
-/* Gray Block Style */
-.gray .ezy__about6,
-.ezy__about6.gray {
-	/* Bootstrap variables */
-	--bs-body-bg: rgb(246, 246, 246);
-}
-
-/* Dark Gray Block Style */
-.dark-gray .ezy__about6,
-.ezy__about6.dark-gray {
-	/* Bootstrap variables */
-	--bs-body-color: #ffffff;
-	--bs-body-bg: rgb(30, 39, 53);
-}
-
-/* Dark Block Style */
-.dark .ezy__about6,
-.ezy__about6.dark {
-	/* Bootstrap variables */
-	--bs-body-color: #ffffff;
-	--bs-body-bg: rgb(11, 23, 39);
+    .ezy__about6 {
+        padding: 100px 0;
+    }
 }
 
 .ezy__about6-heading {
-	font-size: 35px;
-	line-height: 45px;
+    font-size: 35px;
+    line-height: 45px;
 }
 @media (min-width: 768px) {
-	.ezy__about6-heading {
-		font-size: 50px;
-		line-height: 70px;
-	}
+    .ezy__about6-heading {
+        font-size: 50px;
+        line-height: 70px;
+    }
 }
 .ezy__about6-sub-heading {
-	font-size: 20px;
-	line-height: 28px;
-	font-weight: 500;
-}
-
-.ezy__about6-banner {
-	min-height: 300px;
-	background-size: cover;
-	background-position: center;
-}
-
-.ezy__about6-content p {
-	font-size: 16px;
-	line-height: 1.7;
-	opacity: 0.7;
-}
-
-.ezy__about6 img {
-	border-radius: 15px;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
 }
 
 .faq-button {
-	background-color: var(--ezy-theme-color); /* Matches theme color */
-	color: white;
-	padding: 10px 20px;
-	font-weight: 500;
-	border-radius: 5px;
-	border: none;
-	transition: background-color 0.3s ease;
+    background-color: var(--ezy-theme-color);
+    color: white;
+    padding: 10px 20px;
+    font-weight: 500;
+    border-radius: 5px;
+    border: none;
+    transition: background-color 0.3s ease;
 }
 
 .faq-button:hover {
-	background-color: #0a6dc2; /* Darken slightly on hover */
-	color: #fff;
-	text-decoration: none;
+    background-color: #0a6dc2;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* FAQ Styles */
+.ezy__faq1 {
+    --bs-body-color: #28303b;
+    --bs-body-bg: rgb(255, 255, 255);
+    --ezy-theme-color: rgb(13, 110, 253);
+    --ezy-theme-color-rgb: 13, 110, 253;
+    --ezy-item-bg: #ffffff;
+    --ezy-item-shadow: 0px 4px 44px rgba(159, 190, 218, 0.37);
+    background-color: var(--bs-body-bg);
+    overflow: hidden;
+    padding: 60px 0;
+}
+
+@media (min-width: 768px) {
+    .ezy__faq1 {
+        padding: 100px 0;
+    }
+}
+
+.ezy__faq1-heading {
+    font-weight: bold;
+    font-size: 25px;
+    line-height: 25px;
+    color: var(--bs-body-color);
+}
+
+@media (min-width: 768px) {
+    .ezy__faq1-heading {
+        font-size: 45px;
+        line-height: 45px;
+    }
+}
+
+.ezy__faq1-item {
+    background-color: var(--ezy-item-bg);
+    border-radius: 15px;
+    box-shadow: var(--ezy-item-shadow);
+}
+
+.ezy__faq1-item * {
+    color: var(--bs-body-color);
+}
+
+.ezy__faq1-btn-collapse [class*="fa-"] {
+    transition: transform 0.25s ease-in-out;
+}
+
+.ezy__faq1-btn-collapse.active [class*="fa-"],
+.ezy__faq1-btn-collapse[aria-expanded="true"] [class*="fa-"] {
+    transform: rotate(-180deg);
 }
