@@ -20,32 +20,18 @@
     font-size: 35px;
     line-height: 45px;
 }
+
 @media (min-width: 768px) {
     .ezy__about6-heading {
         font-size: 50px;
         line-height: 70px;
     }
 }
+
 .ezy__about6-sub-heading {
     font-size: 20px;
     line-height: 28px;
     font-weight: 500;
-}
-
-.faq-button {
-    background-color: var(--ezy-theme-color);
-    color: white;
-    padding: 10px 20px;
-    font-weight: 500;
-    border-radius: 5px;
-    border: none;
-    transition: background-color 0.3s ease;
-}
-
-.faq-button:hover {
-    background-color: #0a6dc2;
-    color: #fff;
-    text-decoration: none;
 }
 
 /* FAQ Styles */
@@ -56,6 +42,7 @@
     --ezy-theme-color-rgb: 13, 110, 253;
     --ezy-item-bg: #ffffff;
     --ezy-item-shadow: 0px 4px 44px rgba(159, 190, 218, 0.37);
+
     background-color: var(--bs-body-bg);
     overflow: hidden;
     padding: 60px 0;
@@ -65,6 +52,28 @@
     .ezy__faq1 {
         padding: 100px 0;
     }
+}
+
+.gray .ezy__faq1,
+.ezy__faq1.gray {
+    --bs-body-bg: rgb(246, 246, 246);
+    --ezy-item-bg: #f6f6f6;
+}
+
+.dark-gray .ezy__faq1,
+.ezy__faq1.dark-gray {
+    --bs-body-color: #ffffff;
+    --bs-body-bg: rgb(30, 39, 53);
+    --ezy-item-bg: rgb(11, 23, 39);
+    --ezy-item-shadow: none;
+}
+
+.dark .ezy__faq1,
+.ezy__faq1.dark {
+    --bs-body-color: #ffffff;
+    --bs-body-bg: rgb(11, 23, 39);
+    --ezy-item-bg: rgb(30, 39, 53);
+    --ezy-item-shadow: none;
 }
 
 .ezy__faq1-heading {
@@ -81,6 +90,12 @@
     }
 }
 
+.ezy__faq1-sub-heading {
+    font-size: 16px;
+    line-height: 22px;
+    color: var(--bs-body-color);
+}
+
 .ezy__faq1-item {
     background-color: var(--ezy-item-bg);
     border-radius: 15px;
@@ -91,11 +106,70 @@
     color: var(--bs-body-color);
 }
 
-.ezy__faq1-btn-collapse [class*="fa-"] {
-    transition: transform 0.25s ease-in-out;
+/* Enhanced FAQ Dropdown Button Styles */
+.ezy__faq1-btn-collapse {
+    background-color: var(--ezy-item-bg);
+    border: 1px solid var(--ezy-theme-color);
+    border-radius: 10px;
+    color: var(--bs-body-color);
+    font-weight: bold;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
 }
 
-.ezy__faq1-btn-collapse.active [class*="fa-"],
-.ezy__faq1-btn-collapse[aria-expanded="true"] [class*="fa-"] {
-    transform: rotate(-180deg);
+.ezy__faq1-btn-collapse:hover {
+    background-color: var(--ezy-theme-color);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ezy__faq1-btn-collapse:focus {
+    outline: none;
+    box-shadow: 0 0 5px var(--ezy-theme-color);
+}
+
+.ezy__faq1-btn-collapse.active,
+.ezy__faq1-btn-collapse[aria-expanded="true"] {
+    background-color: var(--ezy-theme-color);
+    color: #ffffff;
+    border-color: var(--ezy-theme-color);
+    transform: scale(1.02);
+}
+
+.ezy__faq1-btn-collapse .fa-chevron-down {
+    color: var(--bs-body-color);
+    font-size: 18px;
+    transition: transform 0.25s ease-in-out, color 0.3s;
+}
+
+.ezy__faq1-btn-collapse.active .fa-chevron-down,
+.ezy__faq1-btn-collapse[aria-expanded="true"] .fa-chevron-down {
+    color: #ffffff;
+}
+
+/* Add a subtle pulse animation on hover */
+.ezy__faq1-btn-collapse:hover {
+    animation: pulse 0.4s ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.03);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.ezy__faq1-content {
+    padding-left: 20px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    font-style: italic;
 }
