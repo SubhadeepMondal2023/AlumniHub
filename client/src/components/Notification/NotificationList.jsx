@@ -5,13 +5,19 @@ import "../../css/notification.css";
 import {
   useGetNotificationsQuery,
   useMarkAsReadMutation,
+  useDeleteNotificationMutation,
 } from "../../redux/api/notificationsApiSlice";
 
-const NotificationItem = ({ item }) => {
+const NotificationItem = ({ item, isAdmin }) => {
   const [markAsRead] = useMarkAsReadMutation();
+  const [deleteNotification] = useDeleteNotificationMutation();
 
   const handleMarkAsRead = async (id) => {
     await markAsRead(id);
+  };
+
+  const handleDeleteNotification = async (id) => {
+    await deleteNotification(id);
   };
 
   return (
@@ -29,10 +35,19 @@ const NotificationItem = ({ item }) => {
         {item.Status === "Unread" && (
           <Button
             variant="primary"
-            className="mark-read-button"
+            className="mark-read-button me-2"
             onClick={() => handleMarkAsRead(item.NotificationID)}
           >
             Mark as Read
+          </Button>
+        )}
+        {isAdmin && (
+          <Button
+            variant="danger"
+            className="delete-button"
+            onClick={() => handleDeleteNotification(item.NotificationID)}
+          >
+            Delete
           </Button>
         )}
       </Col>
@@ -42,9 +57,10 @@ const NotificationItem = ({ item }) => {
 
 NotificationItem.propTypes = {
   item: PropTypes.object.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
 };
 
-const NotificationList = () => {
+const NotificationList = ({ isAdmin }) => {
   const { data: notifications = [], isLoading, isError } = useGetNotificationsQuery();
 
   if (isLoading) {
@@ -90,7 +106,7 @@ const NotificationList = () => {
 
         {notifications.length > 0 ? (
           notifications.map((item, i) => (
-            <NotificationItem key={i} item={item} />
+            <NotificationItem key={i} item={item} isAdmin={isAdmin} />
           ))
         ) : (
           <Row className="text-center">
@@ -110,6 +126,10 @@ const NotificationList = () => {
       </Container>
     </section>
   );
+};
+
+NotificationList.propTypes = {
+  isAdmin: PropTypes.bool.isRequired,
 };
 
 export default NotificationList;

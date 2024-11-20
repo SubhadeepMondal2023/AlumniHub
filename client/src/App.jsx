@@ -14,6 +14,8 @@ import NotificationList from './components/Notification/NotificationList.jsx';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [userRole, setUserRole] = useState('admin'); 
+  const isAdmin = isAuthenticated && userRole === 'admin';
 
   return (
     <Provider store={store}>
@@ -25,7 +27,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={<AboutUs />} /> 
           <Route path="/donation" element={<Donation />} />
-          <Route path="/notifications" element={<NotificationList />} />
+          <Route path="/notifications" element={<NotificationList isAdmin={isAdmin} />} />
           {/* <Route path="/alumni" element={<AlumniPage />} />  */}
         </Routes>
         <Footer />
