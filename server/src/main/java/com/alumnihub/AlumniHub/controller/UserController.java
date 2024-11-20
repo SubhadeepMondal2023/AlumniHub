@@ -2,17 +2,25 @@ package com.alumnihub.AlumniHub.controller;
 
 import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.model.Gender;
-import com.alumnihub.AlumniHub.model.LoginRequest;
 import com.alumnihub.AlumniHub.model.Role;
 import com.alumnihub.AlumniHub.util.EmailService;
+import com.alumnihub.AlumniHub.util.PasswordConstraintValidator;
+
+import jakarta.validation.Valid;
+
 import com.alumnihub.AlumniHub.service.UserService;
 import com.alumnihub.AlumniHub.storage.OtpStorage;
+import com.alumnihub.AlumniHub.storage.UserStorage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,89 +37,104 @@ public class UserController {
     @Autowired
     private OtpStorage otpStorage;
 
+    @Autowired
+    private UserStorage userStorage;
+
+    @Autowired 
+    private PasswordConstraintValidator passwordValidator;
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
     // Step 1: Start Registration
     @PostMapping("/auth/register/send-otp")
-    public ResponseEntity<?> RegistrationSendOtp(@RequestBody User user) {
+    public ResponseEntity<?> RegistrationSendOtp(@Valid @RequestBody User user) {
         try {
 
-            // Send OTP to email
+            if (userService.getUserByEmail(user.getEmail()).isPresent()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of(
+                            "success", false, 
+                            "message", "Email is already registered"));
+                }
+
+            if (!passwordValidator.isValid(user.getPassword(), null)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of(
+                            "success", false, 
+                            "message", "Password does not meet the required criteria"));
+            }
             String otp = emailService.sendOtpEmail(user.getEmail());
-
-            // Store OTP in the OTP storage
             otpStorage.storeOtp(user.getEmail(), otp);
-
-            return ResponseEntity.status(HttpStatus.OK).body(Map.of(
-                    "success", true,
-                    "message", "OTP sent to " + user.getEmail()));
+            userStorage.storeUserDetails(user);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(Map.of(
+                            "success", true,
+                            "message", "OTP sent to " + user.getEmail()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "success", false,
+                            "message", e.getMessage()));
         }
     }
 
     // Step 2: Complete Registration
-    @PostMapping("/auth/register")
+    @PostMapping("/auth/register/confirm")
     public ResponseEntity<?> registerUser(@RequestBody Map<String, String> request) {
-        try {
-            String email = request.get("email");
-            String otp = request.get("otp");
-
-            // Validate OTP
-            String storedOtp = otpStorage.getOtp(email);
-            if (storedOtp == null || !storedOtp.equals(otp)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
-                        "success", false,
-                        "message", "Invalid or expired OTP!"));
+        {
+            try {
+                String email = request.get("email");
+                String otp = request.get("otp");
+                String storedOtp = otpStorage.getOtp(email);
+                if (storedOtp == null || !storedOtp.equals(otp)) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of(
+                                    "success", false,
+                                    "message", "Invalid or expired OTP!"));
+                }
+                User user = userStorage.getUserDetails(email);
+                if (user == null) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of(
+                                    "success", false,
+                                    "message", "User details not found!"));
+                }
+                String token = userService.registerUser(user);
+                userStorage.removeUserDetails(email);
+                otpStorage.removeOtp(email);
+                return ResponseEntity.status(HttpStatus.CREATED)
+                        .body(Map.of(
+                                "success", true,
+                                "jwt", token,
+                                "message", "Registration successful!"));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of(
+                                "success", false,
+                                "message", e.getMessage()));
             }
-
-            // Retrieve user details from the OTP storage (you need to store user details as
-            // well in otpStorage if required)
-            User user = new User();
-            user.setFirstName(request.get("firstName"));
-            user.setLastName(request.get("lastName"));
-            user.setEmail(email); // Set email from the request
-            user.setPassword(request.get("password")); // Set password from the request
-
-            // Convert string role to Role enum
-            String roleString = request.get("role");
-            Role role = Role.valueOf(roleString.toUpperCase()); // Convert the string to Role enum
-            user.setRole(role);
-
-            // Convert string gender to Gender enum
-            String genderString = request.get("gender");
-            Gender gender = Gender.valueOf(genderString.toUpperCase()); // Convert the string to Gender enum
-            user.setGender(gender);
-
-            // Set date of birth
-            user.setDateOfBirth(LocalDate.parse(request.get("dateOfBirth")));
-
-            // Convert yearOfGraduation to Short
-            Short yearOfGraduation = Short.parseShort(request.get("yearOfGraduation"));
-            user.setYearOfGraduation(yearOfGraduation);
-
-            user.setDegree(request.get("degree"));
-            user.setIndustry(request.get("industry"));
-            user.setProfileImage(request.get("profileImage"));
-            user.setBio(request.get("bio"));
-            String token = userService.registerUser(user);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                    "success", true,
-                    "jwt", token,
-                    "message", "Registration successful!"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()));
         }
     }
 
     // Login User
     @PostMapping("/auth/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> request) {
         try {
-            String token = userService.loginUser(loginRequest);
+            String email = request.get("email");
+            String password = request.get("password");
+
+
+            String token = userService.loginUser(email, password);
             return ResponseEntity.status(HttpStatus.OK).body(Map.of(
                     "success", true,
                     "jwt", token));
