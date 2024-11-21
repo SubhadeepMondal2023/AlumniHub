@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Form } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import AlumniCard from "../Alumni/AlumniCard";
-import AlumniList from "../HeroSection/AlumniList";
 import Pagination from "../common/Pagination";
 import { useFetchAlumniQuery } from "../../redux/api/alumniApiSlice";
+import { TextField } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
 
 const AlumniPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,15 +13,18 @@ const AlumniPage = () => {
 
   const handlePageChange = (newPage) => setCurrentPage(newPage);
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
+  const handleFilterChange = (field, value) => {
     setFilters((prev) => ({
       ...prev,
-      [name]: value,
+      [field]: value,
     }));
   };
 
   const { data, isLoading, isError } = useFetchAlumniQuery(filters);
+
+  
+  const designations = data ? [...new Set(data.map((alumni) => alumni.Designation))] : [];
+  const locations = data ? [...new Set(data.map((alumni) => alumni.Location))] : [];
 
   const totalPages = data ? Math.ceil(data.length / 5) : 1;
   const filteredAlumni = data
@@ -43,34 +47,30 @@ const AlumniPage = () => {
       <h1 className="text-center my-5">Alumni Details</h1>
 
       {/* Filter Options */}
-      <Form>
-        <Row className="mb-4">
-          <Col xs={12} md={6}>
-            <Form.Group controlId="designationFilter">
-              <Form.Label>Filter by Designation</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter designation"
-                name="designation"
-                value={filters.designation}
-                onChange={handleFilterChange}
-              />
-            </Form.Group>
-          </Col>
-          <Col xs={12} md={6}>
-            <Form.Group controlId="locationFilter">
-              <Form.Label>Filter by Location</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter location"
-                name="location"
-                value={filters.location}
-                onChange={handleFilterChange}
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-      </Form>
+      <Row className="mb-4">
+        <Col xs={12} md={6}>
+          <Autocomplete
+            options={designations}
+            getOptionLabel={(option) => option || ""}
+            value={filters.designation}
+            onChange={(event, value) => handleFilterChange("designation", value || "")}
+            renderInput={(params) => (
+              <TextField {...params} label="Filter by Designation" variant="outlined" />
+            )}
+          />
+        </Col>
+        <Col xs={12} md={6}>
+          <Autocomplete
+            options={locations}
+            getOptionLabel={(option) => option || ""}
+            value={filters.location}
+            onChange={(event, value) => handleFilterChange("location", value || "")}
+            renderInput={(params) => (
+              <TextField {...params} label="Filter by Location" variant="outlined" />
+            )}
+          />
+        </Col>
+      </Row>
 
       {/* Alumni List */}
       <Row>
