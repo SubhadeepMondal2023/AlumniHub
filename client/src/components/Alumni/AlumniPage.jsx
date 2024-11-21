@@ -1,62 +1,99 @@
 import React, { useState } from "react";
-import { useFetchAlumniQuery, useDeleteAlumniMutation } from "../../redux/api/alumniApiSlice";
-import AlumniCard from "./AlumniCard";
+import { Container, Row, Col, Form } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import AlumniCard from "../Alumni/AlumniCard";
+import AlumniList from "../HeroSection/AlumniList";
 import Pagination from "../common/Pagination";
-import "../../css/alumniPage.css";
+import { useFetchAlumniQuery } from "../../redux/api/alumniApiSlice";
 
 const AlumniPage = () => {
-  const [filters, setFilters] = useState({ designation: "", location: "", yoe: "", company: "", department: "" });
   const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState({ designation: "", location: "" });
 
-  const { data, isFetching, isError } = useFetchAlumniQuery({ page: currentPage, ...filters });
-  const [deleteAlumni] = useDeleteAlumniMutation();
+  const handlePageChange = (newPage) => setCurrentPage(newPage);
 
   const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
-    setCurrentPage(1); // Reset to page 1 on filter change
+    const { name, value } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleDelete = async (alumniId) => {
-    const optimisticAlumni = data.alumni.filter((a) => a.AlumniID !== alumniId);
+  const { data, isLoading, isError } = useFetchAlumniQuery(filters);
 
-    // Optimistically update the UI
-    try {
-      await deleteAlumni(alumniId).unwrap();
-    } catch (error) {
-      alert("Failed to delete alumni. Reverting...");
-    }
-  };
+  const totalPages = data ? Math.ceil(data.length / 5) : 1;
+  const filteredAlumni = data
+    ? data.filter((alumni) => {
+        return (
+          (filters.designation
+            ? alumni.Designation.toLowerCase().includes(filters.designation.toLowerCase())
+            : true) &&
+          (filters.location
+            ? alumni.Location.toLowerCase().includes(filters.location.toLowerCase())
+            : true)
+        );
+      })
+    : [];
 
-  if (isError) return <div>Error fetching alumni data.</div>;
-  if (isFetching) return <div>Loading...</div>;
+  const alumniToDisplay = filteredAlumni.slice((currentPage - 1) * 5, currentPage * 5);
 
   return (
-    <div className="alumni-page container">
-      <div className="filter-options">
-        {["designation", "location", "yoe", "company", "department"].map((filter) => (
-          <input
-            key={filter}
-            type="text"
-            name={filter}
-            placeholder={`Filter by ${filter}`}
-            value={filters[filter]}
-            onChange={handleFilterChange}
-          />
-        ))}
-      </div>
+    <Container>
+      <h1 className="text-center my-5">Alumni Details</h1>
 
-      <div className="alumni-cards">
-        {data?.alumni.map((alumnus) => (
-          <AlumniCard key={alumnus.AlumniID} alumni={alumnus} onDelete={() => handleDelete(alumnus.AlumniID)} />
-        ))}
-      </div>
+      {/* Filter Options */}
+      <Form>
+        <Row className="mb-4">
+          <Col xs={12} md={6}>
+            <Form.Group controlId="designationFilter">
+              <Form.Label>Filter by Designation</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter designation"
+                name="designation"
+                value={filters.designation}
+                onChange={handleFilterChange}
+              />
+            </Form.Group>
+          </Col>
+          <Col xs={12} md={6}>
+            <Form.Group controlId="locationFilter">
+              <Form.Label>Filter by Location</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter location"
+                name="location"
+                value={filters.location}
+                onChange={handleFilterChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+      </Form>
 
+      {/* Alumni List */}
+      <Row>
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : isError ? (
+          <p>Error fetching data.</p>
+        ) : (
+          alumniToDisplay.map((alumni) => (
+            <Col xs={12} md={6} lg={4} key={alumni.AlumniID}>
+              <AlumniCard alumni={alumni} />
+            </Col>
+          ))
+        )}
+      </Row>
+
+      {/* Pagination */}
       <Pagination
         currentPage={currentPage}
-        totalPages={data?.totalPages || 1}
-        onPageChange={setCurrentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
       />
-    </div>
+    </Container>
   );
 };
 

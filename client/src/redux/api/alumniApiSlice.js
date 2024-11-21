@@ -1,33 +1,31 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { testAlumniData } from "../../utils/Links";
 
 export const alumniApi = createApi({
-  reducerPath: 'alumniApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
-  tagTypes: ['Alumni'],
+  reducerPath: "alumniApi",
+  baseQuery: async () => ({ data: testAlumniData }), // Mock API call
+  tagTypes: ["Alumni"],
   endpoints: (builder) => ({
     fetchAlumni: builder.query({
-      query: (params) => ({
-        url: '/alumni',
-        params,
-      }),
+      query: () => "/alumni",
       providesTags: (result) =>
         result
           ? [
-              ...result.alumni.map(({ AlumniID }) => ({ type: 'Alumni', id: AlumniID })),
-              { type: 'Alumni', id: 'LIST' },
+              ...result.map(({ AlumniID }) => ({ type: "Alumni", id: AlumniID })),
+              { type: "Alumni", id: "LIST" },
             ]
-          : [{ type: 'Alumni', id: 'LIST' }],
+          : [{ type: "Alumni", id: "LIST" }],
     }),
     deleteAlumni: builder.mutation({
       query: (alumniId) => ({
         url: `/alumni/${alumniId}`,
-        method: 'DELETE',
+        method: "DELETE",
       }),
-      invalidatesTags: (result, error, alumniId) => [{ type: 'Alumni', id: alumniId }],
+      invalidatesTags: (result, error, alumniId) => [{ type: "Alumni", id: alumniId }],
     }),
     fetchAlumniById: builder.query({
       query: (alumniId) => `/alumni/${alumniId}`,
-      providesTags: (result, error, alumniId) => [{ type: 'Alumni', id: alumniId }],
+      providesTags: (result, error, alumniId) => [{ type: "Alumni", id: alumniId }],
     }),
   }),
 });
