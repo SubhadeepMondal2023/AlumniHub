@@ -28,13 +28,18 @@ public class JwtProvider {
     }
 
     public String getEmailFromJwtToken(String jwt) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(jwt)
-                .getBody();
-
-        return claims.get("email", String.class);
+        try {
+            Claims claims = Jwts
+            .parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(jwt)
+            .getBody();
+            return claims.get("email", String.class);
+        } catch (Exception e) {
+            System.err.println("Error parsing JWT: " + e.getMessage());
+            return null;
+        }
     }
 
 }

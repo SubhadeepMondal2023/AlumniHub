@@ -1,6 +1,5 @@
 package com.alumnihub.AlumniHub.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,30 +17,28 @@ import com.alumnihub.AlumniHub.util.JwtTokenValidator;
 import java.util.Collections;
 import java.util.List;
 
-
-
 @Configuration
 @EnableWebSecurity
 public class AppConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenValidator jwtTokenValidator) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF protection for stateless authentication
-                .cors(cors -> cors.configurationSource(corsConfigarationSource())) // Enable CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Use stateless sessions
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() // Allow public access to login and register
                         .requestMatchers("/api/**").authenticated() // Protect all other API endpoints
                         .anyRequest().permitAll() // Allow other non-API requests
                 )
-                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class) // Add custom JWT validation filter
+                .addFilterBefore(jwtTokenValidator, BasicAuthenticationFilter.class) // Add custom JWT validation filter
                 .httpBasic(withDefaults()); // Optional: Enable basic authentication for testing (can remove in production)
 
         return http.build();
     }
 
-    private CorsConfigurationSource corsConfigarationSource() {
+    private CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             CorsConfiguration cfg = new CorsConfiguration();
             cfg.setAllowedOrigins(Collections.singletonList("http://your-frontend-domain.com")); // Replace with your frontend domain
@@ -54,7 +51,7 @@ public class AppConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
