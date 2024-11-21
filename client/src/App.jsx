@@ -11,6 +11,7 @@ import Register from './components/Auth/Register.jsx';
 import Donation from './components/Donation/Donation.jsx';
 import NotificationList from './components/Notification/NotificationList.jsx'; 
 import AlumniPage from './components/Alumni/AlumniPage.jsx'; 
+import TheTeam from './components/The Team/TheTeam.jsx';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -29,6 +30,7 @@ function App() {
           <Route path="/donation" element={<Donation />} />
           <Route path="/notifications" element={<NotificationList isAdmin={isAdmin} />} />
           <Route path="/alumni" element={<AlumniPage />} /> 
+          <Route path="/team" element={<TheTeam />} />
         </Routes>
         <Footer />
       </Router>

@@ -1,0 +1,105 @@
+.ezy__header8 {
+	/* Bootstrap variables */
+	--bs-body-color: #373572;
+	--bs-body-bg: rgb(255, 255, 255);
+
+	/* Easy Frontend variables */
+	--ezy-theme-color: rgb(13, 110, 253);
+	--ezy-theme-color-rgb: 13, 110, 253;
+	--ezy-shadow: 0px 4px 44px rgba(159, 190, 218, 0.37);
+
+	background-color: var(--bs-body-bg);
+	overflow: hidden;
+	padding: 50px 0;
+	position: relative;
+}
+
+@media (min-width: 768px) {
+	.ezy__header8 {
+		padding: 100px 0;
+	}
+}
+
+/* Gray Block Style */
+.gray .ezy__header8,
+.ezy__header8.gray {
+	/* Bootstrap variables */
+	--bs-body-bg: rgb(246, 246, 246);
+
+	/* Easy Frontend variables */
+	--ezy-shadow: 0px 4px 44px rgba(125, 153, 177, 0.37);
+}
+
+/* Dark Gray Block Style */
+.dark-gray .ezy__header8,
+.ezy__header8.dark-gray {
+	/* Bootstrap variables */
+	--bs-body-color: #ffffff;
+	--bs-body-bg: rgb(30, 39, 53);
+
+	/* Easy Frontend variables */
+	--ezy-shadow: 0px 4px 44px rgba(44, 44, 44, 0.37);
+}
+
+/* Dark Block Style */
+.dark .ezy__header8,
+.ezy__header8.dark {
+	/* Bootstrap variables */
+	--bs-body-color: #ffffff;
+	--bs-body-bg: rgb(11, 23, 39);
+
+	/* Easy Frontend variables */
+	--ezy-shadow: 0px 4px 44px rgba(0, 0, 0, 0.37);
+}
+
+.ezy__header8-heading {
+	font-weight: bold;
+	font-size: 25px;
+	line-height: 25px;
+	color: var(--bs-body-color);
+}
+
+@media (min-width: 768px) {
+	.ezy__header8-heading {
+		font-size: 70px;
+		line-height: 70px;
+	}
+}
+
+.ezy__header8-sub-heading {
+	color: black;
+	font-size: 20px;
+	line-height: 1.5;
+	opacity: 0.8;
+}
+
+.ezy__header8-meta {
+	color: var(--bs-body-color);
+}
+
+.ezy__header8-img {
+	border: 20px solid rgba(244, 247, 253, 0.1);
+	box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.1);
+	border-radius: 30px 30% 30px 30%;
+}
+
+.ezy__header8-social li {
+	list-style-type: none;
+	display: inline-block;
+}
+
+.ezy__header8-social li:not(:last-child) {
+	margin-right: 20px;
+}
+
+.ezy__header8-social li a {
+	color: var(--bs-body-color);
+	text-decoration: none;
+	font-size: 25px;
+	opacity: 0.7;
+	transition: opacity 0.35s ease-in-out, color 0.35s ease-in-out;
+}
+
+.ezy__header8-social li a:hover {
+	opacity: 1;
+}
