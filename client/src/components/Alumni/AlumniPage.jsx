@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import AlumniCard from "../Alumni/AlumniCard";
 import Pagination from "../common/Pagination";
 import { useFetchAlumniQuery } from "../../redux/api/alumniApiSlice";
@@ -9,7 +8,21 @@ import Autocomplete from "@mui/material/Autocomplete";
 
 const AlumniPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState({ designation: "", location: "" });
+  const [filters, setFilters] = useState({
+    designation: "",
+    location: "",
+    yearOfGraduation: "",
+    degree: "",
+    department: "",
+    name: "",
+  });
+
+  const { data, isLoading, isError } = useFetchAlumniQuery(filters);
+
+  // Reset page to 1 when filters or search term change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
 
   const handlePageChange = (newPage) => setCurrentPage(newPage);
 
@@ -20,21 +33,36 @@ const AlumniPage = () => {
     }));
   };
 
-  const { data, isLoading, isError } = useFetchAlumniQuery(filters);
-
-  
+  // Extract unique values for autocomplete
   const designations = data ? [...new Set(data.map((alumni) => alumni.Designation))] : [];
   const locations = data ? [...new Set(data.map((alumni) => alumni.Location))] : [];
+  const yearsOfGraduation = data
+    ? [...new Set(data.map((alumni) => alumni.YearOfGraduation))]
+    : [];
+  const degrees = data ? [...new Set(data.map((alumni) => alumni.Degree))] : [];
+  const departments = data ? [...new Set(data.map((alumni) => alumni.Department))] : [];
 
   const totalPages = data ? Math.ceil(data.length / 5) : 1;
   const filteredAlumni = data
     ? data.filter((alumni) => {
         return (
+          (filters.name
+            ? alumni.Name.toLowerCase().includes(filters.name.toLowerCase())
+            : true) &&
           (filters.designation
             ? alumni.Designation.toLowerCase().includes(filters.designation.toLowerCase())
             : true) &&
           (filters.location
             ? alumni.Location.toLowerCase().includes(filters.location.toLowerCase())
+            : true) &&
+          (filters.yearOfGraduation
+            ? alumni.YearOfGraduation === filters.yearOfGraduation
+            : true) &&
+          (filters.degree
+            ? alumni.Degree.toLowerCase().includes(filters.degree.toLowerCase())
+            : true) &&
+          (filters.department
+            ? alumni.Department.toLowerCase().includes(filters.department.toLowerCase())
             : true)
         );
       })
@@ -44,30 +72,82 @@ const AlumniPage = () => {
 
   return (
     <Container>
-      <h1 className="text-center my-5">Alumni Details</h1>
+      <h1 className="text-center my-5" style={{ color: "black" }}>
+        Alumni Details
+      </h1>
 
       {/* Filter Options */}
-      <Row className="mb-4">
-        <Col xs={12} md={6}>
+      <Row className="mb-4 d-flex align-items-center">
+        <Col xs={6} md={2}>
           <Autocomplete
+            size="small"
             options={designations}
             getOptionLabel={(option) => option || ""}
             value={filters.designation}
             onChange={(event, value) => handleFilterChange("designation", value || "")}
             renderInput={(params) => (
-              <TextField {...params} label="Filter by Designation" variant="outlined" />
+              <TextField {...params} label="Designation" variant="outlined" />
             )}
           />
         </Col>
-        <Col xs={12} md={6}>
+        <Col xs={6} md={2}>
           <Autocomplete
+            size="small"
             options={locations}
             getOptionLabel={(option) => option || ""}
             value={filters.location}
             onChange={(event, value) => handleFilterChange("location", value || "")}
             renderInput={(params) => (
-              <TextField {...params} label="Filter by Location" variant="outlined" />
+              <TextField {...params} label="Location" variant="outlined" />
             )}
+          />
+        </Col>
+        <Col xs={6} md={2}>
+          <Autocomplete
+            size="small"
+            options={yearsOfGraduation}
+            getOptionLabel={(option) => option.toString()}
+            value={filters.yearOfGraduation}
+            onChange={(event, value) =>
+              handleFilterChange("yearOfGraduation", value || "")
+            }
+            renderInput={(params) => (
+              <TextField {...params} label="Year" variant="outlined" />
+            )}
+          />
+        </Col>
+        <Col xs={6} md={2}>
+          <Autocomplete
+            size="small"
+            options={degrees}
+            getOptionLabel={(option) => option || ""}
+            value={filters.degree}
+            onChange={(event, value) => handleFilterChange("degree", value || "")}
+            renderInput={(params) => (
+              <TextField {...params} label="Degree" variant="outlined" />
+            )}
+          />
+        </Col>
+        <Col xs={6} md={2}>
+          <Autocomplete
+            size="small"
+            options={departments}
+            getOptionLabel={(option) => option || ""}
+            value={filters.department}
+            onChange={(event, value) => handleFilterChange("department", value || "")}
+            renderInput={(params) => (
+              <TextField {...params} label="Department" variant="outlined" />
+            )}
+          />
+        </Col>
+        <Col xs={6} md={2}>
+          <TextField
+            size="small"
+            label="Search by Name"
+            variant="outlined"
+            value={filters.name}
+            onChange={(e) => handleFilterChange("name", e.target.value)}
+            fullWidth
           />
         </Col>
       </Row>
