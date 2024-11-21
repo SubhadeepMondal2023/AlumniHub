@@ -5,6 +5,7 @@ import com.alumnihub.AlumniHub.model.Gender;
 import com.alumnihub.AlumniHub.model.Role;
 import com.alumnihub.AlumniHub.util.EmailService;
 import com.alumnihub.AlumniHub.util.PasswordConstraintValidator;
+import com.alumnihub.AlumniHub.util.TokenBlacklistService;
 
 import jakarta.validation.Valid;
 
@@ -40,8 +41,10 @@ public class UserController {
     @Autowired
     private UserStorage userStorage;
 
-    @Autowired 
+    @Autowired
     private PasswordConstraintValidator passwordValidator;
+
+    @Autowired private TokenBlacklistService tokenBlacklistService;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -63,15 +66,15 @@ public class UserController {
             if (userService.getUserByEmail(user.getEmail()).isPresent()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(Map.of(
-                            "success", false, 
-                            "message", "Email is already registered"));
-                }
+                                "success", false,
+                                "message", "Email is already registered"));
+            }
 
             if (!passwordValidator.isValid(user.getPassword(), null)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(Map.of(
-                            "success", false, 
-                            "message", "Password does not meet the required criteria"));
+                                "success", false,
+                                "message", "Password does not meet the required criteria"));
             }
             String otp = emailService.sendOtpEmail(user.getEmail());
             otpStorage.storeOtp(user.getEmail(), otp);
@@ -133,7 +136,6 @@ public class UserController {
             String email = request.get("email");
             String password = request.get("password");
 
-
             String token = userService.loginUser(email, password);
             return ResponseEntity.status(HttpStatus.OK).body(Map.of(
                     "success", true,
@@ -143,6 +145,30 @@ public class UserController {
                     "success", false,
                     "message", e.getMessage()));
         }
+    }
+
+    // delete User
+    @DeleteMapping("/api/user/delete")
+    public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String token) {
+        try {
+            userService.deleteUser(token);
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of(
+                    "success", true,
+                    "message", "User deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()));
+        }
+    }
+
+    @PostMapping("api/logout")
+    public ResponseEntity<?> logoutUser(@RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        tokenBlacklistService.blacklistToken(jwt);
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of(
+                "success", true,
+                "message", "Logged out successfully"));
     }
 
     // Reset Password Step 1: Send OTP

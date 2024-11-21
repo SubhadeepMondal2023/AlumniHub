@@ -77,8 +77,8 @@ public class UserService {
 
     public Optional<User> getUserFromToken(String token) throws Exception {
 
-        String jwt = token.split(" ")[1];
-        // token = token.startsWith("Bearer ") ? token.substring(7) : token;
+        // String jwt = token.split(" ")[1];
+        String jwt = token.startsWith("Bearer ") ? token.substring(7) : token;
         String email = jwtProvider.getEmailFromJwtToken(jwt);
 
         Optional<User> user = userRepository.findByEmail(email);
@@ -86,6 +86,12 @@ public class UserService {
             throw new RuntimeException("User not found!");
         }
         return user;
+    }
+
+
+    public void deleteUser(String token) throws Exception {
+        Optional<User> user= getUserFromToken(token);
+        userRepository.deleteById(user.get().getUserId());
     }
 
     public void updatePassword(String email, String newPassword) {
