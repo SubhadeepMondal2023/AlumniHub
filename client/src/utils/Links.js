@@ -168,3 +168,67 @@ export const alumniList = [
 	},
 	
   ];
+
+  export const testAlumniData = [
+	{
+	  AlumniID: 1,
+	  Phone: "123-456-7890",
+	  Address: "123 Maple St, Springfield",
+	  LinkedInProfile: "https://linkedin.com/in/emilypatel",
+	  CurrentCompany: "InnovateTech",
+	  Designation: "Design Engineer",
+	  Location: "New York, USA",
+	  img: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
+	},
+	{
+	  AlumniID: 2,
+	  Phone: "987-654-3210",
+	  Address: "456 Oak St, Metropolis",
+	  LinkedInProfile: "https://linkedin.com/in/ryanthompson",
+	  CurrentCompany: "SkyBuild",
+	  Designation: "Structural Engineer",
+	  Location: "Los Angeles, USA",
+	  img: "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg",
+	},
+	{
+	  AlumniID: 3,
+	  Phone: "555-555-5555",
+	  Address: "789 Pine St, Gotham",
+	  LinkedInProfile: "https://linkedin.com/in/sophiarodriguez",
+	  CurrentCompany: "BioGen",
+	  Designation: "Research Scientist",
+	  Location: "Boston, USA",
+	  img: "https://images.pexels.com/photos/3182743/pexels-photo-3182743.jpeg",
+	},
+	{
+	  AlumniID: 4,
+	  Phone: "111-222-3333",
+	  Address: "101 Cedar St, Star City",
+	  LinkedInProfile: "https://linkedin.com/in/michaellee",
+	  CurrentCompany: "AeroTech",
+	  Designation: "Aerodynamics Engineer",
+	  Location: "Seattle, USA",
+	  img: "https://images.pexels.com/photos/1181690/pexels-photo-1181690.jpeg",
+	},
+	{
+	  AlumniID: 5,
+	  Phone: "222-333-4444",
+	  Address: "202 Birch St, Central City",
+	  LinkedInProfile: "https://linkedin.com/in/isabellamartin",
+	  CurrentCompany: "GreenEarth",
+	  Designation: "Sustainability Consultant",
+	  Location: "San Francisco, USA",
+	  img: "https://images.pexels.com/photos/936120/pexels-photo-936120.jpeg",
+	},
+	{
+	  AlumniID: 6,
+	  Phone: "333-444-5555",
+	  Address: "303 Elm St, Coast City",
+	  LinkedInProfile: "https://linkedin.com/in/danielkim",
+	  CurrentCompany: "ChemCorp",
+	  Designation: "Process Engineer",
+	  Location: "Chicago, USA",
+	  img: "https://images.pexels.com/photos/2381069/pexels-photo-2381069.jpeg",
+	},
+  ];
+  

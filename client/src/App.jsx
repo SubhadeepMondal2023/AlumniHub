@@ -10,7 +10,7 @@ import Login from './components/Auth/Login.jsx';
 import Register from './components/Auth/Register.jsx';
 import Donation from './components/Donation/Donation.jsx';
 import NotificationList from './components/Notification/NotificationList.jsx'; 
-// import AlumniPage from './components/Alumni/AlumniPage.jsx'; 
+import AlumniPage from './components/Alumni/AlumniPage.jsx'; 
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -28,7 +28,7 @@ function App() {
           <Route path="/about" element={<AboutUs />} /> 
           <Route path="/donation" element={<Donation />} />
           <Route path="/notifications" element={<NotificationList isAdmin={isAdmin} />} />
-          {/* <Route path="/alumni" element={<AlumniPage />} />  */}
+          <Route path="/alumni" element={<AlumniPage />} /> 
         </Routes>
         <Footer />
       </Router>
