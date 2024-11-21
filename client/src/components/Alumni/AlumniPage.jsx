@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
 import AlumniCard from "../Alumni/AlumniCard";
 import Pagination from "../common/Pagination";
 import { useFetchAlumniQuery } from "../../redux/api/alumniApiSlice";
@@ -8,6 +8,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 
 const AlumniPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [showContactActions, setShowContactActions] = useState(false);
   const [filters, setFilters] = useState({
     designation: "",
     location: "",
@@ -19,7 +20,6 @@ const AlumniPage = () => {
 
   const { data, isLoading, isError } = useFetchAlumniQuery(filters);
 
-  // Reset page to 1 when filters or search term change
   useEffect(() => {
     setCurrentPage(1);
   }, [filters]);
@@ -33,7 +33,6 @@ const AlumniPage = () => {
     }));
   };
 
-  // Extract unique values for autocomplete
   const designations = data ? [...new Set(data.map((alumni) => alumni.Designation))] : [];
   const locations = data ? [...new Set(data.map((alumni) => alumni.Location))] : [];
   const yearsOfGraduation = data
@@ -161,7 +160,10 @@ const AlumniPage = () => {
         ) : (
           alumniToDisplay.map((alumni) => (
             <Col xs={12} md={6} lg={4} key={alumni.AlumniID}>
-              <AlumniCard alumni={alumni} />
+              <AlumniCard
+                alumni={alumni}
+                showContactActions={showContactActions}
+              />
             </Col>
           ))
         )}
@@ -173,6 +175,16 @@ const AlumniPage = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
+
+      {/* Contact Alumni Button */}
+      <div className="text-center mt-4">
+        <Button
+          variant="info"
+          onClick={() => setShowContactActions(!showContactActions)}
+        >
+          {showContactActions ? "Hide Contact Details" : "Contact Alumni"}
+        </Button>
+      </div>
     </Container>
   );
 };
