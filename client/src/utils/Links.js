@@ -275,3 +275,41 @@ export const alumniList = [
 		img: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg",
 	},
 ];
+export const notificationsData = [
+	{
+	  NotificationID: 1,
+	  UserID: 1,
+	  Message: "New message from Alumni Hub.",
+	  NotificationDate: "2024-11-21T10:00:00",
+	  Status: "Unread",
+	},
+	{
+	  NotificationID: 2,
+	  UserID: 2,
+	  Message: "Your alumni profile has been updated.",
+	  NotificationDate: "2024-11-20T12:30:00",
+	  Status: "Read",
+	},
+	{
+	  NotificationID: 3,
+	  UserID: 3,
+	  Message: "You have a new connection request.",
+	  NotificationDate: "2024-11-19T08:15:00",
+	  Status: "Unread",
+	},
+	{
+	  NotificationID: 4,
+	  UserID: 4,
+	  Message: "New job posting available in your field.",
+	  NotificationDate: "2024-11-18T14:00:00",
+	  Status: "Unread",
+	},
+	{
+	  NotificationID: 5,
+	  UserID: 5,
+	  Message: "Reminder: Update your alumni profile.",
+	  NotificationDate: "2024-11-17T16:45:00",
+	  Status: "Read",
+	},
+  ];
+  

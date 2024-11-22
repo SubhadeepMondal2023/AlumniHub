@@ -1,4 +1,3 @@
-
 .notifications-section {
   background-color: var(--bs-body-bg);
   color: var(--bs-body-color);
@@ -53,23 +52,29 @@
 
 .status {
   font-weight: bold;
+  display: inline-block;
+  margin-top: 8px; /* Add spacing if needed */
+  opacity: 1; /* Fully visible */
 }
 
 .status.unread {
-  color: rgb(220, 53, 69); /* Red for unread notifications */
+  color: rgb(220, 53, 69); /* Red for unread */
 }
 
 .status.read {
-  color: rgb(40, 167, 69); /* Green for read notifications */
+  color: rgb(40, 167, 69); /* Green for read */
 }
 
 .mark-read-button {
-  background-color: var(--ezy-theme-color);
+  background-color: var(--ezy-theme-color, #007bff); 
   color: #fff;
   font-weight: 500;
   border-radius: 5px;
   border: none;
-  transition: background-color 0.3s ease;
+  padding: 5px 10px;
+  display: inline-block; 
+  opacity: 1; 
+  transition: background-color 0.3s ease, opacity 0.3s ease;
 }
 
 .mark-read-button:hover {
@@ -77,22 +82,21 @@
 }
 
 .view-all-button {
-  background-color: var(--ezy-theme-color, #007bff); /* Add a fallback color if var isn't set */
+  background-color: var(--ezy-theme-color, #007bff); 
   color: white;
   padding: 10px 20px;
   font-weight: 500;
   border-radius: 5px;
   border: none;
   transition: background-color 0.3s ease, color 0.3s ease;
-  display: inline-block; /* Ensures proper display of the button */
-  text-align: center;    /* Centers text */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for visibility */
+  display: inline-block; 
+  text-align: center;   
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .view-all-button:hover {
   background-color: #0a6dc2;
   color: #fff;
   text-decoration: none;
-  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); /* Enhanced hover shadow */
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.2); 
 }
-
