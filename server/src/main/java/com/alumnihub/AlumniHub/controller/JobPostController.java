@@ -23,18 +23,27 @@ public class JobPostController {
     @Autowired
     private JobPostService jobPostService;
 
-   @GetMapping
-    public ResponseEntity<List<JobPost>> getAllJobPosts(
-        @RequestParam(required = false) String jobTitle,
-        @RequestParam(required = false) String company,
-        @RequestParam(required = false) String location) {
+    @GetMapping("/search")
+    public ResponseEntity<List<JobPost>> searchJobPosts(
+            @RequestParam(required = false) String jobTitle,
+            @RequestParam(required = false) String company,
+            @RequestParam(required = false) String location) {
 
-        Specification<JobPost> specification = JobPostSpecifications.buildSearchSpecification(jobTitle, company, location);
-        List<JobPost> jobPosts = jobPostService.getAllJobPosts(specification);
+        List<JobPost> jobPosts = jobPostService.searchJobPosts(jobTitle, company, location);
 
         if (jobPosts.isEmpty()) {
-            String message = "No job posts found matching the specified criteria";
-            throw new JobPostNotFoundException(message);
+            throw new JobPostNotFoundException("No job posts found matching the specified criteria");
+        }
+
+        return ResponseEntity.ok(jobPosts);
+    }
+
+    @GetMapping("/search/keyword")
+    public ResponseEntity<List<JobPost>> searchByKeyword(@RequestParam String keyword) {
+        List<JobPost> jobPosts = jobPostService.searchByKeyword(keyword);
+
+        if (jobPosts.isEmpty()) {
+            throw new JobPostNotFoundException("No job posts found matching the keyword: " + keyword);
         }
 
         return ResponseEntity.ok(jobPosts);
