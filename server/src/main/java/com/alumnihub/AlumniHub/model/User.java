@@ -18,6 +18,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -77,4 +78,8 @@ public class User {
 
     @Column(name = "Bio", columnDefinition = "TEXT")
     private String bio;
+
+    @ManyToMany(mappedBy = "userId") // Bidirectional mapping
+    // private Notification notificationId;
+    private List<Notification> notificationId=new ArrayList<>(); 
 }
