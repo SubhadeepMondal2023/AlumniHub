@@ -1,32 +1,38 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Col, Container, Row, Button } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import "../../css/notification.css"; 
-import { fetchNotifications, markAsRead } from "../../redux/actions/notificationActions";
+import "../../css/notification.css";
+import { notificationsData as mockData } from "../../utils/Links"; 
 
-const NotificationItem = ({ item }) => {
-  const dispatch = useDispatch();
-
-  const handleMarkAsRead = async (id) => {
-    dispatch(markAsRead(id)); 
-  };
-
+const NotificationItem = ({ item, isAdmin, onMarkAsRead, onDelete }) => {
   return (
     <Row className="align-items-center notification-item mb-4">
       <Col xs={12} md={8} className="notification-content">
         <h5 className="fw-bold">{item.Message}</h5>
-        <p className="text-muted">Date: {new Date(item.NotificationDate).toLocaleString()}</p>
-        <p className={`status ${item.Status.toLowerCase()}`}>Status: {item.Status}</p>
+        <p className="text-muted">
+          Date: {new Date(item.NotificationDate).toLocaleString()}
+        </p>
+        <p className={`status ${item.Status.toLowerCase()}`}>
+          Status: {item.Status}
+        </p>
       </Col>
       <Col xs="auto" className="text-center">
         {item.Status === "Unread" && (
           <Button
             variant="primary"
-            className="mark-read-button"
-            onClick={() => handleMarkAsRead(item.NotificationID)}
+            className="mark-read-button me-2"
+            onClick={() => onMarkAsRead(item.NotificationID)}
           >
             Mark as Read
+          </Button>
+        )}
+        {isAdmin && (
+          <Button
+            variant="danger"
+            className="delete-button"
+            onClick={() => onDelete(item.NotificationID)}
+          >
+            Delete
           </Button>
         )}
       </Col>
@@ -36,15 +42,29 @@ const NotificationItem = ({ item }) => {
 
 NotificationItem.propTypes = {
   item: PropTypes.object.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
+  onMarkAsRead: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
-const NotificationList = () => {
-  const dispatch = useDispatch();
-  const notifications = useSelector((state) => state.notifications.notifications);
+const NotificationList = ({ isAdmin }) => {
+  const [notifications, setNotifications] = useState(mockData); 
 
-  useEffect(() => {
-    dispatch(fetchNotifications()); 
-  }, [dispatch]);
+  const handleMarkAsRead = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notification) =>
+        notification.NotificationID === id
+          ? { ...notification, Status: "Read" }
+          : notification
+      )
+    );
+  };
+
+  const handleDeleteNotification = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.filter((notification) => notification.NotificationID !== id)
+    );
+  };
 
   return (
     <section className="notifications-section light">
@@ -52,15 +72,22 @@ const NotificationList = () => {
         <Row className="justify-content-center text-center mb-5">
           <Col xs={12} md={8}>
             <h2 className="notifications-heading fw-bold mb-4">Notifications</h2>
-            <p className="notifications-sub-heading" style={{color: "black"}}>
-              Stay updated with the latest notifications from Alumni Hub. Mark your notifications as read to keep track.
+            <p className="notifications-sub-heading" style={{ color: "black" }}>
+              Stay updated with the latest notifications from Alumni Hub. Mark
+              your notifications as read to keep track.
             </p>
           </Col>
         </Row>
 
         {notifications.length > 0 ? (
-          notifications.map((item, i) => (
-            <NotificationItem key={i} item={item} />
+          notifications.map((item) => (
+            <NotificationItem
+              key={item.NotificationID}
+              item={item}
+              isAdmin={isAdmin}
+              onMarkAsRead={handleMarkAsRead}
+              onDelete={handleDeleteNotification}
+            />
           ))
         ) : (
           <Row className="text-center">
@@ -80,6 +107,10 @@ const NotificationList = () => {
       </Container>
     </section>
   );
+};
+
+NotificationList.propTypes = {
+  isAdmin: PropTypes.bool.isRequired,
 };
 
 export default NotificationList;
