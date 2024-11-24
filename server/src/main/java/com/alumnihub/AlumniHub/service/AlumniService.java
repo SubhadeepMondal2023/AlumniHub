@@ -54,17 +54,27 @@ public class AlumniService {
     }
     
 
-    public List<Alumni> getAllAlumni(String location, String company) {
-        List<Alumni> results;
-        if (location == null && company == null) {
-            results = alumniRepository.findAll();
+    public List<Alumni> getAllAlumni(String location, String company, Integer minYoe, Integer maxYoe, String industry) {
+        if (location == null && company == null && minYoe == null && maxYoe == null && industry == null) {
+            List<Alumni> results = alumniRepository.findAll();
             log.info("Fetching all alumni without filters. Found {} records", results.size());
-        } else {
-            results = alumniRepository.findAll(AlumniSpecifications.buildSearchSpecification(location, company));
-            log.info("Fetching alumni with filters - location: {}, company: {}. Found {} records", 
-                location, company, results.size());
+            return results;
         }
+
+        List<Alumni> results = alumniRepository.findAlumniByFilters(location, company, minYoe, maxYoe, industry);
+        log.info("Fetching alumni with filters - location: {}, company: {}, YoE range: {}-{}, industry: {}. Found {} records",
+            location, company, minYoe, maxYoe, industry, results.size());
         return results;
+    }
+    
+    public List<Alumni> getAlumniByYearOfExperience(Integer minYoe, Integer maxYoe) {
+        if (minYoe == null) minYoe = 0;
+        if (maxYoe == null) maxYoe = 99;
+        return alumniRepository.findByYoeBetween(minYoe, maxYoe);
+    }
+
+    public List<Alumni> getAlumniByIndustry(String industry) {
+        return alumniRepository.findByUserIndustryContainingIgnoreCase(industry);
     }
 
     public boolean deleteAlumni(Long alumniId) {

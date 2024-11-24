@@ -50,5 +50,4 @@ public class Alumni {
     @Min(0)
     @Max(99)
     private Integer yoe;
-
 }
