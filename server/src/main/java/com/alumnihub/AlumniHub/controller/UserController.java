@@ -59,6 +59,7 @@ public class UserController {
     }
 
     // Step 1: Start Registration
+    //input - email first,last name password yog
     @PostMapping("/auth/register/send-otp")
     public ResponseEntity<?> RegistrationSendOtp(@Valid @RequestBody User user) {
         try {
@@ -92,6 +93,7 @@ public class UserController {
     }
 
     // Step 2: Complete Registration
+    //input email otp
     @PostMapping("/auth/register/confirm")
     public ResponseEntity<?> registerUser(@RequestBody Map<String, String> request) {
         {
@@ -162,7 +164,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("api/logout")
+    @PostMapping("/api/logout")
     public ResponseEntity<?> logoutUser(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         tokenBlacklistService.blacklistToken(jwt);

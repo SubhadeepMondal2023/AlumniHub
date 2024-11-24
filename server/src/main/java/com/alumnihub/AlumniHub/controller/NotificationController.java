@@ -33,6 +33,7 @@ public class NotificationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
         }
     }
+    // add route for read un read notification
 
     @PostMapping("/create-notification")
     public ResponseEntity<?> createNotification(@RequestBody Notification notification) {
