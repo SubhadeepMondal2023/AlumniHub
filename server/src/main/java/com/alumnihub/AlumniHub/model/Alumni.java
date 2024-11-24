@@ -51,7 +51,4 @@ public class Alumni {
     @Max(99)
     private Integer yoe;
 
-    @OneToOne
-    @JoinColumn(name = "Industry")
-    private User ind;
 }
