@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,4 +45,13 @@ public class Alumni {
 
     @Column(name = "Location")
     private String location;
+
+    @Column(name = "YoE")
+    @Min(0)
+    @Max(99)
+    private Integer yoe;
+
+    @OneToOne
+    @JoinColumn(name = "Industry")
+    private User ind;
 }
