@@ -15,25 +15,72 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/alumni")
+@RequestMapping("/alumni")
 public class AlumniController {
 
     @Autowired
     private AlumniService alumniService;
 
     @GetMapping
-    public ResponseEntity<List<Alumni>> getAllAlumni(@RequestParam(required = false) String location,
-                                                     @RequestParam(required = false) String company) {
-        List<Alumni> alumniList = alumniService.getAllAlumni(location, company);
+    public ResponseEntity<List<Alumni>> getAllAlumni(
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String company,
+            @RequestParam(required = false) Integer minYoe,
+            @RequestParam(required = false) Integer maxYoe,
+            @RequestParam(required = false) String industry) {
+        
+        List<Alumni> alumniList = alumniService.getAllAlumni(location, company, minYoe, maxYoe, industry);
 
         if (alumniList.isEmpty()) {
-            String message = (location != null || company != null)
+            String message = (location != null || company != null || minYoe != null || 
+                            maxYoe != null || industry != null)
                 ? "No alumni found matching the specified criteria"
                 : "No alumni records found in the system";
             throw new AlumniNotFoundException(message);
         }
 
         return ResponseEntity.ok(alumniList);
+    }
+
+    @GetMapping("/search/experience")
+    public ResponseEntity<?> getAlumniByExperience(
+            @RequestParam(required = false) Integer minYoe,
+            @RequestParam(required = false) Integer maxYoe) {
+        
+        List<Alumni> alumni = alumniService.getAlumniByYearOfExperience(minYoe, maxYoe);
+        
+        if (alumni.isEmpty()) {
+            Map<String, Object> response = Map.of(
+                "success", false,
+                "message", "No alumni found with the specified years of experience range"
+            );
+            return ResponseEntity.ok(response);
+        }
+
+        Map<String, Object> response = Map.of(
+            "success", true,
+            "data", alumni
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search/industry")
+    public ResponseEntity<?> getAlumniByIndustry(@RequestParam String industry) {
+        List<Alumni> alumni = alumniService.getAlumniByIndustry(industry);
+        
+        if (alumni.isEmpty()) {
+            Map<String, Object> response = Map.of(
+                "success", false,
+                "message", "No alumni found in the specified industry: " + industry
+            );
+            return ResponseEntity.ok(response);
+        }
+
+        Map<String, Object> response = Map.of(
+            "success", true,
+            "data", alumni
+        );
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{alumniId}")
@@ -49,6 +96,7 @@ public class AlumniController {
         );
         return ResponseEntity.ok(successResponse);
     }
+    
 
     @PostMapping
     public ResponseEntity<?> createAlumni(@RequestBody Alumni alumni) {
