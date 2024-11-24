@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 @Table(name = "User")
@@ -67,6 +70,9 @@ public class User {
     private String bio;
 
     
+    @ManyToMany(mappedBy = "userId") // Bidirectional mapping
+    // private Notification notificationId;
+    private List<Notification> notificationId=new ArrayList<>(); 
 }
 
 
