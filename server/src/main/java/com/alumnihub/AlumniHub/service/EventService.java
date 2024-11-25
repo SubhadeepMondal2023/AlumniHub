@@ -1,7 +1,11 @@
 package com.alumnihub.AlumniHub.service;
 
+import com.alumnihub.AlumniHub.model.Attendee;
 import com.alumnihub.AlumniHub.model.Event;
+import com.alumnihub.AlumniHub.model.User;
+import com.alumnihub.AlumniHub.repository.AttendeeRepository;
 import com.alumnihub.AlumniHub.repository.EventRepository;
+import com.alumnihub.AlumniHub.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +17,12 @@ public class EventService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private AttendeeRepository attendeeRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public Optional<Event> getEventById(Long eventId) {
         return eventRepository.findById(eventId);
@@ -70,19 +80,24 @@ public class EventService {
 
     public Optional<Event> attendEvent(Long eventId, Long userId) {
         return eventRepository.findById(eventId).map(event -> {
-            if (!event.getAttendees().contains(userId)) {
-                event.getAttendees().add(userId);
-                eventRepository.save(event);
+            boolean alreadyAttending = attendeeRepository.existsByEventIdAndUserId(eventId, userId);
+            if (!alreadyAttending) {
+                User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+                Attendee attendee = new Attendee();
+                attendee.setEvent(event);
+                attendee.setUser(user);
+                attendeeRepository.save(attendee);
             }
             return event;
         });
     }
 
-    public Optional<Event> getEventAttendees(Long eventId) {
-        return eventRepository.findById(eventId);
+    public List<Attendee> getEventAttendees(Long eventId) {
+        return attendeeRepository.findByEventId(eventId);
     }
 
     public List<Event> getMyEvents(Long userId) {
-        return eventRepository.findByCreatedBy(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return eventRepository.findByCreatedBy(user);
     }
 }

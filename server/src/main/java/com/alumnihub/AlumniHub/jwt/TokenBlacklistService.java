@@ -1,4 +1,4 @@
-package com.alumnihub.AlumniHub.util;
+package com.alumnihub.AlumniHub.jwt;
 
 import org.springframework.stereotype.Service;
 import java.util.HashSet;

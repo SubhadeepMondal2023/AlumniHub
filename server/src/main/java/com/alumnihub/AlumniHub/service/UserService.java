@@ -1,6 +1,6 @@
 package com.alumnihub.AlumniHub.service;
 
-import com.alumnihub.AlumniHub.util.JwtProvider;
+import com.alumnihub.AlumniHub.jwt.JwtProvider;
 import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.repository.UserRepository;
 
