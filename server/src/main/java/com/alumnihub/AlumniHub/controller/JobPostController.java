@@ -4,10 +4,7 @@ import com.alumnihub.AlumniHub.exception.JobPostNotFoundException;
 import com.alumnihub.AlumniHub.exception.UnauthorizedException;
 import com.alumnihub.AlumniHub.model.JobPost;
 import com.alumnihub.AlumniHub.service.JobPostService;
-import com.alumnihub.AlumniHub.util.JobPostSpecifications;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/jobs")
 public class JobPostController {
 

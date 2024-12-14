@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RequestMapping("/events")
+@CrossOrigin
 @RestController
 public class EventController {
 

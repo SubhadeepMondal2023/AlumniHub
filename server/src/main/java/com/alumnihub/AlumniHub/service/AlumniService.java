@@ -5,10 +5,7 @@ import com.alumnihub.AlumniHub.model.Alumni;
 import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.repository.AlumniRepository;
 import com.alumnihub.AlumniHub.repository.UserRepository;
-import com.alumnihub.AlumniHub.util.AlumniSpecifications;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
