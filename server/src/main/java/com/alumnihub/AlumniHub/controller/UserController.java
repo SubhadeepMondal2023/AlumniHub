@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-
+@CrossOrigin
 public class UserController {
 
     @Autowired
