@@ -1,9 +1,9 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { testAlumniData } from "../../utils/Links";
 
 export const alumniApi = createApi({
   reducerPath: "alumniApi",
-  baseQuery: async () => ({ data: testAlumniData }), // Mock API call
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8080/api" }),
   tagTypes: ["Alumni"],
   endpoints: (builder) => ({
     fetchAlumni: builder.query({
