@@ -3,6 +3,7 @@ import { Col, Container, Row, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import "../../css/notification.css";
 import { notificationsData as mockData } from "../../utils/Links"; 
+import { useGetNotificationsQuery } from "../../redux/api/notificationsApiSlice";
 
 const NotificationItem = ({ item, isAdmin, onMarkAsRead, onDelete }) => {
   return (
@@ -49,6 +50,7 @@ NotificationItem.propTypes = {
 
 const NotificationList = ({ isAdmin }) => {
   const [notifications, setNotifications] = useState(mockData); 
+  const { data: notificationsData , isLoading, isError} = useGetNotificationsQuery();
 
   const handleMarkAsRead = (id) => {
     setNotifications((prevNotifications) =>
