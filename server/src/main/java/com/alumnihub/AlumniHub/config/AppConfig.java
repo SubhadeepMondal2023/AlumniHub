@@ -26,7 +26,7 @@ public class AppConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenValidator jwtTokenValidator) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF protection for stateless authentication
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless authentication
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Use stateless sessions
                 .authorizeHttpRequests(auth -> auth
@@ -43,11 +43,12 @@ public class AppConfig {
     private CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             CorsConfiguration cfg = new CorsConfiguration();
-            cfg.setAllowedOrigins(Collections.singletonList("http://your-frontend-domain.com")); // Replace with your frontend domain
+            cfg.setAllowedOrigins(Collections.singletonList("http://localhost:5173")); // React app URL
             cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
             cfg.setAllowedHeaders(List.of("Authorization", "Content-Type"));
             cfg.setExposedHeaders(List.of("Authorization"));
-            cfg.setMaxAge(3600L);
+            cfg.setAllowCredentials(true); // Allow cookies if needed
+            cfg.setMaxAge(3600L); // Cache the CORS response for 1 hour
             return cfg;
         };
     }
