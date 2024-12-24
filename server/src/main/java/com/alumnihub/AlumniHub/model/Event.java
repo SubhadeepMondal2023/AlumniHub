@@ -1,5 +1,8 @@
 package com.alumnihub.AlumniHub.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.Column;
 
 @Entity
 @Table(name = "Events")
@@ -47,5 +49,6 @@ public class Event {
     private String eventStatus;
 
     @OneToMany(mappedBy = "event")
+    @JsonManagedReference
     private List<Attendee> attendees = new ArrayList<>();
 }

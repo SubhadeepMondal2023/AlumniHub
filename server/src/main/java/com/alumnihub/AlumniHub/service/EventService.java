@@ -81,16 +81,25 @@ public class EventService {
     public Optional<Event> attendEvent(Long eventId, Long userId) {
         return eventRepository.findById(eventId).map(event -> {
             boolean alreadyAttending = attendeeRepository.existsByEventIdAndUserId(eventId, userId);
-            if (!alreadyAttending) {
-                User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+            User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+            
+            if (alreadyAttending) {
+                // Remove the user from the attendees
+                Attendee attendee = attendeeRepository.findByEventIdAndUserId(eventId, userId)
+                        .orElseThrow(() -> new RuntimeException("Attendee not found"));
+                attendeeRepository.delete(attendee);
+            } else {
+                // Add the user to the attendees
                 Attendee attendee = new Attendee();
                 attendee.setEvent(event);
                 attendee.setUser(user);
                 attendeeRepository.save(attendee);
             }
+            
             return event;
         });
     }
+    
 
     public List<Attendee> getEventAttendees(Long eventId) {
         return attendeeRepository.findByEventId(eventId);
