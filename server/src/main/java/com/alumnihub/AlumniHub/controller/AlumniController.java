@@ -34,21 +34,21 @@ public class AlumniController {
             return Optional.empty();
         }
     }
-    
 
     @GetMapping
     public ResponseEntity<?> getAllAlumni(@RequestHeader("Authorization") String token,
-                                          @RequestParam(required = false) String location,
-                                          @RequestParam(required = false) String company,
-                                          @RequestParam(required = false) Integer minYoe,
-                                          @RequestParam(required = false) Integer maxYoe,
-                                          @RequestParam(required = false) String industry) {
+                                        @RequestParam(required = false) String designation,
+                                        @RequestParam(required = false) String location,
+                                        @RequestParam(required = false) Integer yoe,
+                                        @RequestParam(required = false) String degree,
+                                        @RequestParam(required = false) String currentCompany,
+                                        @RequestParam(required = false) String searchByName) {
         Optional<User> user = authenticate(token);
         if (user.isPresent()) {
-            List<Alumni> alumniList = alumniService.getAllAlumni(location, company, minYoe, maxYoe, industry);
+            List<Alumni> alumniList = alumniService.getAllAlumni(designation, location, yoe, degree, currentCompany, searchByName);
             if (alumniList.isEmpty()) {
-                String message = (location != null || company != null || minYoe != null || 
-                                maxYoe != null || industry != null)
+                String message = (designation != null || location != null || yoe != null || 
+                                degree != null || currentCompany != null || searchByName != null)
                     ? "No alumni found matching the specified criteria"
                     : "No alumni records found in the system";
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("success", false, "message", message));
@@ -59,15 +59,19 @@ public class AlumniController {
         }
     }
 
-    @GetMapping("/search/experience")
-    public ResponseEntity<?> getAlumniByExperience(@RequestHeader("Authorization") String token,
-                                                    @RequestParam(required = false) Integer minYoe,
-                                                    @RequestParam(required = false) Integer maxYoe) {
+    @GetMapping("/search")
+    public ResponseEntity<?> searchAlumni(@RequestHeader("Authorization") String token,
+                                        @RequestParam(required = false) String designation,
+                                        @RequestParam(required = false) String location,
+                                        @RequestParam(required = false) Integer yoe,
+                                        @RequestParam(required = false) String degree,
+                                        @RequestParam(required = false) String currentCompany,
+                                        @RequestParam(required = false) String searchByName) {
         Optional<User> user = authenticate(token);
         if (user.isPresent()) {
-            List<Alumni> alumni = alumniService.getAlumniByYearOfExperience(minYoe, maxYoe);
+            List<Alumni> alumni = alumniService.searchAlumni(designation, location, yoe, degree, currentCompany, searchByName);
             if (alumni.isEmpty()) {
-                return ResponseEntity.ok(Map.of("success", false, "message", "No alumni found with the specified years of experience range"));
+                return ResponseEntity.ok(Map.of("success", false, "message", "No alumni found matching the search criteria"));
             }
             return ResponseEntity.ok(Map.of("success", true, "data", alumni));
         } else {
@@ -75,20 +79,6 @@ public class AlumniController {
         }
     }
 
-    @GetMapping("/search/industry")
-    public ResponseEntity<?> getAlumniByIndustry(@RequestHeader("Authorization") String token,
-                                                  @RequestParam String industry) {
-        Optional<User> user = authenticate(token);
-        if (user.isPresent()) {
-            List<Alumni> alumni = alumniService.getAlumniByIndustry(industry);
-            if (alumni.isEmpty()) {
-                return ResponseEntity.ok(Map.of("success", false, "message", "No alumni found in the specified industry: " + industry));
-            }
-            return ResponseEntity.ok(Map.of("success", true, "data", alumni));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
-        }
-    }
 
     @GetMapping("/{alumniId}")
     public ResponseEntity<?> getAlumniById(@RequestHeader("Authorization") String token, @PathVariable Long alumniId) {
