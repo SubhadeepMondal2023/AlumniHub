@@ -60,7 +60,7 @@ public class DonationController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
         }
     }
-    @GetMapping("/history")
+    @GetMapping("/history/{userId}")
     public ResponseEntity<?> getDonationHistory(@PathVariable Long userId){
         try{
             Map<String, Object> map = Map.of("success", true, "data", donationService.getMyDonations(userId));

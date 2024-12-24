@@ -12,7 +12,7 @@ import Donation from './components/Donation/Donation.jsx';
 import NotificationList from './components/Notification/NotificationList.jsx'; 
 import AlumniPage from './components/Alumni/AlumniPage.jsx'; 
 import TheTeam from './components/The Team/TheTeam.jsx';
-import GroupPage from './components/Group/GroupPage.jsx';
+import DonationPayment from './components/Donation/DonationPayment.jsx';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -30,6 +30,7 @@ function App() {
           <Route path="/about" element={<AboutUs />} /> 
           <Route path="/groups" element={<GroupPage />} /> 
           <Route path="/donation" element={<Donation />} />
+          <Route path="/donation-payment" element={<DonationPayment />} />
           <Route path="/notifications" element={<NotificationList isAdmin={isAdmin} />} />
           <Route path="/alumni" element={<AlumniPage />} /> 
           <Route path="/team" element={<TheTeam />} />
