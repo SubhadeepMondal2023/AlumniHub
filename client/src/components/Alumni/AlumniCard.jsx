@@ -15,10 +15,10 @@ const AlumniCard = ({ alumni, showContactActions }) => {
       <Card.Body>
         {alumni &&
           Object.keys(alumni)
-            .filter((key) => key !== "img" && key !== "AlumniID")
+            .filter((key) => key !== "img" && key !== "id")
             .map((key, index) => (
               <Card.Title key={index}>
-                <strong>{key}:</strong> {alumni[key]}
+                <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {alumni[key]}
               </Card.Title>
             ))}
 

@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom"; // Import Link and useNavigate
+import { Link, useNavigate } from "react-router-dom"; 
 import "../../css/navbar.css";
 import Dropdown from "../common/Dropdown";
 

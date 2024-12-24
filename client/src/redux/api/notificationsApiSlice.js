@@ -3,7 +3,8 @@ import { notificationsData } from "../../utils/Links";
 
 export const notificationsApi = createApi({
   reducerPath: "notificationsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8080/api" }),
+  tagTypes: ["Notifications"],
   endpoints: (builder) => ({
     getNotifications: builder.query({
       query: () => notificationsData, 
