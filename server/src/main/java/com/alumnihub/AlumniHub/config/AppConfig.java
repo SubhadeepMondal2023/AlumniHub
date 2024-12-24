@@ -30,10 +30,10 @@ public class AppConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Use stateless sessions
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
-                        // .requestMatchers("/auth/**").permitAll() // Allow public access to login and register
-                        // .requestMatchers("/api/**").authenticated() // Protect all other API endpoints
-                        // .anyRequest().permitAll() // Allow other non-API requests
+                        //.requestMatchers("/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll() // Allow public access to login and register
+                        .requestMatchers("/api/**").authenticated() // Protect all other API endpoints
+                        .anyRequest().permitAll() // Allow other non-API requests
                 )
                 .addFilterBefore(jwtTokenValidator, BasicAuthenticationFilter.class) // Add custom JWT validation filter
                 .httpBasic(withDefaults()); // Optional: Enable basic authentication for testing (can remove in production)
