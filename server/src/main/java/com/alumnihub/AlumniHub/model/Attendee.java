@@ -1,5 +1,7 @@
 package com.alumnihub.AlumniHub.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,10 +26,10 @@ public class Attendee {
 
     @ManyToOne
     @JoinColumn(name = "EventId", nullable = false)
+    @JsonBackReference
     private Event event;
 
     @ManyToOne
     @JoinColumn(name = "UserId", nullable = false)
     private User user;
 }
-
