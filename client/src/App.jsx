@@ -14,6 +14,8 @@ import DonationPayment from './components/Donation/DonationPayment.jsx';
 import GroupPage from './components/Group/GroupPage.jsx';
 import { useGetMyProfileQuery } from './redux/api/authSlice.js';
 import { Spinner } from 'react-bootstrap';
+import Loader from './utils/Loader.jsx';
+import VerifyOTP from './components/Auth/VerifyOTP.jsx';
 
 function App() {
   const {isLoading, isError, data:userData} = useGetMyProfileQuery();
@@ -21,22 +23,21 @@ function App() {
   const isAdmin = userData && userData.success && userRole === 'admin';
 
   return (
-      isLoading ?<div> 
-        <Spinner animation="border" variant="primary"></Spinner>
-      </div> :
+      isLoading ? <Loader/> :
       <Router>
       {userData?.success && <Navbar />}
       <Routes>
         <Route path="/" element={<HeroPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={userData?.success ? <HeroPage /> : <Login />} />
+        <Route path="/register" element={userData?.success ? <HeroPage /> : <Register />} />
         <Route path="/about" element={<AboutUs />} /> 
         <Route path="/groups" element={<GroupPage />} /> 
         <Route path="/donation" element={<Donation />} />
         <Route path="/donation-payment" element={<DonationPayment />} />
-        <Route path="/notifications" element={<NotificationList isAdmin={isAdmin} />} />
+        <Route path="/notifications" element={<NotificationList  />} />
         <Route path="/alumni" element={<AlumniPage />} /> 
         <Route path="/team" element={<TheTeam />} />
+        <Route path='/verify-otp' element={<VerifyOTP />}/>
       </Routes>
       <Footer />
     </Router>

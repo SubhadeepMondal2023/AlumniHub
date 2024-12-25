@@ -5,6 +5,7 @@ import Pagination from "../common/Pagination";
 import { useFetchAlumniQuery } from "../../redux/api/alumniApiSlice";
 import { TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
+import Loader from "../../utils/Loader";
 
 const AlumniPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,7 +43,7 @@ const AlumniPage = () => {
     }));
   };
 
-  const designations = data ? [...new Set(data.map((alumni) => alumni.designation))] : [];
+  const designation = data ? [...new Set(data.map((alumni) => alumni.designation))] : [];
   const locations = data ? [...new Set(data.map((alumni) => alumni.location))] : [];
   const yearsOfExperience = data ? [...new Set(data.map((alumni) => alumni.yoe))] : [];
   const degrees = data ? [...new Set(data.map((alumni) => alumni.degree))] : [];
@@ -77,11 +78,7 @@ const AlumniPage = () => {
 
   return (
     isLoading ? (
-      <div className="d-flex justify-content-center align-items-center mt-5">
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
+      <Loader />
     ):
     <Container>
       <h1 className="text-center my-5" style={{ color: "black" }}>
@@ -93,7 +90,7 @@ const AlumniPage = () => {
         <Col xs={6} md={2}>
           <Autocomplete
             size="small"
-            options={designations}
+            options={designation}
             getOptionLabel={(option) => option || ""}
             value={filters.designation}
             onChange={(event, value) => handleFilterChange("designation", value || "")}
@@ -165,7 +162,7 @@ const AlumniPage = () => {
       {/* Alumni List */}
       <Row>
         {isLoading ? (
-          <p>Loading...</p>
+          <Loader />
         ) : isError ? (
           <p>Error fetching data.</p>
         ) : (
