@@ -16,6 +16,7 @@ import { useGetMyProfileQuery } from './redux/api/authSlice.js';
 import { Spinner } from 'react-bootstrap';
 import Loader from './utils/Loader.jsx';
 import VerifyOTP from './components/Auth/VerifyOTP.jsx';
+import MyProfile from './components/Auth/MyProfile.jsx';
 
 function App() {
   const {isLoading, isError, data:userData} = useGetMyProfileQuery();
@@ -31,7 +32,7 @@ function App() {
         <Route path="/login" element={userData?.success ? <HeroPage /> : <Login />} />
         <Route path="/register" element={userData?.success ? <HeroPage /> : <Register />} />
         <Route path="/about" element={<AboutUs />} /> 
-        <Route path="/groups" element={<GroupPage />} /> 
+        <Route path="/myprofile" element={<MyProfile />} /> 
         <Route path="/donation" element={<Donation />} />
         <Route path="/donation-payment" element={<DonationPayment />} />
         <Route path="/notifications" element={<NotificationList  />} />
