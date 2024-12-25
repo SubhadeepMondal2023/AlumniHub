@@ -1,10 +1,9 @@
 package com.alumnihub.AlumniHub.service;
 
-import com.alumnihub.AlumniHub.util.JwtProvider;
+import com.alumnihub.AlumniHub.jwt.JwtProvider;
 import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.repository.UserRepository;
-import com.alumnihub.AlumniHub.model.LoginRequest;
-import com.alumnihub.AlumniHub.model.Role;
+
 
 import java.util.Optional;
 
@@ -22,29 +21,25 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-
     public Optional<User> getUser(Long userId) {
         return userRepository.findById(userId);
-    }
-
-    // Register a new user
-    public User register(User user) {
-        return userRepository.save(user);
     }
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Autowired
     private JwtProvider jwtProvider;
 
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     public String registerUser(User user) throws Exception {
-        if (userRepository.findByEmailAndRole(user.getEmail(), user.getRole()) != null) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new Exception("Email is already registered!");
         }
 
-        // Encode the password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         // Save the user directly
@@ -57,15 +52,12 @@ public class UserService {
         return jwtProvider.generateToken(authentication);
     }
 
-    public String loginUser(LoginRequest loginRequest) {
-        String email = loginRequest.getEmail();
-        String password = loginRequest.getPassword();
-        Role role = loginRequest.getRole();
+    public String loginUser(String email, String password) throws Exception {
 
-        // Find user by email and role
-        User user = userRepository.findByEmailAndRole(email, role);
-        if (user == null) {
-            throw new BadCredentialsException("Invalid email or role!");
+        // Find user by email
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new BadCredentialsException("Invalid email");
         }
 
         // Authenticate user
@@ -83,16 +75,33 @@ public class UserService {
         return new UsernamePasswordAuthenticationToken(email, null, null);
     }
 
-    public Optional<User> getUserFromToken(String token) {
-      
+    public Optional<User> getUserFromToken(String token) throws Exception {
+
         // String jwt = token.split(" ")[1];
-        token = token.startsWith("Bearer ") ? token.substring(7) : token;
-        String email = jwtProvider.getEmailFromJwtToken(token);
+        String jwt = token.startsWith("Bearer ") ? token.substring(7) : token;
+        String email = jwtProvider.getEmailFromJwtToken(jwt);
 
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) {
             throw new RuntimeException("User not found!");
         }
         return user;
+    }
+
+
+    public void deleteUser(String token) throws Exception {
+        Optional<User> user= getUserFromToken(token);
+        userRepository.deleteById(user.get().getUserId());
+    }
+
+    public void updatePassword(String email, String newPassword) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new RuntimeException("Email not found!");
+        }
+
+        // Update password
+        user.get().setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user.get());
     }
 }

@@ -1,4 +1,4 @@
-package com.alumnihub.AlumniHub.util;
+package com.alumnihub.AlumniHub.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -28,14 +28,18 @@ public class JwtProvider {
     }
 
     public String getEmailFromJwtToken(String jwt) {
-        jwt = jwt.substring(7); // Remove "Bearer " prefix
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(jwt)
-                .getBody();
-
-        return claims.get("email", String.class);
+        try {
+            Claims claims = Jwts
+            .parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(jwt)
+            .getBody();
+            return claims.get("email", String.class);
+        } catch (Exception e) {
+            System.err.println("Error parsing JWT: " + e.getMessage());
+            return null;
+        }
     }
 
 }

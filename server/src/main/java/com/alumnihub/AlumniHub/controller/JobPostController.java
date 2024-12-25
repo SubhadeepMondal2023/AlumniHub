@@ -4,10 +4,7 @@ import com.alumnihub.AlumniHub.exception.JobPostNotFoundException;
 import com.alumnihub.AlumniHub.exception.UnauthorizedException;
 import com.alumnihub.AlumniHub.model.JobPost;
 import com.alumnihub.AlumniHub.service.JobPostService;
-import com.alumnihub.AlumniHub.util.JobPostSpecifications;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,24 +14,34 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/jobs")
 public class JobPostController {
 
     @Autowired
     private JobPostService jobPostService;
 
-   @GetMapping
-    public ResponseEntity<List<JobPost>> getAllJobPosts(
-        @RequestParam(required = false) String jobTitle,
-        @RequestParam(required = false) String company,
-        @RequestParam(required = false) String location) {
+    @GetMapping("/search")
+    public ResponseEntity<List<JobPost>> searchJobPosts(
+            @RequestParam(required = false) String jobTitle,
+            @RequestParam(required = false) String company,
+            @RequestParam(required = false) String location) {
 
-        Specification<JobPost> specification = JobPostSpecifications.buildSearchSpecification(jobTitle, company, location);
-        List<JobPost> jobPosts = jobPostService.getAllJobPosts(specification);
+        List<JobPost> jobPosts = jobPostService.searchJobPosts(jobTitle, company, location);
 
         if (jobPosts.isEmpty()) {
-            String message = "No job posts found matching the specified criteria";
-            throw new JobPostNotFoundException(message);
+            throw new JobPostNotFoundException("No job posts found matching the specified criteria");
+        }
+
+        return ResponseEntity.ok(jobPosts);
+    }
+
+    @GetMapping("/search/keyword")
+    public ResponseEntity<List<JobPost>> searchByKeyword(@RequestParam String keyword) {
+        List<JobPost> jobPosts = jobPostService.searchByKeyword(keyword);
+
+        if (jobPosts.isEmpty()) {
+            throw new JobPostNotFoundException("No job posts found matching the keyword: " + keyword);
         }
 
         return ResponseEntity.ok(jobPosts);
