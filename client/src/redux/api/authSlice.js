@@ -36,9 +36,17 @@ export const authApi = createApi({
         }
       },
     }),
-    registerUser: builder.mutation({
+    registerUserSendOtp: builder.mutation({
       query: (credentials) => ({
-        url: '/auth/register',
+        url: '/auth/register/send-otp',
+        method: 'POST',
+        body: credentials,
+      }), 
+      
+    }),
+    registerUserVerifyOtp: builder.mutation({
+      query: (credentials) => ({
+        url: '/auth/register/confirm',
         method: 'POST',
         body: credentials,
       }), 
@@ -50,8 +58,9 @@ export const authApi = createApi({
           console.error('Registration failed:', error);
         }
       },
+      
     }),
   }),
 });
 
-export const { useGetMyProfileQuery, useLoginUserMutation, useRegisterUserMutation } = authApi;
+export const { useGetMyProfileQuery, useLoginUserMutation, useRegisterUserSendOtpMutation, useRegisterUserVerifyOtpMutation } = authApi;

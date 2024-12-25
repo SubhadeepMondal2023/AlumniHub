@@ -45,8 +45,6 @@ const Login = () => {
 				transition: Bounce,
 			});
 		} else if(data){
-			console.log(data);
-			
 			navigate("/");
 		}
 	}, [error,data]);
@@ -79,7 +77,7 @@ const Login = () => {
 					/>
 
 					<div className="login-links"></div>
-					<Button onClick={handleLogin} disabled={isLoading}>
+					<Button size='md' onClick={handleLogin} disabled={isLoading}>
 						{isLoading ? (
 							<>
 								<Spinner animation="border" size="sm" />
@@ -99,7 +97,16 @@ const Login = () => {
 				<SocialLoginButton />
 				<p>
 					Don't have an account?{' '}
-					<Link to="/register" style={{ textDecorationLine: 'none' }}>
+					<Link to="/register" 
+					onMouseOver={(e) => {
+						e.target.style.textDecorationLine = 'underline';
+						e.target.style.color = 'blue';
+					}}
+					onMouseOut={(e) => {
+						e.target.style.textDecorationLine = 'none';
+						e.target.style.color = 'white';
+					}}
+					style={{ textDecorationLine: 'none', color: 'white' }}>
 						Register
 					</Link>
 				</p>
