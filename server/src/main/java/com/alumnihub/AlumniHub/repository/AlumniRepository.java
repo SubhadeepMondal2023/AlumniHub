@@ -14,30 +14,25 @@ import java.util.Optional;
 
 @Repository
 public interface AlumniRepository extends JpaRepository<Alumni, Long>, JpaSpecificationExecutor<Alumni> {
-    // Existing methods
     Optional<User> findByUser_UserId(Long userId);
     boolean existsByUser_UserId(Long userId);
-    List<Alumni> findByLocationContainingIgnoreCase(String location);
-    List<Alumni> findByCurrentCompanyContainingIgnoreCase(String company);
-
-    // New methods
-    List<Alumni> findByYoeBetween(Integer minYoe, Integer maxYoe);
     
-    @Query("SELECT a FROM Alumni a JOIN a.user u WHERE u.industry LIKE %:industry%")
-    List<Alumni> findByUserIndustryContainingIgnoreCase(@Param("industry") String industry);
-    
-    // Combined search with all parameters
-    @Query("SELECT a FROM Alumni a JOIN a.user u WHERE " +
+    @Query("SELECT DISTINCT a FROM Alumni a JOIN a.user u WHERE " +
+           "(:designation IS NULL OR LOWER(a.designation) LIKE LOWER(CONCAT('%', :designation, '%'))) AND " +
            "(:location IS NULL OR LOWER(a.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +
-           "(:company IS NULL OR LOWER(a.currentCompany) LIKE LOWER(CONCAT('%', :company, '%'))) AND " +
-           "(:minYoe IS NULL OR a.yoe >= :minYoe) AND " +
-           "(:maxYoe IS NULL OR a.yoe <= :maxYoe) AND " +
-           "(:industry IS NULL OR LOWER(u.industry) LIKE LOWER(CONCAT('%', :industry, '%')))")
+           "(:yoe IS NULL OR a.yoe >= :yoe) AND " +
+           "(:degree IS NULL OR LOWER(u.degree) LIKE LOWER(CONCAT('%', :degree, '%'))) AND " +
+           "(:currentCompany IS NULL OR LOWER(a.currentCompany) LIKE LOWER(CONCAT('%', :currentCompany, '%'))) AND " +
+           "(:searchByName IS NULL OR " +
+           "LOWER(CONCAT(u.firstName, ' ', u.lastName)) LIKE LOWER(CONCAT('%', :searchByName, '%')) OR " +
+           "LOWER(u.firstName) LIKE LOWER(CONCAT('%', :searchByName, '%')) OR " +
+           "LOWER(u.lastName) LIKE LOWER(CONCAT('%', :searchByName, '%')))")
     List<Alumni> findAlumniByFilters(
+        @Param("designation") String designation,
         @Param("location") String location,
-        @Param("company") String company,
-        @Param("minYoe") Integer minYoe,
-        @Param("maxYoe") Integer maxYoe,
-        @Param("industry") String industry
+        @Param("yoe") Integer yoe,
+        @Param("degree") String degree,
+        @Param("currentCompany") String currentCompany,
+        @Param("searchByName") String searchByName
     );
 }

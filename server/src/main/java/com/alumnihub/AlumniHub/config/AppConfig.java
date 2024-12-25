@@ -11,8 +11,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+
+import com.alumnihub.AlumniHub.jwt.JwtTokenValidator;
+
 import static org.springframework.security.config.Customizer.withDefaults;
-import com.alumnihub.AlumniHub.util.JwtTokenValidator;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,10 +26,11 @@ public class AppConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenValidator jwtTokenValidator) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF protection for stateless authentication
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless authentication
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Use stateless sessions
                 .authorizeHttpRequests(auth -> auth
+                        //.requestMatchers("/**").permitAll()
                         .requestMatchers("/auth/**").permitAll() // Allow public access to login and register
                         .requestMatchers("/api/**").authenticated() // Protect all other API endpoints
                         .anyRequest().permitAll() // Allow other non-API requests
@@ -41,11 +44,12 @@ public class AppConfig {
     private CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             CorsConfiguration cfg = new CorsConfiguration();
-            cfg.setAllowedOrigins(Collections.singletonList("http://your-frontend-domain.com")); // Replace with your frontend domain
+            cfg.setAllowedOrigins(Collections.singletonList("http://localhost:5173")); // React app URL
             cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
             cfg.setAllowedHeaders(List.of("Authorization", "Content-Type"));
             cfg.setExposedHeaders(List.of("Authorization"));
-            cfg.setMaxAge(3600L);
+            cfg.setAllowCredentials(true); // Allow cookies if needed
+            cfg.setMaxAge(3600L); // Cache the CORS response for 1 hour
             return cfg;
         };
     }

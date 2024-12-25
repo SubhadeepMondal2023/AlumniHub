@@ -7,25 +7,46 @@ const AlumniCard = ({ alumni, showContactActions }) => {
     <Card className="alumni-card mt-4 mt-lg-0">
       <Card.Header className="position-relative p-0">
         <img
-          src={alumni.img}
-          alt={`${alumni.name || alumni.Designation}'s photo`}
+          src={alumni?.profileImage || "default-profile.png"} // Default image if profileImage is null
+          alt={`${alumni?.user?.firstName || "User"}'s photo`}
           className="w-100"
         />
       </Card.Header>
       <Card.Body>
-        {alumni &&
-          Object.keys(alumni)
-            .filter((key) => key !== "img" && key !== "AlumniID")
-            .map((key, index) => (
-              <Card.Title key={index}>
-                <strong>{key}:</strong> {alumni[key]}
-              </Card.Title>
-            ))}
+        {alumni && (
+          <>
+            <Card.Title>
+              <strong>Name:</strong> {alumni.user?.firstName} {alumni.user?.lastName}
+            </Card.Title>
+            <Card.Title>
+              <strong>Location:</strong> {alumni.location}
+            </Card.Title>
+            <Card.Title>
+              <strong>Current Company:</strong> {alumni.currentCompany}
+            </Card.Title>
+            <Card.Title>
+              <strong>Designation:</strong> {alumni.designation}
+            </Card.Title>
+            <Card.Title>
+              <strong>Degree:</strong> {alumni.user?.degree}
+            </Card.Title>
+            <Card.Title>
+              <strong>Year of Graduation:</strong> {alumni.yearOfGraduation}
+            </Card.Title>
+            <Card.Title>
+              <strong>Years of Experience:</strong> {alumni.yoe}+ years
+            </Card.Title>
+            <Card.Title>
+              <strong>Industry:</strong> {alumni.industry}
+            </Card.Title>
+            
+          </>
+        )}
 
         {showContactActions && (
           <div className="contact-actions mt-3">
             <p>
-              <strong>Phone:</strong> {alumni.Phone || "N/A"}
+              <strong>Phone:</strong> {alumni.phone || "N/A"}
             </p>
             <Button variant="primary" className="me-2">
               Email Me

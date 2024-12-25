@@ -1,11 +1,11 @@
 package com.alumnihub.AlumniHub.controller;
 
 import com.alumnihub.AlumniHub.model.User;
+import com.alumnihub.AlumniHub.jwt.TokenBlacklistService;
 import com.alumnihub.AlumniHub.model.Gender;
 import com.alumnihub.AlumniHub.model.Role;
 import com.alumnihub.AlumniHub.util.EmailService;
 import com.alumnihub.AlumniHub.util.PasswordConstraintValidator;
-import com.alumnihub.AlumniHub.util.TokenBlacklistService;
 
 import jakarta.validation.Valid;
 
@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-
 public class UserController {
 
     @Autowired

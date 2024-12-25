@@ -9,22 +9,31 @@ import Autocomplete from "@mui/material/Autocomplete";
 const AlumniPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showContactActions, setShowContactActions] = useState(false);
+  const [data,setData] = useState([]);
   const [filters, setFilters] = useState({
     designation: "",
     location: "",
-    yearOfGraduation: "",
+    yoe: "",
     degree: "",
-    department: "",
-    name: "",
+    currentCompany: "",
+    searchByName: ""
   });
 
-  const { data, isLoading, isError } = useFetchAlumniQuery(filters);
+  const { data: alumniData, isLoading, isError } = useFetchAlumniQuery(filters);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [filters]);
-
-  const handlePageChange = (newPage) => setCurrentPage(newPage);
+  useEffect(() => {
+    if (alumniData) {
+      setData(alumniData.data);
+    }
+  }, [alumniData]);
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({
@@ -33,35 +42,32 @@ const AlumniPage = () => {
     }));
   };
 
-  const designations = data ? [...new Set(data.map((alumni) => alumni.Designation))] : [];
-  const locations = data ? [...new Set(data.map((alumni) => alumni.Location))] : [];
-  const yearsOfGraduation = data
-    ? [...new Set(data.map((alumni) => alumni.YearOfGraduation))]
-    : [];
-  const degrees = data ? [...new Set(data.map((alumni) => alumni.Degree))] : [];
-  const departments = data ? [...new Set(data.map((alumni) => alumni.Department))] : [];
+  const designations = data ? [...new Set(data.map((alumni) => alumni.designation))] : [];
+  const locations = data ? [...new Set(data.map((alumni) => alumni.location))] : [];
+  const yearsOfExperience = data ? [...new Set(data.map((alumni) => alumni.yoe))] : [];
+  const degrees = data ? [...new Set(data.map((alumni) => alumni.degree))] : [];
+  const currentCompanies = data ? [...new Set(data.map((alumni) => alumni.currentCompany))] : [];
 
   const totalPages = data ? Math.ceil(data.length / 5) : 1;
   const filteredAlumni = data
     ? data.filter((alumni) => {
         return (
-          (filters.name
-            ? alumni.Name.toLowerCase().includes(filters.name.toLowerCase())
+          (filters.searchByName
+            ? alumni.firstName.toLowerCase().includes(filters.searchByName.toLowerCase()) ||
+              alumni.lastName.toLowerCase().includes(filters.searchByName.toLowerCase())
             : true) &&
           (filters.designation
-            ? alumni.Designation.toLowerCase().includes(filters.designation.toLowerCase())
+            ? alumni.designation.toLowerCase().includes(filters.designation.toLowerCase())
             : true) &&
           (filters.location
-            ? alumni.Location.toLowerCase().includes(filters.location.toLowerCase())
+            ? alumni.location.toLowerCase().includes(filters.location.toLowerCase())
             : true) &&
-          (filters.yearOfGraduation
-            ? alumni.YearOfGraduation === filters.yearOfGraduation
-            : true) &&
+          (filters.yoe ? alumni.yoe.toString() === filters.yoe : true) &&
           (filters.degree
-            ? alumni.Degree.toLowerCase().includes(filters.degree.toLowerCase())
+            ? alumni.degree.toLowerCase().includes(filters.degree.toLowerCase())
             : true) &&
-          (filters.department
-            ? alumni.Department.toLowerCase().includes(filters.department.toLowerCase())
+          (filters.currentCompany
+            ? alumni.currentCompany.toLowerCase().includes(filters.currentCompany.toLowerCase())
             : true)
         );
       })
@@ -70,6 +76,13 @@ const AlumniPage = () => {
   const alumniToDisplay = filteredAlumni.slice((currentPage - 1) * 5, currentPage * 5);
 
   return (
+    isLoading ? (
+      <div className="d-flex justify-content-center align-items-center mt-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    ):
     <Container>
       <h1 className="text-center my-5" style={{ color: "black" }}>
         Alumni Details
@@ -104,14 +117,12 @@ const AlumniPage = () => {
         <Col xs={6} md={2}>
           <Autocomplete
             size="small"
-            options={yearsOfGraduation}
+            options={yearsOfExperience}
             getOptionLabel={(option) => option.toString()}
-            value={filters.yearOfGraduation}
-            onChange={(event, value) =>
-              handleFilterChange("yearOfGraduation", value || "")
-            }
+            value={filters.yoe}
+            onChange={(event, value) => handleFilterChange("yoe", value || "")}
             renderInput={(params) => (
-              <TextField {...params} label="Year" variant="outlined" />
+              <TextField {...params} label="Years of Exp" variant="outlined" />
             )}
           />
         </Col>
@@ -130,12 +141,12 @@ const AlumniPage = () => {
         <Col xs={6} md={2}>
           <Autocomplete
             size="small"
-            options={departments}
+            options={currentCompanies}
             getOptionLabel={(option) => option || ""}
-            value={filters.department}
-            onChange={(event, value) => handleFilterChange("department", value || "")}
+            value={filters.currentCompany}
+            onChange={(event, value) => handleFilterChange("currentCompany", value || "")}
             renderInput={(params) => (
-              <TextField {...params} label="Department" variant="outlined" />
+              <TextField {...params} label="Company" variant="outlined" />
             )}
           />
         </Col>
@@ -144,8 +155,8 @@ const AlumniPage = () => {
             size="small"
             label="Search by Name"
             variant="outlined"
-            value={filters.name}
-            onChange={(e) => handleFilterChange("name", e.target.value)}
+            value={filters.searchByName}
+            onChange={(e) => handleFilterChange("searchByName", e.target.value)}
             fullWidth
           />
         </Col>
@@ -159,7 +170,7 @@ const AlumniPage = () => {
           <p>Error fetching data.</p>
         ) : (
           alumniToDisplay.map((alumni) => (
-            <Col xs={12} md={6} lg={4} key={alumni.AlumniID}>
+            <Col xs={12} md={6} lg={4} key={alumni.alumniId}>
               <AlumniCard
                 alumni={alumni}
                 showContactActions={showContactActions}
@@ -174,6 +185,8 @@ const AlumniPage = () => {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
+        disableNext={currentPage >= totalPages}
+        disablePrev={currentPage <= 1}
       />
 
       {/* Contact Alumni Button */}

@@ -1,4 +1,4 @@
-package com.alumnihub.AlumniHub.util;
+package com.alumnihub.AlumniHub.jwt;
 
 public class JwtConstant {
 

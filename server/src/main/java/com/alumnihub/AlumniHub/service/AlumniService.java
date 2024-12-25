@@ -5,10 +5,7 @@ import com.alumnihub.AlumniHub.model.Alumni;
 import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.repository.AlumniRepository;
 import com.alumnihub.AlumniHub.repository.UserRepository;
-import com.alumnihub.AlumniHub.util.AlumniSpecifications;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,49 +29,47 @@ public class AlumniService {
     }
 
     public Alumni createAlumni(Alumni alumni) {
-        // Validate input
-        if (alumni == null  || alumni.getUser().getUserId() == null) {
+        if (alumni == null || alumni.getUser().getUserId() == null) {
             throw new IllegalArgumentException("Invalid alumni or user data provided");
         }
     
-        // Retrieve user
         User user = userRepository.findById(alumni.getUser().getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found"));
     
-        // Check for existing alumni
         if (alumniRepository.existsByUser_UserId(user.getUserId())) {
             throw new IllegalArgumentException("Alumni profile already exists for this user");
         }
     
-        // Link the validated user to the alumni entity
         alumni.setUser(user);
-    
-        // Save and return the new alumni profile
         return alumniRepository.save(alumni);
     }
-    
 
-    public List<Alumni> getAllAlumni(String location, String company, Integer minYoe, Integer maxYoe, String industry) {
-        if (location == null && company == null && minYoe == null && maxYoe == null && industry == null) {
+    public List<Alumni> getAllAlumni(String designation, String location, Integer yoe, 
+                                   String degree, String currentCompany, String searchByName) {
+        if (isNoFilterApplied(designation, location, yoe, degree, currentCompany, searchByName)) {
             List<Alumni> results = alumniRepository.findAll();
             log.info("Fetching all alumni without filters. Found {} records", results.size());
             return results;
         }
 
-        List<Alumni> results = alumniRepository.findAlumniByFilters(location, company, minYoe, maxYoe, industry);
-        log.info("Fetching alumni with filters - location: {}, company: {}, YoE range: {}-{}, industry: {}. Found {} records",
-            location, company, minYoe, maxYoe, industry, results.size());
+        List<Alumni> results = alumniRepository.findAlumniByFilters(designation, location, yoe, 
+                                                                  degree, currentCompany, searchByName);
+        log.info("Fetching alumni with filters - designation: {}, location: {}, YoE: {}, degree: {}, " +
+                "company: {}, name: {}. Found {} records", 
+                designation, location, yoe, degree, currentCompany, searchByName, results.size());
         return results;
     }
-    
-    public List<Alumni> getAlumniByYearOfExperience(Integer minYoe, Integer maxYoe) {
-        if (minYoe == null) minYoe = 0;
-        if (maxYoe == null) maxYoe = 99;
-        return alumniRepository.findByYoeBetween(minYoe, maxYoe);
+
+    public List<Alumni> searchAlumni(String designation, String location, Integer yoe, 
+                                   String degree, String currentCompany, String searchByName) {
+        return alumniRepository.findAlumniByFilters(designation, location, yoe, 
+                                                  degree, currentCompany, searchByName);
     }
 
-    public List<Alumni> getAlumniByIndustry(String industry) {
-        return alumniRepository.findByUserIndustryContainingIgnoreCase(industry);
+    private boolean isNoFilterApplied(String designation, String location, Integer yoe, 
+                                    String degree, String currentCompany, String searchByName) {
+        return designation == null && location == null && yoe == null && 
+               degree == null && currentCompany == null && searchByName == null;
     }
 
     public boolean deleteAlumni(Long alumniId) {
@@ -88,20 +83,24 @@ public class AlumniService {
     public Optional<Alumni> updateAlumni(Long alumniId, Alumni alumniDetails) {
         return alumniRepository.findById(alumniId)
                 .map(alumni -> {
-                    alumni.setPhone(alumniDetails.getPhone());
-                    alumni.setAddress(alumniDetails.getAddress());
-                    alumni.setLinkedInProfile(alumniDetails.getLinkedInProfile());
-                    alumni.setCurrentCompany(alumniDetails.getCurrentCompany());
-                    alumni.setDesignation(alumniDetails.getDesignation());
-                    alumni.setLocation(alumniDetails.getLocation());
+                    updateAlumniFields(alumni, alumniDetails);
                     return alumniRepository.save(alumni);
                 });
+    }
+
+    private void updateAlumniFields(Alumni alumni, Alumni alumniDetails) {
+        alumni.setPhone(alumniDetails.getPhone());
+        alumni.setAddress(alumniDetails.getAddress());
+        alumni.setLinkedInProfile(alumniDetails.getLinkedInProfile());
+        alumni.setCurrentCompany(alumniDetails.getCurrentCompany());
+        alumni.setDesignation(alumniDetails.getDesignation());
+        alumni.setLocation(alumniDetails.getLocation());
+        alumni.setYoe(alumniDetails.getYoe());
     }
 
     public boolean alumniExistsByUserId(Long userId) {
         return alumniRepository.existsByUser_UserId(userId);
     }
-
 
     public Optional<User> getUserById(Long userId) {
         return userRepository.findById(userId);

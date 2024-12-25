@@ -1,4 +1,4 @@
-package com.alumnihub.AlumniHub.util;
+package com.alumnihub.AlumniHub.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

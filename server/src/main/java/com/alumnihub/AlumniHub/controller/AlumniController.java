@@ -5,6 +5,7 @@ import com.alumnihub.AlumniHub.exception.NotFoundException;
 import com.alumnihub.AlumniHub.model.Alumni;
 import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.service.AlumniService;
+import com.alumnihub.AlumniHub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,191 +16,144 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/alumni")
+@RequestMapping("/api/alumni")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AlumniController {
 
     @Autowired
     private AlumniService alumniService;
 
+    @Autowired
+    private UserService userService;
+
+    private Optional<User> authenticate(String token) {
+        try {
+            return userService.getUserFromToken(token);
+        } catch (Exception e) {
+            System.err.println("Error during authentication: " + e.getMessage());
+            return Optional.empty();
+        }
+    }
+
     @GetMapping
-    public ResponseEntity<List<Alumni>> getAllAlumni(
-            @RequestParam(required = false) String location,
-            @RequestParam(required = false) String company,
-            @RequestParam(required = false) Integer minYoe,
-            @RequestParam(required = false) Integer maxYoe,
-            @RequestParam(required = false) String industry) {
-        
-        List<Alumni> alumniList = alumniService.getAllAlumni(location, company, minYoe, maxYoe, industry);
-
-        if (alumniList.isEmpty()) {
-            String message = (location != null || company != null || minYoe != null || 
-                            maxYoe != null || industry != null)
-                ? "No alumni found matching the specified criteria"
-                : "No alumni records found in the system";
-            throw new AlumniNotFoundException(message);
+    public ResponseEntity<?> getAllAlumni(@RequestHeader("Authorization") String token,
+                                        @RequestParam(required = false) String designation,
+                                        @RequestParam(required = false) String location,
+                                        @RequestParam(required = false) Integer yoe,
+                                        @RequestParam(required = false) String degree,
+                                        @RequestParam(required = false) String currentCompany,
+                                        @RequestParam(required = false) String searchByName) {
+        Optional<User> user = authenticate(token);
+        if (user.isPresent()) {
+            List<Alumni> alumniList = alumniService.getAllAlumni(designation, location, yoe, degree, currentCompany, searchByName);
+            if (alumniList.isEmpty()) {
+                String message = (designation != null || location != null || yoe != null || 
+                                degree != null || currentCompany != null || searchByName != null)
+                    ? "No alumni found matching the specified criteria"
+                    : "No alumni records found in the system";
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("success", false, "message", message));
+            }
+            return ResponseEntity.ok(Map.of("success", true, "data", alumniList));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
         }
-
-        return ResponseEntity.ok(alumniList);
     }
 
-    @GetMapping("/search/experience")
-    public ResponseEntity<?> getAlumniByExperience(
-            @RequestParam(required = false) Integer minYoe,
-            @RequestParam(required = false) Integer maxYoe) {
-        
-        List<Alumni> alumni = alumniService.getAlumniByYearOfExperience(minYoe, maxYoe);
-        
-        if (alumni.isEmpty()) {
-            Map<String, Object> response = Map.of(
-                "success", false,
-                "message", "No alumni found with the specified years of experience range"
-            );
-            return ResponseEntity.ok(response);
+    @GetMapping("/search")
+    public ResponseEntity<?> searchAlumni(@RequestHeader("Authorization") String token,
+                                        @RequestParam(required = false) String designation,
+                                        @RequestParam(required = false) String location,
+                                        @RequestParam(required = false) Integer yoe,
+                                        @RequestParam(required = false) String degree,
+                                        @RequestParam(required = false) String currentCompany,
+                                        @RequestParam(required = false) String searchByName) {
+        Optional<User> user = authenticate(token);
+        if (user.isPresent()) {
+            List<Alumni> alumni = alumniService.searchAlumni(designation, location, yoe, degree, currentCompany, searchByName);
+            if (alumni.isEmpty()) {
+                return ResponseEntity.ok(Map.of("success", false, "message", "No alumni found matching the search criteria"));
+            }
+            return ResponseEntity.ok(Map.of("success", true, "data", alumni));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
         }
-
-        Map<String, Object> response = Map.of(
-            "success", true,
-            "data", alumni
-        );
-        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/search/industry")
-    public ResponseEntity<?> getAlumniByIndustry(@RequestParam String industry) {
-        List<Alumni> alumni = alumniService.getAlumniByIndustry(industry);
-        
-        if (alumni.isEmpty()) {
-            Map<String, Object> response = Map.of(
-                "success", false,
-                "message", "No alumni found in the specified industry: " + industry
-            );
-            return ResponseEntity.ok(response);
-        }
-
-        Map<String, Object> response = Map.of(
-            "success", true,
-            "data", alumni
-        );
-        return ResponseEntity.ok(response);
-    }
 
     @GetMapping("/{alumniId}")
-    public ResponseEntity<?> getAlumniById(@PathVariable Long alumniId) {
-        Optional<Alumni> alumni = alumniService.getAlumniById(alumniId);
-        if (alumni.isEmpty()) {
-            throw new AlumniNotFoundException("Alumni not found with ID: " + alumniId);
+    public ResponseEntity<?> getAlumniById(@RequestHeader("Authorization") String token, @PathVariable Long alumniId) {
+        Optional<User> user = authenticate(token);
+        if (user.isPresent()) {
+            Optional<Alumni> alumni = alumniService.getAlumniById(alumniId);
+            if (alumni.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("success", false, "message", "Alumni not found with ID: " + alumniId));
+            }
+            return ResponseEntity.ok(Map.of("success", true, "data", alumni.get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
         }
-        
-        Map<String, Object> successResponse = Map.of(
-            "success", true,
-            "data", alumni.get()
-        );
-        return ResponseEntity.ok(successResponse);
     }
-    
 
     @PostMapping
-    public ResponseEntity<?> createAlumni(@RequestBody Alumni alumni) {
-        if (alumni == null || alumni.getUser() == null || alumni.getUser().getUserId() == null) {
-            return ResponseEntity.badRequest().body(Map.of(
-                "success", false,
-                "message", "Invalid input: Alumni or User data is missing"
-            ));
-        }
-
-        try {
-            // Check if user exists
-            User user = alumniService.getUserById(alumni.getUser().getUserId())
-                    .orElseThrow(() -> new NotFoundException("User not found"));
-
-            // Check if alumni profile already exists for this user
-            if (alumniService.alumniExistsByUserId(user.getUserId())) {
-                return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", "Alumni profile already exists for this user"
-                ));
+    public ResponseEntity<?> createAlumni(@RequestHeader("Authorization") String token, @RequestBody Alumni alumni) {
+        Optional<User> user = authenticate(token);
+        if (user.isPresent()) {
+            if (alumni == null || alumni.getUser() == null || alumni.getUser().getUserId() == null) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Invalid input: Alumni or User data is missing"));
             }
+            try {
+                User userFromDb = alumniService.getUserById(alumni.getUser().getUserId())
+                        .orElseThrow(() -> new NotFoundException("User not found"));
 
-            // Create new alumni profile
-            Alumni newAlumni = alumniService.createAlumni(alumni);
-            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "success", true,
-                "data", newAlumni
-            ));
-        } catch (NotFoundException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                "success", false,
-                "message", e.getMessage()
-            ));
-        } catch (Exception e) {
-            // Catch unexpected exceptions to prevent HTTP 500
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                "success", false,
-                "message", "An unexpected error occurred: " + e.getMessage()
-            ));
+                if (alumniService.alumniExistsByUserId(userFromDb.getUserId())) {
+                    return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Alumni profile already exists for this user"));
+                }
+
+                Alumni newAlumni = alumniService.createAlumni(alumni);
+                return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("success", true, "data", newAlumni));
+            } catch (NotFoundException e) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false, "message", "An unexpected error occurred: " + e.getMessage()));
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
         }
     }
 
-
     @PutMapping("/{alumniId}")
-    public ResponseEntity<?> updateAlumni(@PathVariable Long alumniId, @RequestBody Alumni alumniDetails) {
-        try {
-            Optional<Alumni> updatedAlumni = alumniService.updateAlumni(alumniId, alumniDetails);
-            if (updatedAlumni.isEmpty()) {
-                throw new AlumniNotFoundException("Alumni not found with ID: " + alumniId);
+    public ResponseEntity<?> updateAlumni(@RequestHeader("Authorization") String token, @PathVariable Long alumniId, @RequestBody Alumni alumniDetails) {
+        Optional<User> user = authenticate(token);
+        if (user.isPresent()) {
+            try {
+                Optional<Alumni> updatedAlumni = alumniService.updateAlumni(alumniId, alumniDetails);
+                if (updatedAlumni.isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("success", false, "message", "Alumni not found with ID: " + alumniId));
+                }
+                return ResponseEntity.ok(Map.of("success", true, "data", updatedAlumni.get(), "message", "Alumni profile updated successfully"));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false, "message", e.getMessage()));
             }
-            
-            Map<String, Object> successResponse = Map.of(
-                "success", true,
-                "data", updatedAlumni.get(),
-                "message", "Alumni profile updated successfully"
-            );
-            return ResponseEntity.ok(successResponse);
-        } catch (AlumniNotFoundException e) {
-            Map<String, Object> errorResponse = Map.of(
-                "success", false,
-                "message", e.getMessage(),
-                "status", HttpStatus.NOT_FOUND.value()
-            );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-        } catch (Exception e) {
-            Map<String, Object> errorResponse = Map.of(
-                "success", false,
-                "message", e.getMessage(),
-                "status", HttpStatus.INTERNAL_SERVER_ERROR.value()
-            );
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
         }
     }
 
     @DeleteMapping("/{alumniId}")
-    public ResponseEntity<?> deleteAlumni(@PathVariable Long alumniId) {
-        try {
-            boolean isDeleted = alumniService.deleteAlumni(alumniId);
-            if (!isDeleted) {
-                throw new AlumniNotFoundException("Alumni not found with ID: " + alumniId);
+    public ResponseEntity<?> deleteAlumni(@RequestHeader("Authorization") String token, @PathVariable Long alumniId) {
+        Optional<User> user = authenticate(token);
+        if (user.isPresent()) {
+            try {
+                boolean isDeleted = alumniService.deleteAlumni(alumniId);
+                if (!isDeleted) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("success", false, "message", "Alumni not found with ID: " + alumniId));
+                }
+                return ResponseEntity.ok(Map.of("success", true, "message", "Alumni profile deleted successfully"));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false, "message", e.getMessage()));
             }
-            
-            Map<String, Object> successResponse = Map.of(
-                "success", true,
-                "message", "Alumni profile deleted successfully"
-            );
-            return ResponseEntity.ok(successResponse);
-        } catch (AlumniNotFoundException e) {
-            Map<String, Object> errorResponse = Map.of(
-                "success", false,
-                "message", e.getMessage(),
-                "status", HttpStatus.NOT_FOUND.value()
-            );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-        } catch (Exception e) {
-            Map<String, Object> errorResponse = Map.of(
-                "success", false,
-                "message", e.getMessage(),
-                "status", HttpStatus.INTERNAL_SERVER_ERROR.value()
-            );
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
         }
     }
-
 }

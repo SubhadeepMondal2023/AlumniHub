@@ -12,6 +12,7 @@ import com.alumnihub.AlumniHub.model.Notification;
 import com.alumnihub.AlumniHub.service.NotificationService;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/notification")
 public class NotificationController {
 

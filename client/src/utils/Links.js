@@ -313,3 +313,62 @@ export const notificationsData = [
 	},
   ];
   
+
+  export const pricingList = {
+	monthlyPricings: [
+		{
+			planTitle: "Education Support Plan",
+			price: "$15",
+			timeline: "/month",
+			description:
+				"Support university programs that empower underprivileged students with better learning opportunities.",
+			features: [
+				{ isActive: true, label: "Fund scholarship programs" },
+				{ isActive: true, label: "Support library enhancements" },
+				{ isActive: true, label: "Improve online learning tools" },
+			],
+			isActive: false,
+		},
+		{
+			planTitle: "Research Booster Plan",
+			price: "$25",
+			timeline: "/month",
+			description:
+				"Help the university advance research and innovation in cutting-edge fields of science and technology.",
+			features: [
+				{ isActive: true, label: "Sponsor lab equipment" },
+				{ isActive: true, label: "Fund faculty development programs" },
+				{ isActive: true, label: "Boost student-led research initiatives" },
+			],
+			isActive: true,
+		},
+	],
+	yearlyPricings: [
+		{
+			planTitle: "Education Support Plan",
+			price: "$150",
+			timeline: "/year",
+			description:
+				"Make a bigger impact by contributing annually to student welfare and academic resources.",
+			features: [
+				{ isActive: true, label: "Fund scholarship programs" },
+				{ isActive: true, label: "Support library enhancements" },
+				{ isActive: true, label: "Improve online learning tools" },
+			],
+			isActive: false,
+		},
+		{
+			planTitle: "Research Booster Plan",
+			price: "$250",
+			timeline: "/year",
+			description:
+				"Support groundbreaking research projects and the university's pursuit of innovation.",
+			features: [
+				{ isActive: true, label: "Sponsor lab equipment" },
+				{ isActive: true, label: "Fund faculty development programs" },
+				{ isActive: true, label: "Boost student-led research initiatives" },
+			],
+			isActive: true,
+		},
+	],
+};

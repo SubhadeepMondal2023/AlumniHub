@@ -4,6 +4,7 @@ import com.alumnihub.AlumniHub.model.Donation;
 import com.alumnihub.AlumniHub.service.DonationService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 
 @RequestMapping("/donations")
+@CrossOrigin
 @RestController
 public class DonationController
 {
@@ -58,7 +60,7 @@ public class DonationController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
         }
     }
-    @GetMapping("/history")
+    @GetMapping("/history/{userId}")
     public ResponseEntity<?> getDonationHistory(@PathVariable Long userId){
         try{
             Map<String, Object> map = Map.of("success", true, "data", donationService.getMyDonations(userId));
