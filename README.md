@@ -18,7 +18,7 @@ AlumniHub is a platform connecting alumni with their alma mater, providing oppor
 
 ## Setup
 ### Prerequisites
-1. Java JDK 11+
+1. Java JDK 17+
 2. MySQL
 3. Node.js and npm
 
