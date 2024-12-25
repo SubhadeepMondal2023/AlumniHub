@@ -23,9 +23,9 @@ function App() {
   const isAdmin = userData && userData.success && userRole === 'admin';
 
   return (
-      isLoading ?<> 
+      isLoading ?<div> 
         <Spinner animation="border" variant="primary"></Spinner>
-      </> :
+      </div> :
       <Router>
       {userData?.success && <Navbar />}
       <Routes>

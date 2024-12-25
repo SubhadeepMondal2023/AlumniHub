@@ -17,13 +17,16 @@ public interface AlumniRepository extends JpaRepository<Alumni, Long>, JpaSpecif
     Optional<User> findByUser_UserId(Long userId);
     boolean existsByUser_UserId(Long userId);
     
-    @Query("SELECT a FROM Alumni a JOIN a.user u WHERE " +
+    @Query("SELECT DISTINCT a FROM Alumni a JOIN a.user u WHERE " +
            "(:designation IS NULL OR LOWER(a.designation) LIKE LOWER(CONCAT('%', :designation, '%'))) AND " +
            "(:location IS NULL OR LOWER(a.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +
-           "(:yoe IS NULL OR a.yoe = :yoe) AND " +
+           "(:yoe IS NULL OR a.yoe >= :yoe) AND " +
            "(:degree IS NULL OR LOWER(u.degree) LIKE LOWER(CONCAT('%', :degree, '%'))) AND " +
            "(:currentCompany IS NULL OR LOWER(a.currentCompany) LIKE LOWER(CONCAT('%', :currentCompany, '%'))) AND " +
-           "(:searchByName IS NULL OR LOWER(CONCAT(u.firstName, ' ', u.lastName)) LIKE LOWER(CONCAT('%', :searchByName, '%')))")
+           "(:searchByName IS NULL OR " +
+           "LOWER(CONCAT(u.firstName, ' ', u.lastName)) LIKE LOWER(CONCAT('%', :searchByName, '%')) OR " +
+           "LOWER(u.firstName) LIKE LOWER(CONCAT('%', :searchByName, '%')) OR " +
+           "LOWER(u.lastName) LIKE LOWER(CONCAT('%', :searchByName, '%')))")
     List<Alumni> findAlumniByFilters(
         @Param("designation") String designation,
         @Param("location") String location,
