@@ -1,0 +1,34 @@
+.group-page-container {
+    display: flex;
+    height: 100vh; /* Full height of the viewport */
+}
+
+.group-list {
+    width: 250px;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+.group-list h2 {
+    margin-top: 0;
+}
+
+.group-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.group-list li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.group-list li:hover {
+    background-color: #ddd;
+}
+
+.chat-window {
+    flex-grow: 1; /* Take up remaining space */
+    padding: 20px;
+    background-color: #fff;
+}

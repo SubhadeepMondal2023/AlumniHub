@@ -1,0 +1,6 @@
+.messages {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: calc(100% - 50px); /* Adjust based on header height */
+    overflow-y: auto; /* Allow scrolling */
+}
