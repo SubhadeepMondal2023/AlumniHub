@@ -29,8 +29,8 @@ public class Notification {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long notificationId;
-
     private String message;
+    private boolean isRead;
 
     @ManyToMany
     @JoinTable(
