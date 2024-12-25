@@ -2,11 +2,12 @@ import React, { useEffect } from "react";
 import { useFetchAlumniQuery } from "../../redux/api/alumniApiSlice";
 import { Col, Container, Row } from "react-bootstrap";
 import AlumniCard from "../Alumni/AlumniCard";
+import Loader from "../../utils/Loader";
 
 const AlumniList = () => {
   const { data: alumniData, isLoading, isError } = useFetchAlumniQuery();
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return   <Loader/>;
   if (isError) return <p>Failed to load alumni data.</p>;
   
   
