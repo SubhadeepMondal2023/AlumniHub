@@ -25,7 +25,6 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin
 @RequestMapping("/jobs")
 public class JobApplicationController {
     @Autowired
