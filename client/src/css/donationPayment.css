@@ -1,0 +1,98 @@
+/* Donation Payment Container */
+.payment-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Heading Styles */
+.payment-container h2 {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Amount Section */
+.payment-container .amount-section {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #555;
+}
+
+/* Payment Method Selection */
+.payment-methods {
+    display: flex;
+    justify-content: space-around;
+    margin: 1.5rem 0;
+}
+
+.payment-method {
+    padding: 0.8rem 1.2rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.payment-method:hover {
+    background-color: #f0f8ff;
+    border-color: #007bff;
+}
+
+.payment-method.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #0056b3;
+}
+
+/* Payment Button */
+.payment-button {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1.1rem;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.payment-button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.payment-button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+/* Success Animation */
+.success-container {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.success-container h3 {
+    margin-top: 1rem;
+    color: #28a745;
+    font-size: 1.2rem;
+}
+
+.donation-payment .form-range {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.donation-payment .form-label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #555;
+}
