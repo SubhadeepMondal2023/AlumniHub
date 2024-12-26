@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useGetMyProfileQuery } from '../../redux/api/authSlice';
+import { useDeleteProfileMutation, useGetMyProfileQuery } from '../../redux/api/authSlice';
 import '../../css/my-profile.css';
 import Loader from '../../utils/Loader';
-import { Button } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer, Bounce } from 'react-toastify';
 
 const MyProfile = () => {
     const { isLoading, isError, data } = useGetMyProfileQuery();
+    const [deleteProfile, { isLoading: isDeleting, isError: isDeleteError, error: deleteError,isSuccess }] = useDeleteProfileMutation();
     const [userData, setUserData] = useState(data);
     useEffect(() => {
         if (data) {
@@ -24,10 +26,31 @@ const MyProfile = () => {
     if (isError || !userData) {
         return <div>Error loading profile data. Please try again later.</div>;
     }
+    useEffect(() => {
+        if (isDeleteError) {
+            toast.error(deleteError?.data?.message, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Bounce,
+            });
+        }
+        if(isSuccess){
+            localStorage.removeItem('token');
+            window.location.reload();
+            navigate('/login');
+        }
 
+    }, [isDeleteError, deleteError, isSuccess]);
     const navigate = useNavigate();
     return (
         <div className="profile-container">
+            <ToastContainer />
             <h1 className="text-center">My Profile</h1>
             <div className="profile-card">
                 <div className="profile-image">
@@ -55,8 +78,18 @@ const MyProfile = () => {
             <div className=' d-flex justify-content-center gap-5'>
                 <Button variant="primary" className="edit-profile-button mt-3" onClick={() => navigate('/edit-profile')}>Edit/Complete Profile</Button>
                 <Button variant="danger" className="delete-profile-button mt-3" onClick={()=>{
-
-                }}>Delete Profile</Button>
+                    if(window.confirm('Are you sure you want to delete your profile?')){
+                        deleteProfile()
+                    }
+                }}>
+                    {isDeleting ? (
+                            <>
+                                <Spinner animation="border" size="sm" />
+                            </>
+                        ) : (
+                            'Delete Profile'
+                        )}
+                </Button>
             </div>
 
         </div>

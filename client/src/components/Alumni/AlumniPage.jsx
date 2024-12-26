@@ -7,7 +7,6 @@ import { TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Loader from "../../utils/Loader";
 
-
 const AlumniPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showContactActions, setShowContactActions] = useState(false);
@@ -48,8 +47,7 @@ const AlumniPage = () => {
 
   const designation = data ? [...new Set(data.map((alumni) => alumni.designation))] : [];
   const locations = data ? [...new Set(data.map((alumni) => alumni.location))] : [];
-  const yearsOfExperience = data ? [...new Set(data.map((alumni) => alumni.yoe))] : [];
-  const degrees = data ? [...new Set(data.map((alumni) => alumni.degree))] : [];
+  const degrees = data ? [...new Set(data.map((alumni) => alumni.user.degree))] : [];
   const currentCompanies = data ? [...new Set(data.map((alumni) => alumni.currentCompany))] : [];
 
   const totalPages = data ? Math.ceil(data.length / 5) : 1;
@@ -76,7 +74,7 @@ const AlumniPage = () => {
           : true;
 
         const matchesDegree = filters.degree
-          ? alumni.degree.toLowerCase().includes(filters.degree.toLowerCase())
+          ? alumni.user.degree.toLowerCase().includes(filters.degree.toLowerCase())
           : true;
 
         const matchesCompany = filters.currentCompany
@@ -127,13 +125,14 @@ const AlumniPage = () => {
           />
         </Col>
         <Col xs={6} md={2}>
-          <Autocomplete
+          <TextField
             size="small"
-            options={yearsOfExperience}
-            getOptionLabel={(option) => option.toString()}
+            type="number"
+            label="Years of Exp"
+            variant="outlined"
             value={filters.yoe}
-            onChange={(event, value) => handleFilterChange("yoe", value || "")}
-            renderInput={(params) => <TextField {...params} label="Years of Exp" variant="outlined" />}
+            onChange={(e) => handleFilterChange("yoe", e.target.value)}
+            fullWidth
           />
         </Col>
         <Col xs={6} md={2}>

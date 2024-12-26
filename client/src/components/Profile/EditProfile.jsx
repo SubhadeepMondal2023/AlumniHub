@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const EditProfile = () => {
     const { isLoading, error, data } = useGetMyProfileQuery();
-    const [updateProfile, { isLoading: updateLoading, error: updateError, data: updateData }] = useUpdateUserMutation();
+    const [updateProfile, { isLoading: updateLoading, error: updateError,isSuccess }] = useUpdateUserMutation();
 
 
     const [formData, setFormData] = useState({});
@@ -35,15 +35,14 @@ const EditProfile = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Updated Profile Data:', formData);
-        //updateProfile(formData).unwrap();
+        updateProfile(formData).unwrap();
     };
     const navigate = useNavigate();
     useEffect(() => {
-        if (updateData) {
+        if (isSuccess) {
             navigate('/myprofile');
         }
-    }, [updateData]);
+    }, [isSuccess]);
     return (
         <Container className="mt-5">
             <h1 className="text-center mb-4 text-black">Edit Profile</h1>

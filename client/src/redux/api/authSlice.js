@@ -64,7 +64,7 @@ export const authApi = createApi({
     }),
     updateUser: builder.mutation({
       query: (credentials) => ({
-        url: '/api/profile/update',
+        url: '/api/user/update-profile',
         method: 'PUT',
         body: credentials,
       }),
@@ -72,7 +72,7 @@ export const authApi = createApi({
     }),
     deleteProfile: builder.mutation({
       query: () => ({
-        url: '/api/profile/delete',
+        url: '/api/user/delete',
         method: 'DELETE',
       }),
       invalidatesTags: ['Profile']

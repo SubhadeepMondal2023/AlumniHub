@@ -36,9 +36,9 @@ function Navbar() {
         <div className="company-navbar">
           <nav ref={navref}>
             <Link className="nav-link" to="/">Home</Link>
-            <Dropdown navlink={'Events'} childlinks={['reunion', 'workshop', 'Ted Talk', 'upcoming events', 'past events']} />
+            <Dropdown navlink={'Events'} childlinks={['reunion']} />
             <Link className="nav-link" to="/alumni">Alumni</Link>
-            <Dropdown navlink={'Services'} childlinks={['job', 'internship', 'referral']} />
+            <Dropdown navlink={'Services'} childlinks={['job']} />
             <Link className="nav-link" to="/donation">Donation</Link>
             <Link className="nav-link" to="/about">About Us</Link>
             <Link className="nav-link" to="/notifications">Notifications</Link>
