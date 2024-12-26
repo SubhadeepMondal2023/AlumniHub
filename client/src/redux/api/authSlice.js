@@ -21,7 +21,7 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     getMyProfile: builder.query({
       query: () => '/api/profile',
-      providesTags: ['Auth'],
+      providesTags: ['Profile'],
     }),
     loginUser: builder.mutation({
       query: (credentials) => ({

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button, Form, Spinner } from 'react-bootstrap';
 import { useGetMyProfileQuery, useUpdateUserMutation } from '../../redux/api/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer, Bounce } from 'react-toastify';
 
 const EditProfile = () => {
     const { isLoading, error, data } = useGetMyProfileQuery();
@@ -40,12 +41,23 @@ const EditProfile = () => {
     const navigate = useNavigate();
     useEffect(() => {
         if (isSuccess) {
+            toast.success('Profile updated successfully', {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            })
+            
             navigate('/myprofile');
         }
     }, [isSuccess]);
     return (
         <Container className="mt-5">
             <h1 className="text-center mb-4 text-black">Edit Profile</h1>
+            <ToastContainer />
             <Form onSubmit={handleSubmit}>
                 <Row className="mb-3">
                     <Col md={6}>
