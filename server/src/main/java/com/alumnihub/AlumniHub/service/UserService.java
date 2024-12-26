@@ -1,10 +1,12 @@
 package com.alumnihub.AlumniHub.service;
 
 import com.alumnihub.AlumniHub.jwt.JwtProvider;
+import com.alumnihub.AlumniHub.model.Gender;
 import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.repository.UserRepository;
 
-
+import java.time.LocalDate;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,5 +105,56 @@ public class UserService {
         // Update password
         user.get().setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user.get());
+    }
+
+    public void updateUserProfile(Long userId, Map<String, String> parameters) {
+        // Fetch the user entity from the database
+        User user = userRepository.findById(userId).orElseThrow(() -> 
+                new IllegalArgumentException("User not found"));
+
+        // Update the user entity based on the provided parameters
+        parameters.forEach((key, value) -> {
+            switch (key) {
+                case "firstName":
+                    user.setFirstName(value);
+                    break;
+                case "lastName":
+                    user.setLastName(value);
+                    break;
+                case "email":
+                    user.setEmail(value);
+                    break;
+                case "password":
+                    user.setPassword(value); // Consider encrypting this value
+                    break;
+                case "gender":
+                    user.setGender(Gender.valueOf(value.toUpperCase()));
+                    break;
+                case "dateOfBirth":
+                    user.setDateOfBirth(LocalDate.parse(value)); // Ensure date format is valid
+                    break;
+                case "yearOfGraduation":
+                    user.setYearOfGraduation(Short.parseShort(value));
+                    break;
+                case "degree":
+                    user.setDegree(value);
+                    break;
+                case "industry":
+                    user.setIndustry(value);
+                    break;
+                case "bio":
+                    user.setBio(value);
+                    break;
+                case "profileImage":
+                    user.setProfileImage(value);
+                    break;
+                default:
+                    // Log unknown fields for debugging
+                    System.out.println("Unknown field: " + key);
+            }
+        });
+
+        // Save the updated user entity
+        userRepository.save(user);
     }
 }
