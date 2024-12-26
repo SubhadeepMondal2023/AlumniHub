@@ -1,47 +1,32 @@
 package com.alumnihub.AlumniHub.model;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-@Table(name = "notification")
+@Table(name = "Notification")
 @Getter
 @Setter
 public class Notification {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "NotificationID")
     private Long notificationId;
 
+    @Column(name = "Message", nullable = false, length = 255)
     private String message;
 
-    @ManyToMany
-    @JoinTable(
-        name = "notification_user", // Join table name
-        joinColumns = @JoinColumn(name = "notificationId"), // Join column for Notification
-        inverseJoinColumns = @JoinColumn(name = "UserID") // Join column for User
-    )
-    // private User userId;
-    // @ElementCollection
-    private List<User> userId=new ArrayList<>(); 
-    // private Long userId;
-    @CreationTimestamp
-    private Date createdAt;
+    @Column(name = "IsRead", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean isRead = false;
+
+    @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // Prevent infinite recursion
+    private List<NotificationUser> users = new ArrayList<>();
 }

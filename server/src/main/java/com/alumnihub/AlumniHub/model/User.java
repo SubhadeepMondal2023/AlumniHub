@@ -9,9 +9,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.alumnihub.AlumniHub.util.ValidPassword;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -19,6 +21,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -79,7 +82,12 @@ public class User {
     @Column(name = "Bio", columnDefinition = "TEXT")
     private String bio;
 
-    @ManyToMany(mappedBy = "userId") // Bidirectional mapping
-    // private Notification notificationId;
-    private List<Notification> notificationId=new ArrayList<>(); 
+    // @ManyToMany(mappedBy = "userId") // Bidirectional mapping
+    // // private Notification notificationId;
+    // private List<Notification> notificationId=new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<NotificationUser> notifications = new ArrayList<>();
+
 }

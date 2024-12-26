@@ -2,8 +2,6 @@ package com.alumnihub.AlumniHub.controller;
 
 import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.jwt.TokenBlacklistService;
-import com.alumnihub.AlumniHub.model.Gender;
-import com.alumnihub.AlumniHub.model.Role;
 import com.alumnihub.AlumniHub.util.EmailService;
 import com.alumnihub.AlumniHub.util.PasswordConstraintValidator;
 
@@ -20,7 +18,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -241,12 +239,3 @@ public class UserController {
     }
 }
 
-// @GetMapping("/{userId}")
-// public ResponseEntity<User> getUser(@PathVariable Long userId) {
-// Optional<User> userOpt = userService.getUser(userId);
-// if (userOpt.isPresent()) {
-// return ResponseEntity.ok(userOpt.get());
-// } else {
-// return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-// }
-// }

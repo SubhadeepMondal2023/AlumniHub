@@ -37,4 +37,3 @@ public class NotificationUserId implements Serializable {
         this.userId = userId;
     }
 }
-
