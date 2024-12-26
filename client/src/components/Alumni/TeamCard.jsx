@@ -1,11 +1,6 @@
 import React from "react";
 import { Col, Container, Nav, Row } from "react-bootstrap";
-import {
-    faTwitter,
-    faLinkedin,
-    faGithub,
-    faFacebook,
-} from "@fortawesome/free-brands-svg-icons";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import "../../css/alumni.css";

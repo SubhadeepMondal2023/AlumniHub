@@ -6,6 +6,7 @@ import debasree from '../../assets/images/debasree.jpg';
 import tatha from '../../assets/images/tatha.jpg';
 import deep from '../../assets/images/deep.jpg';
 import bhargav from '../../assets/images/bhargav.jpg';
+import ishani from '../../assets/images/ishani.jpg';
 
 const teamData = [
     {
@@ -45,6 +46,26 @@ const teamData = [
             { label: "Phone", value: "+91 81011 65244" },
         ]
     },
+    {
+        image: ishani,
+        subHeading: "Backend Developer, BTech IT, University of Calcutta",
+        imageName: "Ishani Sen",
+        intro: "As a passionate BTech student with a strong interest in backend development, I have successfully developed and implemented key backend functionalities using Java Spring Boot, focusing on the Donation and Notification systems.",
+        contribution: [
+            "Handling donation history for user tracking and enabling event-specific donations to support targeted initiatives.",
+            "Implementing mechanisms to retrieve detailed donation records for transparency",
+            "Creating notifications dynamically based on user activities, fetching notifications by ID.",
+            "Adding functionality to mark notifications as read, enhancing user experience."
+        ],
+        socialLinks: [
+            { icon: faLinkedin, href: "https://www.linkedin.com/in/ishani-sen-4157ab225" },
+            { icon: faGithub, href: "https://github.com/IshaniSen2612" },
+        ],
+        infoList: [
+            { label: "Location", value: "Kolkata, India" },
+            { label: "Phone", value: "+91 6291 688 499" },
+        ]
+    }, 
     {
         image: debasree,
         subHeading: "Frontend Developer, BTech IT, University of Calcutta",
