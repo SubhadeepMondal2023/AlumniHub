@@ -18,7 +18,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +40,8 @@ public class UserController {
     @Autowired
     private PasswordConstraintValidator passwordValidator;
 
-    @Autowired private TokenBlacklistService tokenBlacklistService;
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -56,7 +56,7 @@ public class UserController {
     }
 
     // Step 1: Start Registration
-    //input - email first,last name password yog
+    // input - email first,last name password yog
     @PostMapping("/auth/register/send-otp")
     public ResponseEntity<?> RegistrationSendOtp(@Valid @RequestBody User user) {
         try {
@@ -90,7 +90,7 @@ public class UserController {
     }
 
     // Step 2: Complete Registration
-    //input email otp
+    // input email otp
     @PostMapping("/auth/register/confirm")
     public ResponseEntity<?> registerUser(@RequestBody Map<String, String> request) {
         {
@@ -170,6 +170,34 @@ public class UserController {
                 "message", "Logged out successfully"));
     }
 
+    // update user
+    @PutMapping("/api/user/update-profile")
+public ResponseEntity<?> updateUserProfile(
+        @RequestHeader("Authorization") String token, 
+        @RequestBody Map<String, String> parameters) {
+    try {
+        // Extract user from the token
+        User user = userService.getUserFromToken(token).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                    "success", false,
+                    "message", "Invalid or expired token"));
+        }
+
+        // Pass userId and parameters to the service
+        userService.updateUserProfile(user.getUserId(), parameters);
+
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of(
+                "success", true,
+                "message", "User profile updated successfully"));
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "message", e.getMessage()));
+    }
+}
+
+
     // Reset Password Step 1: Send OTP
     @PostMapping("/auth/reset-password/send-otp")
     public ResponseEntity<?> ResetPasswordSendOtp(@RequestBody Map<String, String> request) {
@@ -238,4 +266,3 @@ public class UserController {
         }
     }
 }
-
