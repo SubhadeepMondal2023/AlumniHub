@@ -7,10 +7,11 @@ import { TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Loader from "../../utils/Loader";
 
+
 const AlumniPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showContactActions, setShowContactActions] = useState(false);
-  const [data,setData] = useState([]);
+  const [data, setData] = useState([]);
   const [filters, setFilters] = useState({
     designation: "",
     location: "",
@@ -25,11 +26,13 @@ const AlumniPage = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [filters]);
+
   useEffect(() => {
     if (alumniData) {
       setData(alumniData.data);
     }
   }, [alumniData]);
+
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -50,36 +53,52 @@ const AlumniPage = () => {
   const currentCompanies = data ? [...new Set(data.map((alumni) => alumni.currentCompany))] : [];
 
   const totalPages = data ? Math.ceil(data.length / 5) : 1;
+
   const filteredAlumni = data
     ? data.filter((alumni) => {
+        const matchesName =
+          filters.searchByName?.trim()
+            ? `${alumni.user.firstName} ${alumni.user.lastName}`
+                .toLowerCase()
+                .includes(filters.searchByName.trim().toLowerCase())
+            : true;
+
+        const matchesDesignation = filters.designation
+          ? alumni.designation.toLowerCase().includes(filters.designation.toLowerCase())
+          : true;
+
+        const matchesLocation = filters.location
+          ? alumni.location.toLowerCase().includes(filters.location.toLowerCase())
+          : true;
+
+        const matchesYOE = filters.yoe
+          ? Number(alumni.yoe) >= Number(filters.yoe)
+          : true;
+
+        const matchesDegree = filters.degree
+          ? alumni.degree.toLowerCase().includes(filters.degree.toLowerCase())
+          : true;
+
+        const matchesCompany = filters.currentCompany
+          ? alumni.currentCompany.toLowerCase().includes(filters.currentCompany.toLowerCase())
+          : true;
+
         return (
-          (filters.searchByName
-            ? alumni.firstName.toLowerCase().includes(filters.searchByName.toLowerCase()) ||
-              alumni.lastName.toLowerCase().includes(filters.searchByName.toLowerCase())
-            : true) &&
-          (filters.designation
-            ? alumni.designation.toLowerCase().includes(filters.designation.toLowerCase())
-            : true) &&
-          (filters.location
-            ? alumni.location.toLowerCase().includes(filters.location.toLowerCase())
-            : true) &&
-          (filters.yoe ? alumni.yoe.toString() === filters.yoe : true) &&
-          (filters.degree
-            ? alumni.degree.toLowerCase().includes(filters.degree.toLowerCase())
-            : true) &&
-          (filters.currentCompany
-            ? alumni.currentCompany.toLowerCase().includes(filters.currentCompany.toLowerCase())
-            : true)
+          matchesName &&
+          matchesDesignation &&
+          matchesLocation &&
+          matchesYOE &&
+          matchesDegree &&
+          matchesCompany
         );
       })
     : [];
 
   const alumniToDisplay = filteredAlumni.slice((currentPage - 1) * 5, currentPage * 5);
 
-  return (
-    isLoading ? (
-      <Loader />
-    ):
+  return isLoading ? (
+    <Loader />
+  ) : (
     <Container>
       <h1 className="text-center my-5" style={{ color: "black" }}>
         Alumni Details
@@ -94,9 +113,7 @@ const AlumniPage = () => {
             getOptionLabel={(option) => option || ""}
             value={filters.designation}
             onChange={(event, value) => handleFilterChange("designation", value || "")}
-            renderInput={(params) => (
-              <TextField {...params} label="Designation" variant="outlined" />
-            )}
+            renderInput={(params) => <TextField {...params} label="Designation" variant="outlined" />}
           />
         </Col>
         <Col xs={6} md={2}>
@@ -106,9 +123,7 @@ const AlumniPage = () => {
             getOptionLabel={(option) => option || ""}
             value={filters.location}
             onChange={(event, value) => handleFilterChange("location", value || "")}
-            renderInput={(params) => (
-              <TextField {...params} label="Location" variant="outlined" />
-            )}
+            renderInput={(params) => <TextField {...params} label="Location" variant="outlined" />}
           />
         </Col>
         <Col xs={6} md={2}>
@@ -118,9 +133,7 @@ const AlumniPage = () => {
             getOptionLabel={(option) => option.toString()}
             value={filters.yoe}
             onChange={(event, value) => handleFilterChange("yoe", value || "")}
-            renderInput={(params) => (
-              <TextField {...params} label="Years of Exp" variant="outlined" />
-            )}
+            renderInput={(params) => <TextField {...params} label="Years of Exp" variant="outlined" />}
           />
         </Col>
         <Col xs={6} md={2}>
@@ -130,9 +143,7 @@ const AlumniPage = () => {
             getOptionLabel={(option) => option || ""}
             value={filters.degree}
             onChange={(event, value) => handleFilterChange("degree", value || "")}
-            renderInput={(params) => (
-              <TextField {...params} label="Degree" variant="outlined" />
-            )}
+            renderInput={(params) => <TextField {...params} label="Degree" variant="outlined" />}
           />
         </Col>
         <Col xs={6} md={2}>
@@ -142,9 +153,7 @@ const AlumniPage = () => {
             getOptionLabel={(option) => option || ""}
             value={filters.currentCompany}
             onChange={(event, value) => handleFilterChange("currentCompany", value || "")}
-            renderInput={(params) => (
-              <TextField {...params} label="Company" variant="outlined" />
-            )}
+            renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
           />
         </Col>
         <Col xs={6} md={2}>
@@ -161,17 +170,12 @@ const AlumniPage = () => {
 
       {/* Alumni List */}
       <Row>
-        {isLoading ? (
-          <Loader />
-        ) : isError ? (
+        {isError ? (
           <p>Error fetching data.</p>
         ) : (
           alumniToDisplay.map((alumni) => (
             <Col xs={12} md={6} lg={4} key={alumni.alumniId}>
-              <AlumniCard
-                alumni={alumni}
-                showContactActions={showContactActions}
-              />
+              <AlumniCard alumni={alumni} showContactActions={showContactActions} />
             </Col>
           ))
         )}
@@ -188,10 +192,7 @@ const AlumniPage = () => {
 
       {/* Contact Alumni Button */}
       <div className="text-center mt-4">
-        <Button
-          variant="info"
-          onClick={() => setShowContactActions(!showContactActions)}
-        >
+        <Button variant="info" onClick={() => setShowContactActions(!showContactActions)}>
           {showContactActions ? "Hide Contact Details" : "Contact Alumni"}
         </Button>
       </div>

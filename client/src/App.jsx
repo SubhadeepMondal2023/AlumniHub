@@ -16,6 +16,9 @@ import { useGetMyProfileQuery } from './redux/api/authSlice.js';
 import { Spinner } from 'react-bootstrap';
 import Events from './components/Events/events.jsx';
 import Reunion from './components/Events/reunion.jsx';
+import Loader from './utils/Loader.jsx';
+import MyProfile from './components/Auth/MyProfile.jsx';
+
 
 function App() {
   const {isLoading, isError, data:userData} = useGetMyProfileQuery();

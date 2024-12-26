@@ -1,10 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { isTokenValid } from '../../utils/jwtValidator';
 
 const baseQueryWithAuth = fetchBaseQuery({
   baseUrl: 'http://localhost:8080',
   prepareHeaders: (headers, { url }) => {
     const token = localStorage.getItem('token');
-    if (token) {
+    if (token && (url !== '/auth/login' || url !== '/auth/register/send-otp' || url !== '/auth/register/confirm')) {
+      
       headers.set('Authorization', `Bearer ${token}`);
       
     }
@@ -60,7 +62,7 @@ export const authApi = createApi({
       },
       
     }),
-    logoutUser: builder.mutation({
+    logoutUser: builder.mutation({  
       query: () => ({
         url: '/api/logout',
         method: 'POST',

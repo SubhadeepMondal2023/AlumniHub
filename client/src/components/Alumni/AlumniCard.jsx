@@ -7,7 +7,7 @@ const AlumniCard = ({ alumni, showContactActions }) => {
     <Card className="alumni-card mt-4 mt-lg-0">
       <Card.Header className="position-relative p-0">
         <img
-          src={alumni?.profileImage || "default-profile.png"} // Default image if profileImage is null
+          src={alumni?.user.profileImage || "default-profile.png"} // Default image if profileImage is null
           alt={`${alumni?.user?.firstName || "User"}'s photo`}
           className="w-100"
         />
