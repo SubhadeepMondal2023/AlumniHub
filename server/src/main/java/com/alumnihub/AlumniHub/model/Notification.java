@@ -9,16 +9,8 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,9 +24,9 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "NotificationID")
     private Long notificationId;
-
+    
+    @Column(name = "Message", nullable = false, length = 255)
     private String message;
-    private boolean isRead;
 
     @Column(name = "IsRead", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private boolean isRead = false;
