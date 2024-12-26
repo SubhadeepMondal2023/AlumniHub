@@ -33,7 +33,7 @@ const Login = () => {
 	};
 	useEffect(() => {
 		if (error) {
-			toast.error(error.data.message, {
+			toast.error(error?.data?.message, {
 				position: "top-center",
 				autoClose: 5000,
 				hideProgressBar: false,

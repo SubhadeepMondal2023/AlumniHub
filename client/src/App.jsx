@@ -14,9 +14,8 @@ import DonationPayment from './components/Donation/DonationPayment.jsx';
 import GroupPage from './components/Group/GroupPage.jsx';
 import { useGetMyProfileQuery } from './redux/api/authSlice.js';
 import { Spinner } from 'react-bootstrap';
-import Loader from './utils/Loader.jsx';
-import VerifyOTP from './components/Auth/VerifyOTP.jsx';
-import MyProfile from './components/Auth/MyProfile.jsx';
+import Events from './components/Events/events.jsx';
+import Reunion from './components/Events/reunion.jsx';
 
 function App() {
   const {isLoading, isError, data:userData} = useGetMyProfileQuery();
@@ -38,7 +37,8 @@ function App() {
         <Route path="/notifications" element={<NotificationList  />} />
         <Route path="/alumni" element={<AlumniPage />} /> 
         <Route path="/team" element={<TheTeam />} />
-        <Route path='/verify-otp' element={<VerifyOTP />}/>
+        <Route path="/events" element={<Events />} />
+        <Route path="/events/reunion" element={<Reunion />} /> 
       </Routes>
       <Footer />
     </Router>
