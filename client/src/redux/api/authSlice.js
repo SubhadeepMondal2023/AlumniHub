@@ -17,7 +17,7 @@ const baseQueryWithAuth = fetchBaseQuery({
 export const authApi = createApi({
   reducerPath: 'authApi', 
   baseQuery: baseQueryWithAuth,
-  tagTypes: ['Auth'], 
+  tagTypes: ['Auth', 'Profile'], 
   endpoints: (builder) => ({
     getMyProfile: builder.query({
       query: () => '/api/profile',
@@ -62,6 +62,21 @@ export const authApi = createApi({
       },
       
     }),
+    updateUser: builder.mutation({
+      query: (credentials) => ({
+        url: '/api/profile/update',
+        method: 'PUT',
+        body: credentials,
+      }),
+      invalidatesTags: ['Profile']
+    }),
+    deleteProfile: builder.mutation({
+      query: () => ({
+        url: '/api/profile/delete',
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Profile']
+    }),
     logoutUser: builder.mutation({  
       query: () => ({
         url: '/api/logout',
@@ -80,4 +95,5 @@ export const authApi = createApi({
 });
 
 export const { useGetMyProfileQuery, useLoginUserMutation, useRegisterUserSendOtpMutation, 
-  useRegisterUserVerifyOtpMutation, useLogoutUserMutation } = authApi;
+  useRegisterUserVerifyOtpMutation, useLogoutUserMutation,
+  useUpdateUserMutation, useDeleteProfileMutation } = authApi;

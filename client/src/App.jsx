@@ -17,8 +17,10 @@ import { Spinner } from 'react-bootstrap';
 import Events from './components/Events/events.jsx';
 import Reunion from './components/Events/reunion.jsx';
 import Loader from './utils/Loader.jsx';
-import MyProfile from './components/Auth/MyProfile.jsx';
 import Job from './components/Services/Job.jsx';
+import MyProfile from './components/Profile/MyProfile.jsx';
+import VerifyOTP from './components/Auth/VerifyOTP.jsx';
+import EditProfile from './components/Profile/EditProfile.jsx';
 
 
 
@@ -37,6 +39,8 @@ function App() {
         <Route path="/register" element={userData?.success ? <HeroPage /> : <Register />} />
         <Route path="/about" element={<AboutUs />} /> 
         <Route path="/myprofile" element={<MyProfile />} /> 
+        <Route path="/verify-otp" element={<VerifyOTP />} />
+        <Route path='/edit-profile' element={<EditProfile />} />
         <Route path="/donation" element={<Donation />} />
         <Route path="/donation-payment" element={<DonationPayment />} />
         <Route path="/notifications" element={<NotificationList  />} />

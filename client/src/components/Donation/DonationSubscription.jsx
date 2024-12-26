@@ -57,7 +57,7 @@ const DonationSubscription = () => {
 
     return (
         <section className="ezy__pricing1 light">
-            <Container>
+            <Container fluid>
                 <Row className="justify-content-center mb-5">
                     <Col lg={6} xl={5} className="text-center">
                         <h2 className="ezy__pricing1-heading mb-3">
@@ -91,7 +91,7 @@ const DonationSubscription = () => {
                 <Collapse in={activeTimeline === pricingTab.monthly}>
                     <Row>
                         {pricingList.monthlyPricings.map((pricing, i) => (
-                            <Col md={6} xl={3} className="mt-4" key={i}>
+                            <Col md={6} xl={6} className="mt-4" key={i}>
                                 <PricingItem pricing={pricing} />
                             </Col>
                         ))}
@@ -100,7 +100,7 @@ const DonationSubscription = () => {
                 <Collapse in={activeTimeline === pricingTab.yearly}>
                     <Row>
                         {pricingList.yearlyPricings.map((pricing, i) => (
-                            <Col md={6} xl={3} className="mt-4" key={i}>
+                            <Col md={6} xl={6} className="mt-4" key={i}>
                                 <PricingItem pricing={pricing} />
                             </Col>
                         ))}

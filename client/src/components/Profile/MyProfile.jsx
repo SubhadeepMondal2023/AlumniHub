@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useGetMyProfileQuery } from '../../redux/api/authSlice';
 import '../../css/my-profile.css';
 import Loader from '../../utils/Loader';
+import { Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const MyProfile = () => {
     const { isLoading, isError, data } = useGetMyProfileQuery();
@@ -23,7 +25,7 @@ const MyProfile = () => {
         return <div>Error loading profile data. Please try again later.</div>;
     }
 
-
+    const navigate = useNavigate();
     return (
         <div className="profile-container">
             <h1 className="text-center">My Profile</h1>
@@ -50,6 +52,13 @@ const MyProfile = () => {
                     <p><strong>User ID:</strong> {userId}</p>
                 </div>
             </div>
+            <div className=' d-flex justify-content-center gap-5'>
+                <Button variant="primary" className="edit-profile-button mt-3" onClick={() => navigate('/edit-profile')}>Edit/Complete Profile</Button>
+                <Button variant="danger" className="delete-profile-button mt-3" onClick={()=>{
+
+                }}>Delete Profile</Button>
+            </div>
+
         </div>
     );
 };

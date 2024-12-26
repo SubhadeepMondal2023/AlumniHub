@@ -9,11 +9,12 @@ import DonationSubscription from './DonationSubscription.jsx';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useFetchAlumniQuery } from '../../redux/api/alumniApiSlice.js';
+import Loader from '../../utils/Loader.jsx';
 
 const Donation = () => {
     const navigate = useNavigate();
     const { data: alumniData, isLoading, isError } = useFetchAlumniQuery();
-    
+
     return (
         <div className='donation'>
             <div>
@@ -33,21 +34,24 @@ const Donation = () => {
             <Button className='donation-button' onClick={() => navigate('/donation-payment')} variant="primary">Donate now</Button>
             <DonationSubscription />
 
-            <section className="alumni-list-section light">
-                <Container>
-                    <h1 className="alumni-heading mb-5 text-center text-black">Our Distinguished Alumni</h1>
-                    <Row>
-                        { alumniData && alumniData.data.map((alumni, i) => (
-                            <Col xs={12} md={6} lg={4} className="mb-4" key={i}>
-                                <AlumniCard
-                                    alumni={alumni}
-                                />
-                            </Col>
-                        ))}
-                    </Row>
-                </Container>
-            </section>
+            {isLoading ? <Loader /> :
+                <section className="alumni-list-section light">
+                    <Container>
+                        <h1 className="alumni-heading mb-5 text-center text-black">Our Distinguished Alumni</h1>
+                        <Row>
+                            {alumniData && alumniData.data.slice(0,6).map((alumni, i) => (
+                                <Col xs={12} md={6} lg={4} className="mb-4" key={i}>
+                                    <AlumniCard
+                                        alumni={alumni}
+                                    />
+                                </Col>
+                            ))}
+                        </Row>
+                    </Container>
+                </section>
 
+
+            }
             <ProsAndCons />
             <DonationImpactSection />
         </div>
