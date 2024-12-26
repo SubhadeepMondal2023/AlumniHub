@@ -45,11 +45,10 @@ const VerifyOTP = () => {
             setError(sendOtpError.data.message);
         }    
         if (sendOtpData) {
-            console.log(sendOtpData);
             navigate("/");
             localStorage.removeItem('email');
         }
-    }, [sendOtpError]);
+    }, [sendOtpError, sendOtpData]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
