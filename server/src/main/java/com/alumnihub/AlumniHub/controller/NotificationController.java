@@ -51,10 +51,10 @@ public class NotificationController {
         }
     }
 
-    @DeleteMapping("/delete-notification/{id}")
-    public ResponseEntity<?> deleteNotification(@PathVariable Long id) {
+    @DeleteMapping("/delete-notification/{notificationiId}")
+    public ResponseEntity<?> deleteNotification(@PathVariable Long notificationId) {
         try {
-            notificationService.deleteNotification(id);
+            notificationService.deleteNotification(notificationId);
             Map<String, Object> map = new HashMap<>();
             map.put("success", true);
             map.put("data", "Notification deleted successfully");
@@ -64,6 +64,16 @@ public class NotificationController {
             map.put("success", false);
             map.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+        }
+    }
+
+    @PutMapping("/{notificationId}/read")
+    public ResponseEntity<?> markNotificationAsRead(@PathVariable Long notificationId) {
+        try {
+            Notification updatedNotification = notificationService.markAsRead(notificationId);
+            return ResponseEntity.ok(updatedNotification);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }

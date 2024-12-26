@@ -7,7 +7,20 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "Notification")
@@ -20,8 +33,8 @@ public class Notification {
     @Column(name = "NotificationID")
     private Long notificationId;
 
-    @Column(name = "Message", nullable = false, length = 255)
     private String message;
+    private boolean isRead;
 
     @Column(name = "IsRead", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private boolean isRead = false;

@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom";
 import "../../css/navbar.css";
 import Dropdown from "../common/Dropdown";
+import { useGetMyProfileQuery, useLogoutUserMutation } from "../../redux/api/authSlice.js";
 
 function Navbar() {
   const navref = useRef();
@@ -11,7 +12,19 @@ function Navbar() {
   const showNavbar = () => {
     navref.current.classList.toggle("responsive_nav");
   };
+  const { isLoading, isError, data: userData } = useGetMyProfileQuery();
+  const [logoutUser, { isSuccess, error }] = useLogoutUserMutation();
+  useEffect(() => {
+    if (isSuccess) {
+      localStorage.removeItem('token');
+      window.location.reload();
+      window.location.href = '/';
+    }
+    if (error) {
+      console.log(error);
 
+    }
+  }, [isError, isSuccess]);
   return (
     <React.Fragment>
       <header>
@@ -23,7 +36,6 @@ function Navbar() {
         <div className="company-navbar">
           <nav ref={navref}>
             <Link className="nav-link" to="/">Home</Link>
-            <Link className="nav-link" to="/groups">Groups</Link>
             <Dropdown navlink={'Events'} childlinks={['reunion', 'workshop', 'Ted Talk', 'upcoming events', 'past events']} />
             <Link className="nav-link" to="/alumni">Alumni</Link>
             <Dropdown navlink={'Services'} childlinks={['job', 'internship', 'referral']} />
@@ -31,6 +43,11 @@ function Navbar() {
             <Link className="nav-link" to="/about">About Us</Link>
             <Link className="nav-link" to="/notifications">Notifications</Link>
             <Link className="nav-link" to="/team">The Team</Link>
+            <Link className="nav-link" to="/myprofile">Hi, {userData.data.firstName}</Link>
+            <Link className="nav-link" onClick={() => {
+              logoutUser().unwrap();
+
+            }}>Logout</Link>
             <button className="nav-btn nav-close-btn" onClick={showNavbar}>
               <FaTimes />
             </button>

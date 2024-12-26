@@ -1,9 +1,9 @@
 package com.alumnihub.AlumniHub.controller;
 
-import com.alumnihub.AlumniHub.exception.JobPostNotFoundException;
-import com.alumnihub.AlumniHub.exception.UnauthorizedException;
 import com.alumnihub.AlumniHub.model.JobPost;
+import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.service.JobPostService;
+import com.alumnihub.AlumniHub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,136 +14,150 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin
-@RequestMapping("/jobs")
+@RequestMapping("/api/jobs")
+@CrossOrigin(origins = "http://localhost:5173")
 public class JobPostController {
 
     @Autowired
     private JobPostService jobPostService;
 
+    @Autowired
+    private UserService userService;
+
+    private Optional<User> authenticate(String token) {
+        try {
+            return userService.getUserFromToken(token);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
     @GetMapping("/search")
-    public ResponseEntity<List<JobPost>> searchJobPosts(
+    public ResponseEntity<Map<String, Object>> searchJobPosts(
+            @RequestHeader("Authorization") String token,
             @RequestParam(required = false) String jobTitle,
             @RequestParam(required = false) String company,
             @RequestParam(required = false) String location) {
-
-        List<JobPost> jobPosts = jobPostService.searchJobPosts(jobTitle, company, location);
-
-        if (jobPosts.isEmpty()) {
-            throw new JobPostNotFoundException("No job posts found matching the specified criteria");
+        Optional<User> user = authenticate(token);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "User not found"));
         }
 
-        return ResponseEntity.ok(jobPosts);
+        List<JobPost> jobPosts = jobPostService.searchJobPosts(jobTitle, company, location);
+        if (jobPosts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", "No job posts found matching the specified criteria"));
+        }
+
+        return ResponseEntity.ok(Map.of("success", true, "data", jobPosts));
     }
 
     @GetMapping("/search/keyword")
-    public ResponseEntity<List<JobPost>> searchByKeyword(@RequestParam String keyword) {
-        List<JobPost> jobPosts = jobPostService.searchByKeyword(keyword);
-
-        if (jobPosts.isEmpty()) {
-            throw new JobPostNotFoundException("No job posts found matching the keyword: " + keyword);
+    public ResponseEntity<Map<String, Object>> searchByKeyword(
+            @RequestHeader("Authorization") String token,
+            @RequestParam String keyword) {
+        Optional<User> user = authenticate(token);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "User not found"));
         }
 
-        return ResponseEntity.ok(jobPosts);
+        List<JobPost> jobPosts = jobPostService.searchByKeyword(keyword);
+        if (jobPosts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", "No job posts found matching the keyword: " + keyword));
+        }
+
+        return ResponseEntity.ok(Map.of("success", true, "data", jobPosts));
     }
 
     @GetMapping("/{jobId}")
-    public ResponseEntity<?> getJobPostById(@PathVariable Long jobId) {
+    public ResponseEntity<Map<String, Object>> getJobPostById(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long jobId) {
+        Optional<User> user = authenticate(token);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "User not found"));
+        }
+
         Optional<JobPost> job = jobPostService.getJobPostById(jobId);
         if (job.isEmpty()) {
-            throw new JobPostNotFoundException("Job post not found with ID: " + jobId);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", "Job post not found with ID: " + jobId));
         }
-        
-        Map<String, Object> successResponse = Map.of(
-            "success", true,
-            "data", job.get()
-        );
-        return ResponseEntity.ok(successResponse);
+
+        return ResponseEntity.ok(Map.of("success", true, "data", job.get()));
     }
 
     @PostMapping
-    public ResponseEntity<?> createJobPost(@RequestBody JobPost jobPost) {
+    public ResponseEntity<Map<String, Object>> createJobPost(
+            @RequestHeader("Authorization") String token,
+            @RequestBody JobPost jobPost) {
+        Optional<User> user = authenticate(token);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "User not found"));
+        }
+
         try {
-            // Verify if the user is an alumni (handled by isAuthorized('alumni') in service)
+            jobPost.setUser(user.get());
             JobPost newJobPost = jobPostService.createJobPost(jobPost);
-            
-            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "success", true,
-                "data", newJobPost,
-                "message", "Job post created successfully"
-            ));
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
-                "success", false,
-                "message", "Only alumni can create job posts"
-            ));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(Map.of("success", true, "data", newJobPost, "message", "Job post created successfully"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                "success", false,
-                "message", "An unexpected error occurred: " + e.getMessage()
-            ));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 
     @PutMapping("/{jobId}")
-    public ResponseEntity<?> updateJobPost(@PathVariable Long jobId, @RequestBody JobPost jobPostDetails) {
+    public ResponseEntity<Map<String, Object>> updateJobPost(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long jobId,
+            @RequestBody JobPost jobPostDetails) {
+        Optional<User> user = authenticate(token);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "User not found"));
+        }
+
         try {
             Optional<JobPost> updatedJob = jobPostService.updateJobPost(jobId, jobPostDetails);
             if (updatedJob.isEmpty()) {
-                throw new JobPostNotFoundException("Job post not found with ID: " + jobId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("success", false, "message", "Job post not found with ID: " + jobId));
             }
-            
-            Map<String, Object> successResponse = Map.of(
-                "success", true,
-                "data", updatedJob.get(),
-                "message", "Job post updated successfully"
-            );
-            return ResponseEntity.ok(successResponse);
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
-                "success", false,
-                "message", "Only the alumni who created this post can update it"
-            ));
-        } catch (JobPostNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                "success", false,
-                "message", e.getMessage()
-            ));
+
+            return ResponseEntity.ok(Map.of("success", true, "data", updatedJob.get(), "message", "Job post updated successfully"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                "success", false,
-                "message", "An unexpected error occurred: " + e.getMessage()
-            ));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 
     @DeleteMapping("/{jobId}")
-    public ResponseEntity<?> deleteJobPost(@PathVariable Long jobId) {
+    public ResponseEntity<Map<String, Object>> deleteJobPost(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long jobId) {
+        Optional<User> user = authenticate(token);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "User not found"));
+        }
+
         try {
             boolean isDeleted = jobPostService.deleteJobPost(jobId);
             if (!isDeleted) {
-                throw new JobPostNotFoundException("Job post not found with ID: " + jobId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("success", false, "message", "Job post not found with ID: " + jobId));
             }
-            
-            return ResponseEntity.ok(Map.of(
-                "success", true,
-                "message", "Job post deleted successfully"
-            ));
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
-                "success", false,
-                "message", "Only the alumni who created this post can delete it"
-            ));
-        } catch (JobPostNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                "success", false,
-                "message", e.getMessage()
-            ));
+
+            return ResponseEntity.ok(Map.of("success", true, "message", "Job post deleted successfully"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                "success", false,
-                "message", "An unexpected error occurred: " + e.getMessage()
-            ));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 }

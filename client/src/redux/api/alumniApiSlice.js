@@ -19,8 +19,8 @@ export const alumniApi = createApi({
   tagTypes: ["Alumni"],
   endpoints: (builder) => ({
     fetchAlumni: builder.query({
-      query: ({designation,location,yoe,degree,currentCompany,searchByName}) => {
-        return `/alumni?designation=${designation}&location=${location}&yoe=${yoe}&degree=${degree}&currentCompany=${currentCompany}&searchByName=${searchByName}`
+      query: () => {
+        return `/alumni`;
       },
     }),
     deleteAlumni: builder.mutation({
