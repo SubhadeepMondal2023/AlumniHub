@@ -7,7 +7,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
+// import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,8 +29,8 @@ public class Notification {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long notificationId;
-
     private String message;
+    private boolean isRead;
 
     @ManyToMany
     @JoinTable(

@@ -8,30 +8,12 @@ import DonationImpactSection from './DonationImpactSection.jsx';
 import DonationSubscription from './DonationSubscription.jsx';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useFetchAlumniQuery } from '../../redux/api/alumniApiSlice.js';
 
 const Donation = () => {
-    const [alumniData, setAlumniData] = useState([]);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchTopDonors = async () => {
-            try {
-                const response = await axios.get('/donations'); 
-                const donations = response.data.data;
-
-                const topDonors = donations
-                    .sort((a, b) => b.amount - a.amount) // Sort by donation amount in descending order
-                    .slice(0, 5); // Take the top 5 donations
-
-                setAlumniData(topDonors);
-            } catch (error) {
-                console.error('Error fetching donations:', error);
-            }
-        };
-
-        fetchTopDonors();
-    }, []);
-
+    const { data: alumniData, isLoading, isError } = useFetchAlumniQuery();
+    
     return (
         <div className='donation'>
             <div>
@@ -55,15 +37,10 @@ const Donation = () => {
                 <Container>
                     <h1 className="alumni-heading mb-5 text-center text-black">Our Distinguished Alumni</h1>
                     <Row>
-                        {alumniData.map((alumni, i) => (
+                        { alumniData && alumniData.data.map((alumni, i) => (
                             <Col xs={12} md={6} lg={4} className="mb-4" key={i}>
                                 <AlumniCard
-                                    alumni={{
-                                        name: alumni.userId?.name || 'N/A', 
-                                        amount: alumni.amount,
-                                        purpose: alumni.purpose,
-                                        transactionId: alumni.transactionId,
-                                    }}
+                                    alumni={alumni}
                                 />
                             </Col>
                         ))}

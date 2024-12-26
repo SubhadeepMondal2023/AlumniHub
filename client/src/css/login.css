@@ -86,7 +86,6 @@ button:hover {
 }
 
 .register-page {
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -111,6 +110,7 @@ button:hover {
     max-width: 600px; /* Increased max width */
     width: 90%; /* Use relative width for responsiveness */
     padding: 2rem;
+    margin: 2rem;
     background: linear-gradient(135deg, #905990, #5a8498);
     box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
     border-radius: 15px;

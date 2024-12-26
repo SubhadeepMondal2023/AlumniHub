@@ -9,7 +9,6 @@ import com.alumnihub.AlumniHub.repository.JobApplicationRepository;
 import com.alumnihub.AlumniHub.repository.JobPostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,33 +21,28 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class JobApplicationService {
+
     @Autowired
     private JobApplicationRepository jobApplicationRepository;
+
     @Autowired
     private JobPostRepository jobPostRepository;
-    
 
     public Optional<JobApplication> getJobApplicationById(Long applicationId) {
         return jobApplicationRepository.findById(applicationId);
     }
 
-    public JobApplication createJobApplication(Long jobId, JobApplication jobApplication) {
+    public JobApplication createJobApplication(Long jobId, User user, JobApplication jobApplication) {
         // Check if job exists
         JobPost job = jobPostRepository.findById(jobId)
-            .orElseThrow(() -> new NotFoundException("Job not found"));
-    
-        // Extract user from JobPost
-        User user = job.getUser(); // This should work now if JobPost has a user field with Lombok's @Getter
-        if (user == null) {
-            throw new NotFoundException("User associated with this job not found");
-        }
-    
+                .orElseThrow(() -> new NotFoundException("Job not found"));
+
         // Set user and job to the job application
         jobApplication.setUser(user);
         jobApplication.setJob(job);
         jobApplication.setApplicationDate(LocalDate.now());
         jobApplication.setApplicationStatus(ApplicationStatus.APPLIED); // Set default status
-    
+
         // Save the application
         return jobApplicationRepository.save(jobApplication);
     }

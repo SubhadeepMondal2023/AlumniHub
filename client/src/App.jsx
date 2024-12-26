@@ -23,20 +23,18 @@ function App() {
   const isAdmin = userData && userData.success && userRole === 'admin';
 
   return (
-      isLoading ?<div> 
-        <Spinner animation="border" variant="primary"></Spinner>
-      </div> :
+      isLoading ? <Loader/> :
       <Router>
       {userData?.success && <Navbar />}
       <Routes>
         <Route path="/" element={<HeroPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={userData?.success ? <HeroPage /> : <Login />} />
+        <Route path="/register" element={userData?.success ? <HeroPage /> : <Register />} />
         <Route path="/about" element={<AboutUs />} /> 
-        <Route path="/groups" element={<GroupPage />} /> 
+        <Route path="/myprofile" element={<MyProfile />} /> 
         <Route path="/donation" element={<Donation />} />
         <Route path="/donation-payment" element={<DonationPayment />} />
-        <Route path="/notifications" element={<NotificationList isAdmin={isAdmin} />} />
+        <Route path="/notifications" element={<NotificationList  />} />
         <Route path="/alumni" element={<AlumniPage />} /> 
         <Route path="/team" element={<TheTeam />} />
         <Route path="/events" element={<Events />} />
