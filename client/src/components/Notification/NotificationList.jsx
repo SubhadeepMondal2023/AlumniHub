@@ -5,7 +5,7 @@ import "../../css/notification.css";
 import { notificationsData as mockData } from "../../utils/Links"; 
 import { useGetNotificationsQuery } from "../../redux/api/notificationsApiSlice";
 
-const NotificationItem = ({ item, isAdmin, onMarkAsRead, onDelete }) => {
+const NotificationItem = ({ item, isAdmin, onMarkAsRead, onMarkAsUnread, onDelete }) => {
   return (
     <Row className="align-items-center notification-item mb-4">
       <Col xs={12} md={8} className="notification-content">
@@ -18,7 +18,7 @@ const NotificationItem = ({ item, isAdmin, onMarkAsRead, onDelete }) => {
         </p>
       </Col>
       <Col xs="auto" className="text-center">
-        {item.Status === "Unread" && (
+        {item.Status === "Unread" ? (
           <Button
             variant="primary"
             className="mark-read-button me-2"
@@ -26,7 +26,14 @@ const NotificationItem = ({ item, isAdmin, onMarkAsRead, onDelete }) => {
           >
             Mark as Read
           </Button>
-        )}
+        ): <Button
+        variant="primary"
+        className="mark-read-button me-2"
+        onClick={() => onMarkAsUnread(item.NotificationID)}
+      >
+        Mark as Unread
+      </Button>
+        }
         {isAdmin && (
           <Button
             variant="danger"
@@ -61,6 +68,15 @@ const NotificationList = ({ isAdmin }) => {
       )
     );
   };
+  const handleMarkAsUnread = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notification) =>
+        notification.NotificationID === id
+          ? { ...notification, Status: "Unread" }
+          : notification
+      )
+    );
+  };
 
   const handleDeleteNotification = (id) => {
     setNotifications((prevNotifications) =>
@@ -86,8 +102,9 @@ const NotificationList = ({ isAdmin }) => {
             <NotificationItem
               key={item.NotificationID}
               item={item}
-              isAdmin={isAdmin}
+              isAdmin={true}
               onMarkAsRead={handleMarkAsRead}
+              onMarkAsUnread={handleMarkAsUnread}
               onDelete={handleDeleteNotification}
             />
           ))
