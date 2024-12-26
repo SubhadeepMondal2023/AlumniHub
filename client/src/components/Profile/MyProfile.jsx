@@ -72,7 +72,6 @@ const MyProfile = () => {
                     <p><strong>Industry:</strong> {industry}</p>
                     <p><strong>Year of Graduation:</strong> {yearOfGraduation}</p>
                     <p><strong>Bio:</strong> {bio || 'No bio provided'}</p>
-                    <p><strong>User ID:</strong> {userId}</p>
                 </div>
             </div>
             <div className=' d-flex justify-content-center gap-5'>
