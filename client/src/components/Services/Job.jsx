@@ -37,11 +37,11 @@ function Job() {
   return (
     <div className="job-body">
       <header className="job-header">
-        <h1>Job Portal</h1>
+        <h1> Job Portal</h1>
       </header>
       <main className="container mt-4 job-main">
         <section className="job-listing">
-          <h2>Available Jobs</h2>
+          <h2 className="job-listing-heading text-center mb-4">Available Jobs</h2>
           <div className="row">
             {jobs.map((job, index) => (
               <div className="col-md-6 mb-4" key={index}>
@@ -57,7 +57,7 @@ function Job() {
                     <h6 className="card-text text-dark">
                       Description: {job.description}
                     </h6>
-                    <button className="btn job-button">Apply Now</button>
+                    <button className="btn btn-primary job-button">Apply Now</button>
                   </div>
                 </div>
               </div>
