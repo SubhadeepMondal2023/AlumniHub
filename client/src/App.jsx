@@ -17,9 +17,11 @@ import { Spinner } from 'react-bootstrap';
 import Events from './components/Events/events.jsx';
 import Reunion from './components/Events/reunion.jsx';
 import Loader from './utils/Loader.jsx';
+import Job from './components/Services/Job.jsx';
 import MyProfile from './components/Profile/MyProfile.jsx';
 import VerifyOTP from './components/Auth/VerifyOTP.jsx';
 import EditProfile from './components/Profile/EditProfile.jsx';
+
 
 
 function App() {
@@ -45,7 +47,9 @@ function App() {
         <Route path="/alumni" element={<AlumniPage />} /> 
         <Route path="/team" element={<TheTeam />} />
         <Route path="/events" element={<Events />} />
-        <Route path="/events/reunion" element={<Reunion />} /> 
+        <Route path="/reunion" element={<Reunion />} />
+        <Route path="/job" element={<Job />} /> 
+        
       </Routes>
       <Footer />
     </Router>

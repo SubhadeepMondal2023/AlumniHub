@@ -13,4 +13,11 @@
   .events ul li {
     margin: 10px 0;
   }
+  .card-text {
+    color: black;
+  }
   
+  .card-title {
+    font-size: 1.5rem; /* Increase the size of the card title */
+    font-weight: bold; /* Make it bold for better emphasis */
+  }
