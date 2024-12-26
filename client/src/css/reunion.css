@@ -1,0 +1,16 @@
+.events {
+    padding: 20px;
+  }
+  
+  .events h1 {
+    font-size: 2rem;
+  }
+  
+  .events ul {
+    list-style-type: none;
+  }
+  
+  .events ul li {
+    margin: 10px 0;
+  }
+  
