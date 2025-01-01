@@ -27,7 +27,7 @@ const NotificationItem = ({ item, isAdmin, onMarkAsRead, onMarkAsUnread, onDelet
             Mark as Read
           </Button>
         ): <Button
-        variant="primary"
+        variant="warning"
         className="mark-read-button me-2"
         onClick={() => onMarkAsUnread(item.NotificationID)}
       >
@@ -55,7 +55,8 @@ NotificationItem.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
-const NotificationList = ({ isAdmin }) => {
+const NotificationList = () => {
+  const isAdmin=true;
   const [notifications, setNotifications] = useState(mockData); 
   const { data: notificationsData , isLoading, isError} = useGetNotificationsQuery();
 
