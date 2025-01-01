@@ -1,13 +1,26 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { notificationsData } from "../../utils/Links";
 
+const baseQueryWithAuth = fetchBaseQuery({
+  baseUrl: 'http://localhost:8080',
+  prepareHeaders: (headers, { url }) => {
+    const token = localStorage.getItem('token');
+    if(token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
+    return headers;
+  },
+});
+
 export const notificationsApi = createApi({
   reducerPath: "notificationsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8080/api" }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ["Notifications"],
   endpoints: (builder) => ({
     getNotifications: builder.query({
-      query: () => notificationsData, 
+      query:()=> ({
+        url :`/notification/get-all-notification`,
+      })
     }),
     markAsRead: builder.mutation({
       query: (notificationId) => ({

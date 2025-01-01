@@ -5,10 +5,12 @@ const baseQueryWithAuth = fetchBaseQuery({
   baseUrl: 'http://localhost:8080',
   prepareHeaders: (headers, { url }) => {
     const token = localStorage.getItem('token');
-    if (token && (url !== '/auth/login' || url !== '/auth/register/send-otp' || url !== '/auth/register/confirm')) {
-      
+
+    if (token && isTokenValid(token)) {
       headers.set('Authorization', `Bearer ${token}`);
+    }else {
       
+      localStorage.removeItem('token');
     }
     return headers;
   },
