@@ -21,10 +21,11 @@ import EditProfile from './components/Profile/EditProfile.jsx';
 import ProtectedRoute from './utils/ProtectedRoute.jsx';
 import { useGetMyProfileQuery } from './redux/api/authSlice.js';
 import Loader from './utils/Loader.jsx';
+import { isTokenValid } from './utils/jwtValidator.js';
 
 function App() {
   const { isLoading, isError, data: userData } = useGetMyProfileQuery();
-
+  
   return (
     isLoading ? <Loader /> :
     <Router>
@@ -35,7 +36,7 @@ function App() {
         <Route path="/register" element={userData?.success ? <HeroPage /> : <Register />} />
         <Route path="/about" element={<AboutUs />} /> 
         <Route path="/myprofile" element={<ProtectedRoute element={MyProfile} />} />
-        <Route path="/verify-otp" element={<ProtectedRoute element={VerifyOTP} />} />
+        <Route path="/verify-otp" element={VerifyOTP} />
         <Route path="/edit-profile" element={<ProtectedRoute element={EditProfile} />} />
         <Route path="/donation" element={<ProtectedRoute element={Donation} />} />
         <Route path="/donation-payment" element={<ProtectedRoute element={DonationPayment} />} />
