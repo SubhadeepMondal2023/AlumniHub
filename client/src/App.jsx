@@ -36,7 +36,7 @@ function App() {
         <Route path="/register" element={userData?.success ? <HeroPage /> : <Register />} />
         <Route path="/about" element={<AboutUs />} /> 
         <Route path="/myprofile" element={<ProtectedRoute element={MyProfile} />} />
-        <Route path="/verify-otp" element={VerifyOTP} />
+        <Route path="/verify-otp" element={<VerifyOTP/>} />
         <Route path="/edit-profile" element={<ProtectedRoute element={EditProfile} />} />
         <Route path="/donation" element={<ProtectedRoute element={Donation} />} />
         <Route path="/donation-payment" element={<ProtectedRoute element={DonationPayment} />} />
