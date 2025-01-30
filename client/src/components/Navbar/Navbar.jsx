@@ -22,7 +22,6 @@ function Navbar() {
     }
     if (error) {
       console.log(error);
-
     }
   }, [isError, isSuccess]);
   return (
@@ -36,7 +35,7 @@ function Navbar() {
         <div className="company-navbar">
           <nav ref={navref}>
             <Link className="nav-link" to="/">Home</Link>
-            <Dropdown navlink={'Events'} childlinks={['reunion']} />
+            <Dropdown navlink={'Events'} childlinks={['Upcoming Events','Past Events','Reunion']} />
             <Link className="nav-link" to="/alumni">Alumni</Link>
             <Dropdown navlink={'Services'} childlinks={['job']} />
             <Link className="nav-link" to="/donation">Donation</Link>
