@@ -31,13 +31,13 @@ const AlumniCard = ({ alumni, showContactActions }) => {
               <strong>Degree:</strong> {alumni.user?.degree}
             </Card.Title>
             <Card.Title>
-              <strong>Year of Graduation:</strong> {alumni.yearOfGraduation}
+              <strong>Year of Graduation:</strong> {alumni.user?.yearOfGraduation}
             </Card.Title>
             <Card.Title>
               <strong>Years of Experience:</strong> {alumni.yoe}+ years
             </Card.Title>
             <Card.Title>
-              <strong>Industry:</strong> {alumni.industry}
+              <strong>Industry:</strong> {alumni.user?.industry}
             </Card.Title>
             
           </>
