@@ -1,11 +1,11 @@
 import React from 'react'
 import '../../css/input.css';
 
-const Input = ({type, placeholder, name, value, onChange, Component}) => {
+const Input = ({type, placeholder, FieldName, name, value, onChange, Component}) => {
   return (
     <div class="inputGroup">
       <input type={type} placeholder={placeholder} name={name} value={value} onChange={onChange} autocomplete="off" />
-      <label for={name}>{name}</label>
+      <label for={name}>{FieldName}</label>
       {Component}
     </div>
   )
