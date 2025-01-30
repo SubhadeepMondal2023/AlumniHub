@@ -16,7 +16,7 @@ const AlumniList = () => {
       <Container>
         <h1 className="alumni-heading mb-5 text-center">Our Distinguished Alumni</h1>
         <Row>
-          {alumniData?.data?.map((alumni) => (
+          {alumniData?.data?.slice(0,6).map((alumni) => (
             <Col xs={12} md={6} lg={4} className="mb-4" key={alumni.alumniId}>
               <AlumniCard alumni={alumni} />
             </Col>
