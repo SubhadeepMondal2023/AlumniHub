@@ -78,6 +78,7 @@ const Register = () => {
                         type="text"
                         name="firstName"
                         placeholder=""
+                        FieldName="First Name"
                         onChange={handleChange}
                         required
                     />
@@ -87,6 +88,7 @@ const Register = () => {
                         type="text"
                         name="lastName"
                         placeholder=""
+                        FieldName="Last Name"
                         value={formData.lastName}
                         onChange={handleChange}
                         required
@@ -97,6 +99,7 @@ const Register = () => {
                         type="text"
                         name="email"
                         placeholder=""
+                        FieldName="Email"
                         value={formData.email}
                         onChange={handleChange}
                         required
@@ -107,6 +110,7 @@ const Register = () => {
                         type="number"
                         name="yearOfGraduation"
                         placeholder=""
+                        FieldName="Year Of Graduation"
                         value={formData.yearOfGraduation}
                         onChange={handleChange}
                         required
@@ -117,6 +121,7 @@ const Register = () => {
                         type="password"
                         name="password"
                         placeholder=""
+                        FieldName="Password"
                         value={formData.password}
                         onChange={handleChange}
                         required
@@ -127,6 +132,7 @@ const Register = () => {
                         type="password"
                         name="confirmPassword"
                         placeholder=""
+                        FieldName="Confirm Password"
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         required

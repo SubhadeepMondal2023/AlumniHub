@@ -54,10 +54,16 @@ const Login = () => {
 			<div className="login-container">
 				<h1>Login</h1>
 				<div>
-					<Input type="text" placeholder="" onChange={(e) => setEmail(e.target.value)} name="Email" />
+					<Input 
+						type="text"
+						placeholder="" 
+						FieldName="Email"
+						onChange={(e) => setEmail(e.target.value)} 
+						name="Email" />
 					<Input
 						type="password"
 						placeholder=""
+						FieldName="Password"
 						name="Password"
 						onChange={(e) => setPassword(e.target.value)}
 						Component={
