@@ -372,3 +372,60 @@ export const notificationsData = [
 		},
 	],
 };
+
+
+export const clientLogos = [
+	{
+		logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHeYpMJQU84GhqCzqMPxS5rxYPSg3yvPXwQw&s",
+		alt: "",
+	},{
+		logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAs-4OCh7qSe_gKUVxt3QFs9JS2h0VBs9qpg&s",
+		alt: "",
+	},{
+		logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7VpwtmJGVKYjn9FCKspBc57FETlEfPul0UA&s",
+		alt: "",
+	},{
+		logo: "https://cdn.easyfrontend.com/pictures/logos/color-logo-4.png",
+		alt: "",
+	},{
+		logo: "https://cdn.easyfrontend.com/pictures/logos/color-logo-5.png",
+		alt: "",
+	},{
+		logo: "https://cdn.easyfrontend.com/pictures/logos/color-logo-6.png",
+		alt: "",
+	},{
+		logo: "https://cdn.easyfrontend.com/pictures/logos/color-logo-7.png",
+		alt: "",
+	},{
+		logo: "https://cdn.easyfrontend.com/pictures/logos/color-logo-8.png",
+		alt: "",
+	},{
+		logo:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvfPzFJVVp5a0nNWwiBdqhIt2ZfUhhW0fblQ&s",
+		alt: "",
+	},{
+		logo:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWXva00694di-7uNEVJS9Sv6jZhnpPqu24TA&s",
+		alt: "",
+	},{
+		logo:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8a01YVeAE8RNPGQGUJFEdihBHgVX_jsnBXA&s",
+		alt: "",
+	},{
+		logo:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaWdCNf4RMLiN5yJc5rP43nQUpIs064x3LAQ&s",
+		alt: "",
+	}
+];
+
+export const placeData = [
+	{
+		img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoeDaTa1TgrnrjjVcZiKGMvm3lwWuwsUhVAw&s",
+		name: "IIT BOMBAY",
+	},{
+		img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQisrj5ov61izOOmW19n04zW50rqDxgzGTHQw&s",
+		name: "IIT KHARAGPUR",
+	},{
+		img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKujUdB0IRYGs_KNLiSNqABbkdjyleUR6u_Q&s",
+		name: "IISC BANGALORE",
+	},{
+		img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkmCM-2o14EpsjmZBRUAa37Ua3Rt7GjpI7eg&s",
+		name:"IIT DELHI"
+	}
+];

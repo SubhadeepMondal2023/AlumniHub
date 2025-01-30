@@ -1,6 +1,5 @@
 package com.alumnihub.AlumniHub.controller;
 
-import com.alumnihub.AlumniHub.exception.AlumniNotFoundException;
 import com.alumnihub.AlumniHub.exception.NotFoundException;
 import com.alumnihub.AlumniHub.model.Alumni;
 import com.alumnihub.AlumniHub.model.User;
