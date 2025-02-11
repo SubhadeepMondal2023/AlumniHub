@@ -14,7 +14,8 @@ import DonationPayment from './components/Donation/DonationPayment.jsx';
 import GroupPage from './components/Group/GroupPage.jsx';
 import Events from './components/Events/events.jsx';
 import Reunion from './components/Events/reunion.jsx';
-import Job from './components/Services/Job.jsx';
+import JobComponent from './components/Services/JobComponent.jsx';
+import InternshipComponent from './components/Services/InternshipComponent.jsx';
 import MyProfile from './components/Profile/MyProfile.jsx';
 import VerifyOTP from './components/Auth/VerifyOTP.jsx';
 import EditProfile from './components/Profile/EditProfile.jsx';
@@ -46,7 +47,8 @@ function App() {
         <Route path="/team" element={<TheTeam />} />
         <Route path="/events" element={<Events />} />
         <Route path="/reunion" element={<Reunion />} />
-        <Route path="/job" element={<ProtectedRoute element={Job} />} />
+        <Route path="/services/job" element={<ProtectedRoute element={JobComponent} />} />
+        <Route path='/services/internship' element={<ProtectedRoute element={InternshipComponent} />}/>
         <Route path='*' element={<PageNotFound />} />
       </Routes>
       <Footer />

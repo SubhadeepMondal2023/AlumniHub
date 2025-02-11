@@ -1,0 +1,110 @@
+.ezy__careers7 {
+	/* Bootstrap variables */
+	--bs-body-color: #28303b;
+	--bs-body-bg: #fff;
+
+	/* easy frontend variables */
+	--ezy-theme-color: rgb(13, 110, 253);
+	--ezy-theme-color-rgb: 13, 110, 253;
+	--ezy-border-color: #ddd;
+	--ezy-card-shadow: 0 7px 65px 0 rgba(0, 0, 0, 0.12);
+
+	background-color: var(--bs-body-bg);
+	color: var(--bs-body-color);
+	padding: 60px 0;
+}
+
+@media (min-width: 768px) {
+	.ezy__careers7 {
+		padding: 100px 0;
+	}
+}
+
+/* Gray Block Style */
+.gray .ezy__careers7,
+.ezy__careers7.gray {
+	/* Bootstrap variables */
+	--bs-body-bg: rgb(246, 246, 246);
+}
+
+/* Dark Gray Block Style */
+.dark-gray .ezy__careers7,
+.ezy__careers7.dark-gray {
+	/* Bootstrap variables */
+	--bs-body-color: rgb(241, 241, 241);
+	--bs-body-bg: rgb(30, 39, 53);
+
+	/* easy frontend variables */
+	--ezy-border-color: rgba(100, 100, 100, 0.3);
+	--ezy-card-shadow: 0 7px 65px 0 rgba(75, 75, 75, 0.25);
+}
+
+/* Dark Block Style */
+.dark .ezy__careers7,
+.ezy__careers7.dark {
+	/* Bootstrap variables */
+	--bs-body-color: rgb(255, 255, 255);
+	--bs-body-bg: rgb(11, 23, 39);
+
+	/* easy frontend variables */
+	--ezy-border-color: rgba(100, 100, 100, 0.3);
+	--ezy-card-shadow: 0 7px 65px 0 rgba(55, 55, 55, 0.25);
+}
+
+/* heading and sub-heading */
+.ezy__careers7-heading {
+	font-weight: 700;
+	font-size: 32px;
+	line-height: 1;
+	color: var(--bs-body-color);
+}
+@media (min-width: 991px) {
+	.ezy__careers7-heading {
+		font-size: 45px;
+	}
+}
+
+.ezy__careers7-sub-heading {
+	font-size: 20px;
+	color: var(--ezy-theme-color);
+	font-weight: 700;
+}
+
+/* card */
+.ezy__careers7-card {
+	color: var(--bs-body-color) !important;
+	background-color: transparent !important;
+	border: 1px solid var(--ezy-border-color) !important;
+	transition: 0.4s !important;
+}
+.ezy__careers7-card:hover {
+	box-shadow: var(--ezy-card-shadow);
+	background-color: transparent !important;
+}
+
+.ezy__careers7-btn {
+	color: var(--ezy-theme-color);
+	background-color: transparent;
+	font-size: 28px;
+	font-weight: 500;
+}
+
+.ezy__careers7-btn:hover {
+	color: rgba(var(--ezy-theme-color-rgb), 0.9);
+}
+.ezy__careers7 a {
+	text-decoration: none;
+}
+.ezy__careers7 h5 {
+	transition: 0.4s;
+}
+.ezy__careers7 a:hover h5 {
+	color: var(--ezy-theme-color) !important;
+}
+
+.ezy__careers7-details,
+.ezy__careers7-icon {
+	color: var(--bs-body-color);
+	font-size: 16px;
+	opacity: 0.8;
+}

@@ -37,7 +37,7 @@ function Navbar() {
             <Link className="nav-link" to="/">Home</Link>
             <Link className="nav-link" to="/events">Events</Link>
             <Link className="nav-link" to="/alumni">Alumni</Link>
-            <Dropdown navlink={'Services'} childlinks={['job']} />
+            <Dropdown navlink={'Services'} childlinks={['Job', 'Internship']} />
             <Link className="nav-link" to="/donation">Donation</Link>
             <Link className="nav-link" to="/about">About Us</Link>
             <Link className="nav-link" to="/notifications">Notifications</Link>
