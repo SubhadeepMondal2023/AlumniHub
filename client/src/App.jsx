@@ -22,6 +22,7 @@ import ProtectedRoute from './utils/ProtectedRoute.jsx';
 import { useGetMyProfileQuery } from './redux/api/authSlice.js';
 import Loader from './utils/Loader.jsx';
 import { isTokenValid } from './utils/jwtValidator.js';
+import PageNotFound from './components/PageNotFound/PageNotFound.jsx';
 
 function App() {
   const { isLoading, isError, data: userData } = useGetMyProfileQuery();
@@ -46,6 +47,7 @@ function App() {
         <Route path="/events" element={<Events />} />
         <Route path="/reunion" element={<Reunion />} />
         <Route path="/job" element={<ProtectedRoute element={Job} />} />
+        <Route path='*' element={<PageNotFound />} />
       </Routes>
       <Footer />
     </Router>
