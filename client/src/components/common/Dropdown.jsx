@@ -16,7 +16,7 @@ const Dropdown = ({navlink,childlinks}) => {
                 <NavDropdown.Item 
                 key={childlink}
                 className='nav-dropdown-item'    
-            ><Link to={`/${childlink.toLowerCase()}`}> {childlink}</Link></NavDropdown.Item>
+            ><Link to={`/${navlink.toLowerCase()}/${childlink.toLowerCase()}`}> {childlink}</Link></NavDropdown.Item>
             ))}
         </NavDropdown>
     )
