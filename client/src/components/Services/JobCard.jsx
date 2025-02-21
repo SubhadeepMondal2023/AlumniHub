@@ -1,37 +1,48 @@
 import React from "react";
-import { Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faMapMarkerAlt, faBuilding } from "@fortawesome/free-solid-svg-icons";
+import { Card } from "react-bootstrap";
+import "../../css/jobinternship.css";
 
+const JobCard = ({ job }) => {
+    const {
+        jobTitle,
+        company,
+        location,
+        jobDescription,
+        applicationDeadline,
+        postDate,
+    } = job;
 
-const JobCard = ({ content }) => {
-	const { link, location, title, duration, description } = content;
-	return (
-		<a href={link}>
-			<Card className="ezy__careers7-card mt-4">
-				<Card.Body className="p-3 p-md-4">
-					<h5 className="fw-bold mb-3 ">{title}</h5>
-					<p className="opacity-75 text-dark">{description}</p>
-					<div className="d-flex mt-5">
-						<div className="ezy__careers7-location d-flex align-items-center me-2 me-sm-4">
-							<FontAwesomeIcon
-								icon={faMapMarkerAlt}
-								className="ezy__careers7-icon me-2"
-							/>
-							<p className="ezy__careers7-details mb-0">{location}</p>
-						</div>
-						<div className="ezy__careers7-time d-flex align-items-center me-2 me-sm-4">
-							<FontAwesomeIcon
-								icon={faClock}
-								className="ezy__careers7-icon me-2"
-							/>
-							<p className="ezy__careers7-details mb-0">{duration}</p>
-						</div>
-					</div>
-				</Card.Body>
-			</Card>
-		</a>
-	);
+    const formattedPostDate = new Date(postDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+
+    return (
+        <Card className="ezy__careers7-card mt-4">
+            <Card.Body className="p-3 p-md-4">
+                <h5 className="fw-bold mb-2 text-dark">{jobTitle}</h5>
+                <div className="d-flex align-items-center mb-2">
+                    <p className="mb-0 fw-semibold text-dark">{company}</p>
+                </div>
+                <div className="d-flex flex-column mt-4">
+                    <div className="d-flex align-items-center me-3">
+                        <FontAwesomeIcon icon={faMapMarkerAlt} className="ezy__careers7-icon me-2 text-secondary" />
+                        <p className="mb-0 text-dark">{location}</p>
+                    </div>
+                    <div className="d-flex align-items-center me-3">
+                        <FontAwesomeIcon icon={faClock} className="ezy__careers7-icon me-2 text-secondary" />
+                        <p className="mb-0 text-dark">Deadline: {applicationDeadline}</p>
+                    </div>
+                </div>
+                <p className="text-muted mt-3 small text-dark"><span className="fw-semibold">Posted on:</span> {formattedPostDate}</p>  
+                <button className="btn-primary ">Apply</button>
+
+            </Card.Body>
+        </Card>
+    );
 };
 
 export default JobCard;

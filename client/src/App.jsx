@@ -11,19 +11,16 @@ import NotificationList from './components/Notification/NotificationList.jsx';
 import AlumniPage from './components/Alumni/AlumniPage.jsx'; 
 import TheTeam from './components/The Team/TheTeam.jsx';
 import DonationPayment from './components/Donation/DonationPayment.jsx';
-import GroupPage from './components/Group/GroupPage.jsx';
 import Events from './components/Events/events.jsx';
 import Reunion from './components/Events/reunion.jsx';
-import JobComponent from './components/Services/JobComponent.jsx';
-import InternshipComponent from './components/Services/InternshipComponent.jsx';
 import MyProfile from './components/Profile/MyProfile.jsx';
 import VerifyOTP from './components/Auth/VerifyOTP.jsx';
 import EditProfile from './components/Profile/EditProfile.jsx';
 import ProtectedRoute from './utils/ProtectedRoute.jsx';
 import { useGetMyProfileQuery } from './redux/api/authSlice.js';
 import Loader from './utils/Loader.jsx';
-import { isTokenValid } from './utils/jwtValidator.js';
 import PageNotFound from './components/PageNotFound/PageNotFound.jsx';
+import { InternshipComponent, JobComponent } from './components/Services/services.jsx';
 
 function App() {
   const { isLoading, isError, data: userData } = useGetMyProfileQuery();
