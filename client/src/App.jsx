@@ -20,7 +20,8 @@ import ProtectedRoute from './utils/ProtectedRoute.jsx';
 import { useGetMyProfileQuery } from './redux/api/authSlice.js';
 import Loader from './utils/Loader.jsx';
 import PageNotFound from './components/PageNotFound/PageNotFound.jsx';
-import { InternshipComponent, JobComponent } from './components/Services/services.jsx';
+import { InternshipComponent, JobComponent } from './components/Services/Services.jsx';
+import JobPostDetails from './components/Services/JobPostDetails.jsx';
 
 function App() {
   const { isLoading, isError, data: userData } = useGetMyProfileQuery();
@@ -46,6 +47,7 @@ function App() {
         <Route path="/reunion" element={<Reunion />} />
         <Route path="/services/job" element={<ProtectedRoute element={JobComponent} />} />
         <Route path='/services/internship' element={<ProtectedRoute element={InternshipComponent} />}/>
+        <Route path='/job/:jobId' element={<ProtectedRoute element={JobPostDetails} />} />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
       <Footer />

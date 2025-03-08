@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import '../../css/jobinternship.css';
-import JobInternshipComponent from './JobInternshipComponent';
-import { useFetchAllJobsQuery, useFetchJobByIdQuery } from '../../redux/api/jobApiSlice';
-import Loader from '../../utils/Loader';
+import JobInternshipComponent from './JobInternshipComponent.jsx';
+import { useFetchAllJobsQuery, useFetchJobByIdQuery } from '../../redux/api/jobApiSlice.js';
+import Loader from '../../utils/Loader.jsx';
 
-// Usage:
 const InternshipComponent = () => {
     const contents = [
         {
@@ -13,15 +12,13 @@ const InternshipComponent = () => {
             title: "Frontend Developer Intern",
             description: "Work with React.js, Redux, and Chakra UI to develop scalable frontend components.",
             duration: "3 Months",
-        },
-        {
+        },{
             link: "#",
             location: "Hybrid - Bangalore",
             title: "Backend Developer Intern",
             description: "Build RESTful APIs using Node.js, Express, and MongoDB for efficient data handling.",
             duration: "6 Months",
-        },
-        {
+        },{
             link: "#",
             location: "Onsite - Pune",
             title: "Machine Learning Intern",

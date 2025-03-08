@@ -34,6 +34,12 @@ export const jobApiSlice = createApi({
         body: jobPost,
       }),
     }),
+    applyToJob: builder.mutation({
+      query: (jobId) => ({
+        url: `/${jobId}/apply`,
+        method: 'POST',
+      }),
+    }),
     updateJobPost: builder.mutation({
       query: ({ jobId, jobPost }) => ({
         url: `/${jobId}`,
@@ -51,4 +57,4 @@ export const jobApiSlice = createApi({
 });
 
 export const { useFetchAllJobsQuery, useFetchJobByIdQuery, useCreateJobPostMutation,
-  useUpdateJobPostMutation, useDeleteJobPostMutation } = jobApiSlice;
+  useUpdateJobPostMutation, useDeleteJobPostMutation, useApplyToJobMutation } = jobApiSlice;

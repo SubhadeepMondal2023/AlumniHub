@@ -6,6 +6,7 @@ import { useFetchAlumniQuery } from "../../redux/api/alumniApiSlice";
 import { TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Loader from "../../utils/Loader";
+import { applyFilters, getUniqueFilterOptions } from "../../utils/customFilter";
 
 const AlumniPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,26 +18,16 @@ const AlumniPage = () => {
     yoe: "",
     degree: "",
     currentCompany: "",
-    searchByName: ""
+    searchByName: "",
   });
 
   const { data: alumniData, isLoading, isError } = useFetchAlumniQuery(filters);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filters]);
 
   useEffect(() => {
     if (alumniData) {
       setData(alumniData.data);
     }
   }, [alumniData]);
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-    }
-  };
 
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({
@@ -45,53 +36,11 @@ const AlumniPage = () => {
     }));
   };
 
-  const designation = data ? [...new Set(data.map((alumni) => alumni.designation))] : [];
-  const locations = data ? [...new Set(data.map((alumni) => alumni.location))] : [];
-  const degrees = data ? [...new Set(data.map((alumni) => alumni.user.degree))] : [];
-  const currentCompanies = data ? [...new Set(data.map((alumni) => alumni.currentCompany))] : [];
+  const filterKeys = ["designation", "location", "degree", "currentCompany"];
+  const filterOptions = getUniqueFilterOptions(data, filterKeys);
+  const filteredAlumni = applyFilters(data, filters);
 
-  const totalPages = data ? Math.ceil(data.length / 5) : 1;
-
-  const filteredAlumni = data
-    ? data.filter((alumni) => {
-        const matchesName =
-          filters.searchByName?.trim()
-            ? `${alumni.user.firstName} ${alumni.user.lastName}`
-                .toLowerCase()
-                .includes(filters.searchByName.trim().toLowerCase())
-            : true;
-
-        const matchesDesignation = filters.designation
-          ? alumni.designation.toLowerCase().includes(filters.designation.toLowerCase())
-          : true;
-
-        const matchesLocation = filters.location
-          ? alumni.location.toLowerCase().includes(filters.location.toLowerCase())
-          : true;
-
-        const matchesYOE = filters.yoe
-          ? Number(alumni.yoe) >= Number(filters.yoe)
-          : true;
-
-        const matchesDegree = filters.degree
-          ? alumni.user.degree.toLowerCase().includes(filters.degree.toLowerCase())
-          : true;
-
-        const matchesCompany = filters.currentCompany
-          ? alumni.currentCompany.toLowerCase().includes(filters.currentCompany.toLowerCase())
-          : true;
-
-        return (
-          matchesName &&
-          matchesDesignation &&
-          matchesLocation &&
-          matchesYOE &&
-          matchesDegree &&
-          matchesCompany
-        );
-      })
-    : [];
-
+  const totalPages = Math.ceil(filteredAlumni.length / 5);
   const alumniToDisplay = filteredAlumni.slice((currentPage - 1) * 5, currentPage * 5);
 
   return isLoading ? (
@@ -102,28 +51,19 @@ const AlumniPage = () => {
         Alumni Details
       </h1>
 
-      {/* Filter Options */}
       <Row className="mb-4 d-flex align-items-center">
-        <Col xs={6} md={2}>
-          <Autocomplete
-            size="small"
-            options={designation}
-            getOptionLabel={(option) => option || ""}
-            value={filters.designation}
-            onChange={(event, value) => handleFilterChange("designation", value || "")}
-            renderInput={(params) => <TextField {...params} label="Designation" variant="outlined" />}
-          />
-        </Col>
-        <Col xs={6} md={2}>
-          <Autocomplete
-            size="small"
-            options={locations}
-            getOptionLabel={(option) => option || ""}
-            value={filters.location}
-            onChange={(event, value) => handleFilterChange("location", value || "")}
-            renderInput={(params) => <TextField {...params} label="Location" variant="outlined" />}
-          />
-        </Col>
+        {filterKeys.map((key) => (
+          <Col xs={6} md={2} key={key}>
+            <Autocomplete
+              size="small"
+              options={filterOptions[key]}
+              getOptionLabel={(option) => option || ""}
+              value={filters[key]}
+              onChange={(event, value) => handleFilterChange(key, value || "")}
+              renderInput={(params) => <TextField {...params} label={key.charAt(0).toUpperCase() + key.slice(1)} variant="outlined" />}
+            />
+          </Col>
+        ))}
         <Col xs={6} md={2}>
           <TextField
             size="small"
@@ -133,26 +73,6 @@ const AlumniPage = () => {
             value={filters.yoe}
             onChange={(e) => handleFilterChange("yoe", e.target.value)}
             fullWidth
-          />
-        </Col>
-        <Col xs={6} md={2}>
-          <Autocomplete
-            size="small"
-            options={degrees}
-            getOptionLabel={(option) => option || ""}
-            value={filters.degree}
-            onChange={(event, value) => handleFilterChange("degree", value || "")}
-            renderInput={(params) => <TextField {...params} label="Degree" variant="outlined" />}
-          />
-        </Col>
-        <Col xs={6} md={2}>
-          <Autocomplete
-            size="small"
-            options={currentCompanies}
-            getOptionLabel={(option) => option || ""}
-            value={filters.currentCompany}
-            onChange={(event, value) => handleFilterChange("currentCompany", value || "")}
-            renderInput={(params) => <TextField {...params} label="Company" variant="outlined" />}
           />
         </Col>
         <Col xs={6} md={2}>
@@ -167,7 +87,6 @@ const AlumniPage = () => {
         </Col>
       </Row>
 
-      {/* Alumni List */}
       <Row>
         {isError ? (
           <p>Error fetching data.</p>
@@ -180,16 +99,14 @@ const AlumniPage = () => {
         )}
       </Row>
 
-      {/* Pagination */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={handlePageChange}
+        onPageChange={setCurrentPage}
         disableNext={currentPage >= totalPages}
         disablePrev={currentPage <= 1}
       />
 
-      {/* Contact Alumni Button */}
       <div className="text-center mt-4">
         <Button variant="info" onClick={() => setShowContactActions(!showContactActions)}>
           {showContactActions ? "Hide Contact Details" : "Contact Alumni"}
