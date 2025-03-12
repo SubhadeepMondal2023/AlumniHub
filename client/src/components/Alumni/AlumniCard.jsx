@@ -1,6 +1,9 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
 import "../../css/alumniList.css";
+import { GeoAltFill, Building, BriefcaseFill, MortarboardFill, Calendar3, ClockFill, Globe } from "react-bootstrap-icons";
+
+
 
 const AlumniCard = ({ alumni, showContactActions }) => {
   return (
@@ -13,33 +16,45 @@ const AlumniCard = ({ alumni, showContactActions }) => {
         />
       </Card.Header>
       <Card.Body>
-        {alumni && (
+      {alumni && (
           <>
-            <Card.Title>
-              <strong>Name:</strong> {alumni.user?.firstName} {alumni.user?.lastName}
+            <Card.Title className="text-primary fw-bold fs-5">
+              {alumni.user?.firstName} {alumni.user?.lastName}
             </Card.Title>
-            <Card.Title>
-              <strong>Location:</strong> {alumni.location}
-            </Card.Title>
-            <Card.Title>
-              <strong>Current Company:</strong> {alumni.currentCompany}
-            </Card.Title>
-            <Card.Title>
-              <strong>Designation:</strong> {alumni.designation}
-            </Card.Title>
-            <Card.Title>
-              <strong>Degree:</strong> {alumni.user?.degree}
-            </Card.Title>
-            <Card.Title>
-              <strong>Year of Graduation:</strong> {alumni.user?.yearOfGraduation}
-            </Card.Title>
-            <Card.Title>
-              <strong>Years of Experience:</strong> {alumni.yoe}+ years
-            </Card.Title>
-            <Card.Title>
-              <strong>Industry:</strong> {alumni.user?.industry}
-            </Card.Title>
-            
+
+            <Card.Text className="mb-2">
+              <GeoAltFill className="text-danger me-2" />
+              <strong>Location:</strong> <span className="text-muted">{alumni.location}</span>
+            </Card.Text>
+
+            <Card.Text className="mb-2">
+              <Building className="text-info me-2" />
+              <strong>Current Company:</strong> <span className="text-muted">{alumni.currentCompany}</span>
+            </Card.Text>
+
+            <Card.Text className="mb-2">
+              <BriefcaseFill className="text-success me-2" />
+              <strong>Designation:</strong> <span className="text-muted">{alumni.designation}</span>
+            </Card.Text>
+
+            <Card.Text className="mb-2">
+              <MortarboardFill className="text-warning me-2" />
+              <strong>Degree:</strong> <span className="text-muted">{alumni.user?.degree}</span>
+            </Card.Text>
+
+            <Card.Text className="mb-2">
+              <Calendar3 className="text-primary me-2" />
+              <strong>Year of Graduation:</strong> <span className="text-muted">{alumni.user?.yearOfGraduation}</span>
+            </Card.Text>
+
+            <Card.Text className="mb-2">
+              <ClockFill className="text-secondary me-2" />
+              <strong>Years of Experience:</strong> <span className="text-muted">{alumni.yoe}+ years</span>
+            </Card.Text>
+            <Card.Text className="mb-2">
+              <Globe className="text-dark me-2" />
+              <strong>Industry:</strong> <span className="text-muted">{alumni.user?.industry}</span>
+            </Card.Text>
           </>
         )}
 
