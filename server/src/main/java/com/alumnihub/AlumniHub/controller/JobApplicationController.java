@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,6 +41,18 @@ public class JobApplicationController {
             return Optional.empty();
         }
     }
+    @GetMapping("/{userId}/applications")
+    public ResponseEntity<Map<String, Object>> getJobApplicationsByUser(@PathVariable Long userId) {
+        Optional<User> user = userService.getUser(userId);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", "User not found"));
+        }
+
+        List<JobApplication> jobApplications = jobApplicationService.getJobApplicationsByUser(user.get().getUserId());
+        return ResponseEntity.ok(Map.of("success", true, "data", jobApplications));
+    }
+
 
     @PostMapping("/{jobId}/apply")
     public ResponseEntity<Map<String, Object>> applyToJob(@RequestHeader("Authorization") String token,

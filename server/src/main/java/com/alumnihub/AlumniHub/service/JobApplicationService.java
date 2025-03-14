@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +31,9 @@ public class JobApplicationService {
 
     public Optional<JobApplication> getJobApplicationById(Long applicationId) {
         return jobApplicationRepository.findById(applicationId);
+    }
+    public List<JobApplication> getJobApplicationsByUser( Long userId) {
+        return jobApplicationRepository.findAllByUser_UserId(userId);
     }
 
     public JobApplication createJobApplication(Long jobId, User user, JobApplication jobApplication) {
