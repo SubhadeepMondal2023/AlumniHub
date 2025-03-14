@@ -1,45 +1,29 @@
-import React, { useState } from "react";
+import React from "react";
 import { Col, Container, Row, Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import "../../css/notification.css";
-import { notificationsData as mockData } from "../../utils/Links"; 
-import { useGetNotificationsQuery } from "../../redux/api/notificationsApiSlice";
+import { useGetNotificationsQuery, useMarkAsReadMutation, useDeleteNotificationMutation } from "../../redux/api/notificationsApiSlice";
 
 const NotificationItem = ({ item, isAdmin, onMarkAsRead, onMarkAsUnread, onDelete }) => {
   return (
     <Row className="align-items-center notification-item mb-4">
       <Col xs={12} md={8} className="notification-content">
         <h5 className="fw-bold">{item.Message}</h5>
-        <p className="text-muted">
-          Date: {new Date(item.NotificationDate).toLocaleString()}
-        </p>
-        <p className={`status ${item.Status.toLowerCase()}`}>
-          Status: {item.Status}
-        </p>
+        <p className="text-muted">Date: {new Date(item.NotificationDate).toLocaleString()}</p>
+        <p className={`status ${item.Status.toLowerCase()}`}>Status: {item.Status}</p>
       </Col>
       <Col xs="auto" className="text-center">
         {item.Status === "Unread" ? (
-          <Button
-            variant="primary"
-            className="mark-read-button me-2"
-            onClick={() => onMarkAsRead(item.NotificationID)}
-          >
+          <Button variant="primary" className="mark-read-button me-2" onClick={() => onMarkAsRead(item.NotificationID)}>
             Mark as Read
           </Button>
-        ): <Button
-        variant="warning"
-        className="mark-read-button me-2"
-        onClick={() => onMarkAsUnread(item.NotificationID)}
-      >
-        Mark as Unread
-      </Button>
-        }
+        ) : (
+          <Button variant="warning" className="mark-read-button me-2" onClick={() => onMarkAsUnread(item.NotificationID)}>
+            Mark as Unread
+          </Button>
+        )}
         {isAdmin && (
-          <Button
-            variant="danger"
-            className="delete-button"
-            onClick={() => onDelete(item.NotificationID)}
-          >
+          <Button variant="danger" className="delete-button" onClick={() => onDelete(item.NotificationID)}>
             Delete
           </Button>
         )}
@@ -52,38 +36,30 @@ NotificationItem.propTypes = {
   item: PropTypes.object.isRequired,
   isAdmin: PropTypes.bool.isRequired,
   onMarkAsRead: PropTypes.func.isRequired,
+  onMarkAsUnread: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
 
 const NotificationList = () => {
-  const isAdmin=true;
-  const [notifications, setNotifications] = useState(mockData); 
-  const { data: notificationsData , isLoading, isError} = useGetNotificationsQuery();
+  const isAdmin = true;
+  const { data: notifications, isLoading, isError } = useGetNotificationsQuery();
+  const [markAsRead] = useMarkAsReadMutation();
+  const [deleteNotification] = useDeleteNotificationMutation();
 
-  const handleMarkAsRead = (id) => {
-    setNotifications((prevNotifications) =>
-      prevNotifications.map((notification) =>
-        notification.NotificationID === id
-          ? { ...notification, Status: "Read" }
-          : notification
-      )
-    );
-  };
-  const handleMarkAsUnread = (id) => {
-    setNotifications((prevNotifications) =>
-      prevNotifications.map((notification) =>
-        notification.NotificationID === id
-          ? { ...notification, Status: "Unread" }
-          : notification
-      )
-    );
+  const handleMarkAsRead = async (id) => {
+    await markAsRead(id);
   };
 
-  const handleDeleteNotification = (id) => {
-    setNotifications((prevNotifications) =>
-      prevNotifications.filter((notification) => notification.NotificationID !== id)
-    );
+  const handleMarkAsUnread = async (id) => {
+    // Handle marking as unread if API supports it.
   };
+
+  const handleDeleteNotification = async (id) => {
+    await deleteNotification(id);
+  };
+
+  if (isLoading) return <p>Loading notifications...</p>;
+  if (isError) return <p>Error loading notifications.</p>;
 
   return (
     <section className="notifications-section light">
@@ -92,22 +68,14 @@ const NotificationList = () => {
           <Col xs={12} md={8}>
             <h2 className="notifications-heading fw-bold mb-4">Notifications</h2>
             <p className="notifications-sub-heading" style={{ color: "black" }}>
-              Stay updated with the latest notifications from Alumni Hub. Mark
-              your notifications as read to keep track.
+              Stay updated with the latest notifications from Alumni Hub. Mark your notifications as read to keep track.
             </p>
           </Col>
         </Row>
 
-        {notifications.length > 0 ? (
+        {notifications?.length > 0 ? (
           notifications.map((item) => (
-            <NotificationItem
-              key={item.NotificationID}
-              item={item}
-              isAdmin={true}
-              onMarkAsRead={handleMarkAsRead}
-              onMarkAsUnread={handleMarkAsUnread}
-              onDelete={handleDeleteNotification}
-            />
+            <NotificationItem key={item.NotificationID} item={item} isAdmin={isAdmin} onMarkAsRead={handleMarkAsRead} onMarkAsUnread={handleMarkAsUnread} onDelete={handleDeleteNotification} />
           ))
         ) : (
           <Row className="text-center">
@@ -127,10 +95,6 @@ const NotificationList = () => {
       </Container>
     </section>
   );
-};
-
-NotificationList.propTypes = {
-  isAdmin: PropTypes.bool.isRequired,
 };
 
 export default NotificationList;
