@@ -4,14 +4,8 @@ import AlumniCard from "../Alumni/AlumniCard";
 import Pagination from "../common/Pagination";
 import { useFetchAlumniQuery } from "../../redux/api/alumniApiSlice";
 import Loader from "../../utils/Loader.jsx";
-import {
-  BriefcaseFill,
-  GeoAltFill,
-  MortarboardFill,
-  Building,
-  Search,
-  ClockFill,
-} from "react-bootstrap-icons";
+import { BsGeoAltFill, BsBuilding, BsBriefcaseFill, BsMortarboardFill, BsCalendar3, BsClockFill, BsGlobe } from "react-icons/bs";
+
 import { getUniqueFilterOptions, applyFilters } from "../../utils/customFilter.js";
 
 
@@ -101,11 +95,11 @@ const FilterInput = ({ label, value, options, onChange }) => {
   return (
     <Form.Group controlId={`filter-${label}`}>
       <Form.Label className="fw-bold">
-        {label === "designation" && <BriefcaseFill className="text-primary me-2" />}
-        {label === "location" && <GeoAltFill className="text-danger me-2" />}
-        {label === "degree" && <MortarboardFill className="text-warning me-2" />}
-        {label === "currentCompany" && <Building className="text-info me-2" />}
-        {label === "yoe" && <ClockFill className="text-secondary me-2" />}
+        {label === "designation" && <BsBriefcaseFill className="text-primary me-2" />}
+        {label === "location" && <BsGeoAltFill className="text-danger me-2" />}
+        {label === "degree" && <BsMortarboardFill className="text-warning me-2" />}
+        {label === "currentCompany" && <BsBuilding className="text-info me-2" />}
+        {label === "yoe" && <BsClockFill className="text-secondary me-2" />}
         {label === "searchByName" && <Search className="text-dark me-2" />}
         {label.charAt(0).toUpperCase() + label.slice(1)}
       </Form.Label>

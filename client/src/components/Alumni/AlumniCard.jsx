@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
 import "../../css/alumniList.css";
-import { GeoAltFill, Building, BriefcaseFill, MortarboardFill, Calendar3, ClockFill, Globe } from "react-bootstrap-icons";
+import { BsGeoAltFill, BsBuilding, BsBriefcaseFill, BsMortarboardFill, BsCalendar3, BsClockFill, BsGlobe } from "react-icons/bs";
 
 
 
@@ -23,36 +23,36 @@ const AlumniCard = ({ alumni, showContactActions }) => {
             </Card.Title>
 
             <Card.Text className="mb-2">
-              <GeoAltFill className="text-danger me-2" />
+              <BsGeoAltFill className="text-danger me-2" />
               <strong>Location:</strong> <span className="text-muted">{alumni.location}</span>
             </Card.Text>
 
             <Card.Text className="mb-2">
-              <Building className="text-info me-2" />
+              <BsBuilding className="text-info me-2" />
               <strong>Current Company:</strong> <span className="text-muted">{alumni.currentCompany}</span>
             </Card.Text>
 
             <Card.Text className="mb-2">
-              <BriefcaseFill className="text-success me-2" />
-              <strong>Designation:</strong> <span className="text-muted">{alumni.designation}</span>
+            <BsBriefcaseFill className="text-success me-2" />
+            <strong>Designation:</strong> <span className="text-muted">{alumni.designation}</span>
             </Card.Text>
 
             <Card.Text className="mb-2">
-              <MortarboardFill className="text-warning me-2" />
+              <BsMortarboardFill className="text-warning me-2" />
               <strong>Degree:</strong> <span className="text-muted">{alumni.user?.degree}</span>
             </Card.Text>
 
             <Card.Text className="mb-2">
-              <Calendar3 className="text-primary me-2" />
+              <BsCalendar3 className="text-primary me-2" />
               <strong>Year of Graduation:</strong> <span className="text-muted">{alumni.user?.yearOfGraduation}</span>
             </Card.Text>
 
             <Card.Text className="mb-2">
-              <ClockFill className="text-secondary me-2" />
+              <BsClockFill className="text-secondary me-2" />
               <strong>Years of Experience:</strong> <span className="text-muted">{alumni.yoe}+ years</span>
             </Card.Text>
             <Card.Text className="mb-2">
-              <Globe className="text-dark me-2" />
+              <BsGlobe className="text-dark me-2" />
               <strong>Industry:</strong> <span className="text-muted">{alumni.user?.industry}</span>
             </Card.Text>
           </>
