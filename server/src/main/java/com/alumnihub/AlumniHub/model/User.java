@@ -88,8 +88,9 @@ public class User {
     // // private Notification notificationId;
     // private List<Notification> notificationId=new ArrayList<>();
 
-    @OneToMany(mappedBy = "UserID", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Notification> notifications = new ArrayList<>();
+    
 
 }

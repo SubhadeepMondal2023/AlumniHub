@@ -1,15 +1,10 @@
 package com.alumnihub.AlumniHub.model;
 
-import java.sql.Timestamp; // Use java.sql.Timestamp instead of java.security.Timestamp
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "Notification")
@@ -18,38 +13,34 @@ import lombok.Setter;
 public class Notification {
 
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "NotificationID", nullable = false)
-    private Long NotificationID;
+    private Long notificationId;
 
     @Column(name = "Title", nullable = false)
-    private String Title;
+    private String title;
 
     @Column(name = "Description", nullable = false)
-    private String Description;
+    private String description;
 
     @Column(name = "Status", nullable = false)
-    private String Status;
+    private String status;
 
-    @Column(name = "User ID", nullable = false) // Change back to Long
-    private Long UserID; // Keep this as Long
+    @Column(name = "CreatedAt")
+    private Timestamp createdAt;
 
-    @Column(name = "CreatedAt") // Add @Column annotation for CreatedAt
-    private Timestamp CreatedAt;
+    @ManyToOne(fetch = FetchType.LAZY) // Many notifications for one user
+    @JoinColumn(name = "userId", nullable = false) // FK userId
+    private User user;
 
-    // If you want to keep the relationship, you can add a ManyToOne relationship
-    @ManyToOne
-    @JoinColumn(name = "User ID", insertable = false, updatable = false) // Use insertable and updatable false
-    private User user; // Optional: This is for convenience if you want to access the User entity directly
-
+    @Override
     public String toString() {
         return "Notification{" +
-                "NotificationID=" + NotificationID +
-                ", Title='" + Title + '\'' +
-                ", Description='" + Description + '\'' +
-                ", Status='" + Status + '\'' +
-                ", UserID=" + UserID +
-                ", CreatedAt=" + CreatedAt +
+                "notificationId=" + notificationId +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }
