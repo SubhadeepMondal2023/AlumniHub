@@ -13,7 +13,6 @@ import TheTeam from './components/The Team/TheTeam.jsx';
 import DonationPayment from './components/Donation/DonationPayment.jsx';
 import Events from './components/Events/events.jsx';
 import Reunion from './components/Events/reunion.jsx';
-import MyProfile from './components/Profile/MyProfile.jsx';
 import VerifyOTP from './components/Auth/VerifyOTP.jsx';
 import EditProfile from './components/Profile/EditProfile.jsx';
 import ProtectedRoute from './utils/ProtectedRoute.jsx';
@@ -22,6 +21,7 @@ import Loader from './utils/Loader.jsx';
 import PageNotFound from './components/PageNotFound/PageNotFound.jsx';
 import { InternshipComponent, JobComponent } from './components/Services/Services.jsx';
 import JobPostDetails from './components/Services/JobPostDetails.jsx';
+import MyProfile from './components/Profile/MyProfile.jsx';
 
 function App() {
   const { isLoading, isError, data: userData } = useGetMyProfileQuery();

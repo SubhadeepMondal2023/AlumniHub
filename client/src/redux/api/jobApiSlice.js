@@ -27,6 +27,11 @@ export const jobApiSlice = createApi({
     fetchJobById: builder.query({
       query: (jobId) => `/${jobId}`,
     }),
+    findAppliedJobsByUserId: builder.query({
+      query: (userId) => ({
+        url: `/${userId}/applications`,
+      }),
+    }),
     createJobPost: builder.mutation({
       query: (jobPost) => ({
         url: '/',
@@ -57,4 +62,6 @@ export const jobApiSlice = createApi({
 });
 
 export const { useFetchAllJobsQuery, useFetchJobByIdQuery, useCreateJobPostMutation,
-  useUpdateJobPostMutation, useDeleteJobPostMutation, useApplyToJobMutation } = jobApiSlice;
+  useUpdateJobPostMutation, useDeleteJobPostMutation, useApplyToJobMutation, 
+  useFindAppliedJobsByUserIdQuery,
+ } = jobApiSlice;
