@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alumnihub.AlumniHub.model.Donation;
+import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.repository.DonationRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class DonationService
@@ -28,10 +31,11 @@ public class DonationService
         }
     }
 
-    public List<Donation> getMyDonations(Long userId) {
-        return donationRepository.findAllDonationsByUserId(userId);
+    public List<Donation> getMyDonations(User user) {
+        return donationRepository.findAllDonationsByUser(user);
     }
 
+    @Transactional
     public Donation createDonation(Donation donation){
         return donationRepository.save(donation);
     }
