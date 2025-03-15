@@ -1,16 +1,13 @@
 package com.alumnihub.AlumniHub.model;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.sql.Timestamp; // Use java.sql.Timestamp instead of java.security.Timestamp
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,17 +18,38 @@ import lombok.Setter;
 public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "NotificationID")
-    private Long notificationId;
-    
-    @Column(name = "Message", nullable = false, length = 255)
-    private String message;
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @Column(name = "NotificationID", nullable = false)
+    private Long NotificationID;
 
-    @Column(name = "IsRead", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
-    private boolean isRead = false;
+    @Column(name = "Title", nullable = false)
+    private String Title;
 
-    @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore // Prevent infinite recursion
-    private List<NotificationUser> users = new ArrayList<>();
+    @Column(name = "Description", nullable = false)
+    private String Description;
+
+    @Column(name = "Status", nullable = false)
+    private String Status;
+
+    @Column(name = "User ID", nullable = false) // Change back to Long
+    private Long UserID; // Keep this as Long
+
+    @Column(name = "CreatedAt") // Add @Column annotation for CreatedAt
+    private Timestamp CreatedAt;
+
+    // If you want to keep the relationship, you can add a ManyToOne relationship
+    @ManyToOne
+    @JoinColumn(name = "User ID", insertable = false, updatable = false) // Use insertable and updatable false
+    private User user; // Optional: This is for convenience if you want to access the User entity directly
+
+    public String toString() {
+        return "Notification{" +
+                "NotificationID=" + NotificationID +
+                ", Title='" + Title + '\'' +
+                ", Description='" + Description + '\'' +
+                ", Status='" + Status + '\'' +
+                ", UserID=" + UserID +
+                ", CreatedAt=" + CreatedAt +
+                '}';
+    }
 }

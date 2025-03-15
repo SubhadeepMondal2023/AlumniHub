@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aspectj.weaver.ast.Not;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.alumnihub.AlumniHub.util.ValidPassword;
@@ -86,8 +88,8 @@ public class User {
     // // private Notification notificationId;
     // private List<Notification> notificationId=new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "UserID", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<NotificationUser> notifications = new ArrayList<>();
+    private List<Notification> notifications = new ArrayList<>();
 
 }

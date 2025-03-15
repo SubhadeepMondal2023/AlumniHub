@@ -1,40 +1,33 @@
 package com.alumnihub.AlumniHub.service;
 
-
 import com.alumnihub.AlumniHub.model.Notification;
 import com.alumnihub.AlumniHub.repository.NotificationRepository;
-
-import java.util.Optional;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-
+import java.util.List;
 
 @Service
+@Transactional
+@Slf4j
+@RequiredArgsConstructor
 public class NotificationService {
 
     @Autowired
     private NotificationRepository notificationRepository;
-    
-    public Iterable<Notification> getAllNotification() {
-        return notificationRepository.findAll();
-    }
-    public Notification createNotification(Notification notification) {
-        return notificationRepository.save(notification);
-    }
-    public void deleteNotification(Long id) {
-        notificationRepository.deleteById(id);
+
+    public List<Notification> getNotificationsByUser(Long userId) {
+        return notificationRepository.findAllByUser_UserId(userId);
     }
 
-    public Notification markAsRead(Long notificationId) {
-        Optional<Notification> notificationOptional = notificationRepository.findById(notificationId);
-        if (notificationOptional.isPresent()) {
-            Notification notification = notificationOptional.get();
-            notification.setRead(true);
-            return notificationRepository.save(notification);
-        }
-        throw new IllegalArgumentException("Notification not found with ID: " + notificationId);
+    public void sendNotification(Notification notification) {
+        notificationRepository.save(notification);
+    }
+
+    public void deleteNotification(Long notificationId) {
+        notificationRepository.deleteById(notificationId);
     }
 }
-
