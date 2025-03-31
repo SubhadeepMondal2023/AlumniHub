@@ -24,8 +24,8 @@ public class Donation {
     private Long donationId;
 
     // Many donations can be made by one user
-    @ManyToOne(optional = false, fetch = FetchType.LAZY) // optional=false makes user mandatory
-    @JoinColumn(name = "userId", nullable = false) // Ensure foreign key is not null
+    @ManyToOne(optional = false) // optional=false makes user mandatory
+    @JoinColumn(name = "UserId", nullable = false) // Ensure foreign key is not null
     @ToString.Exclude // Avoid recursion in toString
     private User user;
 

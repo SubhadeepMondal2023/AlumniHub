@@ -30,7 +30,7 @@ public class Notification {
     private Timestamp createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY) // Many notifications for one user
-    @JoinColumn(name = "userId", nullable = false) // FK userId
+    @JoinColumn(name = "UserId", nullable = false) // FK userId
     private User user;
 
     @Override
