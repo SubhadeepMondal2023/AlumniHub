@@ -8,7 +8,6 @@ import com.alumnihub.AlumniHub.repository.EventRepository;
 import com.alumnihub.AlumniHub.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +22,9 @@ public class EventService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificationService notificationService; // Inject NotificationService
 
     public Optional<Event> getEventById(Long eventId) {
         return eventRepository.findById(eventId);
@@ -39,7 +41,15 @@ public class EventService {
         if (existingEventByUserAndName.isPresent()) {
             throw new Exception("An event with the same name by the same user already exists.");
         }
-        return eventRepository.save(event);
+
+        Event savedEvent = eventRepository.save(event);
+
+        // 🔔 Notify Event Creator
+        String title = "Event Created";
+        String description = "Your event '" + savedEvent.getEventName() + "' has been created successfully!";
+        notificationService.sendNotificationToUser(savedEvent.getCreatedBy(), title, description);
+
+        return savedEvent;
     }
 
     public List<Event> getAllEvents() {
@@ -47,7 +57,17 @@ public class EventService {
     }
 
     public void deleteEvent(Long eventId) {
-        if (eventRepository.existsById(eventId)) {
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        if (eventOpt.isPresent()) {
+            Event event = eventOpt.get();
+
+            // 🔔 Notify Attendees about Cancellation
+            List<Attendee> attendees = attendeeRepository.findByEventId(eventId);
+            for (Attendee attendee : attendees) {
+                notificationService.sendNotificationToUser(attendee.getUser(),
+                        "Event Cancelled", "The event '" + event.getEventName() + "' has been cancelled.");
+            }
+
             eventRepository.deleteById(eventId);
         } else {
             throw new RuntimeException("Event not found");
@@ -74,7 +94,17 @@ public class EventService {
             if (eventDetails.getEventStatus() != null) {
                 event.setEventStatus(eventDetails.getEventStatus());
             }
-            return eventRepository.save(event);
+
+            Event updatedEvent = eventRepository.save(event);
+
+            // 🔔 Notify Attendees about Update
+            List<Attendee> attendees = attendeeRepository.findByEventId(eventId);
+            for (Attendee attendee : attendees) {
+                notificationService.sendNotificationToUser(attendee.getUser(),
+                        "Event Updated", "The event '" + updatedEvent.getEventName() + "' has been updated.");
+            }
+
+            return updatedEvent;
         });
     }
 
@@ -88,18 +118,23 @@ public class EventService {
                 Attendee attendee = attendeeRepository.findByEventIdAndUserId(eventId, userId)
                         .orElseThrow(() -> new RuntimeException("Attendee not found"));
                 attendeeRepository.delete(attendee);
+
+                notificationService.sendNotificationToUser(event.getCreatedBy(),
+                        "User Left Event", user.getFirstName() + " has left your event '" + event.getEventName() + "'.");
             } else {
-                // Add the user to the attendees
                 Attendee attendee = new Attendee();
                 attendee.setEvent(event);
                 attendee.setUser(user);
                 attendeeRepository.save(attendee);
+
+                // 🔔 Notify Event Creator that User Joined
+                notificationService.sendNotificationToUser(event.getCreatedBy(),
+                        "New Attendee", user.getFirstName() + " is attending your event '" + event.getEventName() + "'.");
             }
-            
+
             return event;
         });
     }
-    
 
     public List<Attendee> getEventAttendees(Long eventId) {
         return attendeeRepository.findByEventId(eventId);
