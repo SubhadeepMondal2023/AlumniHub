@@ -7,23 +7,51 @@ import { PencilFill, HeartFill, BriefcaseFill, TabletFill, TabletLandscape } fro
 import Loader from "../../utils/Loader";
 import "../../css/my-profile.css";
 import TableData from "./TableData.jsx";
-import { useFindAppliedJobsByUserIdQuery } from "../../redux/api/jobApiSlice.js";
+import { useFindAppliedJobsByUserIdQuery, useWithdrawApplicationMutation } from "../../redux/api/jobApiSlice.js";
+import { useFetchDonationByIdQuery, useGetMyDonationsQuery } from "../../redux/api/donationApiSlice.js";
 
 const MyProfile = () => {
   const { isLoading, isError, data } = useGetMyProfileQuery();
+  
   const [deleteProfile, { isLoading: isDeleting, isError: isDeleteError, error: deleteError, isSuccess }] = useDeleteProfileMutation();
   const [userData, setUserData] = useState(null);
-  const { isLoading: isTableLoading, isError: isTableError, data: tableData } = useFindAppliedJobsByUserIdQuery(data.data?.userId);
+  const [jobTableData, setJobTableData] = useState([]);
+  const [donationTableData, setDonationTableData] = useState([]); 
+  const [withdrawApplication, { isLoading: isWithdrawLoading, isError: isWithdrawError, error: withdrawError, isSuccess: isWithdrawSuccess }] = useWithdrawApplicationMutation();
+  const { isLoading: isDonationLoading, isError: isDonationError, data: donationData } = useGetMyDonationsQuery();
+  const { isLoading: isJobLoading, isError: isJobError, data: jobData } = useFindAppliedJobsByUserIdQuery(data.data?.userId);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showTable, setShowTable] = useState(false);
-  const [TableComponent, setTableComponent] = useState(<TableData theads={["Job Title", "Company", "Location", "Status"]} data={[]} />);
+  const [TableComponent, setTableComponent] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (data) {
       setUserData(data.data);
     }
-  }, [data]);
+    if(donationData) {
+      const demoData = donationData.data.map((donation) => ({
+       "Donation ID": donation.donationId, 
+       "Donation Date": donation.donationDate,
+       "Amount": donation.amount,
+       "Purpose": donation.purpose,
+       "Transaction ID": donation.transactionId
+      }))
+      setDonationTableData(demoData);
+    }
+    if(jobData){    
+      const demoData = jobData.data.map((job) => ({
+        "Job ID": job.job.jobId,
+        "Job Title": job.job.jobTitle,
+        "Company": job.job.company,
+        "Location": job.job.location,
+        "Applied Date": job.applicationDate,
+        "Status": job.applicationStatus,
+        "Action" : <Button size="sm" variant="primary">Withdraw</Button>
+      }))
+      setJobTableData(demoData);
+    }
+  }, [ data,jobData, donationData]);
 
   useEffect(() => {
     if (isDeleteError) {
@@ -45,18 +73,20 @@ const MyProfile = () => {
     }
   }, [isDeleteError, deleteError, isSuccess, navigate]);
 
+
   const handleDeleteProfile = () => {
     deleteProfile();
     setShowDeleteModal(false);
     navigate("/");
   };
+
   const handleTableData = (component) => {
     if(TableComponent === component) setShowTable(false);
     else setShowTable(true);
     setTableComponent(component);
   }
 
-  if (isLoading) {
+  if (isJobLoading || isLoading) {
     return <Loader />;
   }
 
@@ -72,7 +102,7 @@ const MyProfile = () => {
             <img
               src={userData.profileImage}
               alt="Profile"
-              className="w-32 h-32 rounded-full border-4 border-white shadow-sm"
+              className="w-32 h-32 rounded-full border-4 border-auqamarine rounded shadow-sm"
             />
           </div>
           <h2 className="text-2xl font-bold mt-4">{`${userData.firstName} ${userData.lastName}`}</h2>
@@ -85,7 +115,7 @@ const MyProfile = () => {
             <p className="text-dark"><strong>Email:</strong> {userData.email}</p>
           </div>
 
-          <div className="mt-6 d-flex justify-content-between">
+          <div className="mt-6 d-flex flex-wrap justify-content-between">
             <Button onClick={() => navigate("/edit-profile")} variant="outline-primary" className="d-flex align-items-center gap-2">
               <PencilFill /> Edit Profile
             </Button>
@@ -96,16 +126,20 @@ const MyProfile = () => {
              onClick={() => handleTableData(
               <TableData
                   theads={["Donation ID", "Donation Date", "Amount", "Purpose", "Transaction ID"]}
-                  data={[]}
+                  data={donationTableData}
               />
             )} >
               <HeartFill /> My Donations
             </Button>
-            <Button variant="outline-info" className="d-flex align-items-center gap-2" 
+            <Button  variant="outline-info" className="d-flex align-items-center gap-2" 
             onClick={() => handleTableData(
               <TableData
-                  theads={["Job ID", "Job Title", "Company", "Refference","Applied Date", "Status"]}
-                  data={[]}
+                  theads={["Job ID", "Job Title", "Company", "Refference","Applied Date", "Status", "Action"]}
+                  data={jobTableData}
+                  withdrawloading = {isWithdrawLoading}
+                  onActionClick={(item) => {
+                    withdrawApplication(item["Job ID"]).unwrap();
+                  }}
               />
             )}
             >

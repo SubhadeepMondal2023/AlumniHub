@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { testAlumniData } from "../../utils/Links";
 
 const baseQueryWithAuth = fetchBaseQuery({
   baseUrl: 'http://localhost:8080/api/',

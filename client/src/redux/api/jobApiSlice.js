@@ -18,11 +18,11 @@ const baseQueryWithAuth = fetchBaseQuery({
 export const jobApiSlice = createApi({
   reducerPath: 'jobApi',
   baseQuery: baseQueryWithAuth,
-  tagTypes: ['Jobs'],
+  tagTypes: ['Jobs','applications'],
   endpoints: (builder) => ({
     fetchAllJobs: builder.query({
         query: () => '/search',
-
+        providesTags: ['Jobs'],
     }),
     fetchJobById: builder.query({
       query: (jobId) => `/${jobId}`,
@@ -30,6 +30,7 @@ export const jobApiSlice = createApi({
     findAppliedJobsByUserId: builder.query({
       query: (userId) => ({
         url: `/${userId}/applications`,
+        providesTags: ['applications'],
       }),
     }),
     createJobPost: builder.mutation({
@@ -56,12 +57,20 @@ export const jobApiSlice = createApi({
       query: (jobId) => ({
         url: `/delete/${jobId}`,
         method: 'DELETE',
+        invalidatesTags: ['Jobs'],
       }),
     }),
+    withdrawApplication: builder.mutation({
+      query: (jobId) => ({
+        url: `/${jobId}/withdraw-application`,
+        method: 'DELETE',
+        invalidatesTags: ['applications'],
+      })
+    })
   }),
 });
 
 export const { useFetchAllJobsQuery, useFetchJobByIdQuery, useCreateJobPostMutation,
   useUpdateJobPostMutation, useDeleteJobPostMutation, useApplyToJobMutation, 
-  useFindAppliedJobsByUserIdQuery,
+  useFindAppliedJobsByUserIdQuery, useWithdrawApplicationMutation
  } = jobApiSlice;

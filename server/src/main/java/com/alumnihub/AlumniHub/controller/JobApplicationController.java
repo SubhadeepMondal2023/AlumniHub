@@ -53,7 +53,6 @@ public class JobApplicationController {
         return ResponseEntity.ok(Map.of("success", true, "data", jobApplications));
     }
 
-
     @PostMapping("/{jobId}/apply")
     public ResponseEntity<Map<String, Object>> applyToJob(@RequestHeader("Authorization") String token,
             @PathVariable Long jobId) {
@@ -118,24 +117,29 @@ public class JobApplicationController {
     public ResponseEntity<Map<String, Object>> withdrawApplication(@RequestHeader("Authorization") String token,
             @PathVariable Long jobId) {
 
-        Optional<User> user = authenticate(token);
+        try {
+            Optional<User> user = authenticate(token);
 
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
-        }
+            if (user.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
+            }
 
-        JobPost jobPost = jobPostRepository.findById(jobId)
-                .orElseThrow(() -> new NotFoundException("Job not found"));
+            JobPost jobPost = jobPostRepository.findById(jobId)
+                    .orElseThrow(() -> new NotFoundException("Job not found"));
 
-        Optional<JobApplication> applicationOptional = jobApplicationService.getApplicationByJobAndUser(jobId,
-                user.get().getUserId());
+            Optional<JobApplication> applicationOptional = jobApplicationService.getApplicationByJobAndUser(jobId,
+                    user.get().getUserId());
 
-        if (applicationOptional.isPresent()) {
-            // Withdraw application
-            jobApplicationService.deleteJobApplication(applicationOptional.get().getApplicationId());
-            return ResponseEntity.ok(Map.of("success", true, "message", "Application withdrawn successfully"));
-        } else {
-            return ResponseEntity.notFound().build();
+            if (applicationOptional.isPresent()) {
+                // Withdraw application
+                jobApplicationService.deleteJobApplication(applicationOptional.get().getApplicationId());
+                return ResponseEntity.ok(Map.of("success", true, "message", "Application withdrawn successfully"));
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 }
