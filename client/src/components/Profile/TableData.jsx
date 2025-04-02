@@ -19,16 +19,10 @@ const TableData = ({ theads, data, onActionClick, withdrawloading}) => {
                 <tr key={rowIndex}>
                   {Object.entries(item).map(([key, value], colIndex) => (
                     <td key={colIndex}>
-                      {key === "Action" ? (
-                        <Button
-                          size="sm"
-                          variant="primary"
-                          onClick={() => onActionClick(item)}
-                        >
-                          {withdrawloading ? "Withdrawing..." : "Withdraw"}
-                        </Button>
-                      ) : (
+                      {typeof value === "object" ? (
                         value
+                      ) : (
+                        value || "-"
                       )}
                     </td>
                   ))}

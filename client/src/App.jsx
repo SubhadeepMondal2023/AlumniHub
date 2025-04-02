@@ -11,7 +11,7 @@ import NotificationList from './components/Notification/NotificationList.jsx';
 import AlumniPage from './components/Alumni/AlumniPage.jsx'; 
 import TheTeam from './components/The Team/TheTeam.jsx';
 import DonationPayment from './components/Donation/DonationPayment.jsx';
-import Events from './components/Events/events.jsx';
+import Events from './components/Events/Events.jsx';
 import Reunion from './components/Events/reunion.jsx';
 import VerifyOTP from './components/Auth/VerifyOTP.jsx';
 import EditProfile from './components/Profile/EditProfile.jsx';

@@ -1,20 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { isTokenValid } from '../../utils/jwtValidator';
-
-const baseQueryWithAuth = fetchBaseQuery({
-  baseUrl: 'http://localhost:8080',
-  prepareHeaders: (headers, { url }) => {
-    const token = localStorage.getItem('token');
-
-    if (token && isTokenValid(token)) {
-      headers.set('Authorization', `Bearer ${token}`);
-    }else {
-      
-      localStorage.removeItem('token');
-    }
-    return headers;
-  },
-});
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithAuth } from './baseQuery';
 
 export const authApi = createApi({
   reducerPath: 'authApi', 
@@ -46,7 +31,6 @@ export const authApi = createApi({
         method: 'POST',
         body: credentials,
       }), 
-      
     }),
     registerUserVerifyOtp: builder.mutation({
       query: (credentials) => ({
@@ -62,7 +46,6 @@ export const authApi = createApi({
           console.error('Registration failed:', error);
         }
       },
-      
     }),
     updateUser: builder.mutation({
       query: (credentials) => ({

@@ -4,6 +4,7 @@ import { notificationsApi } from './api/notificationsApiSlice';
 import { authApi } from "./api/authSlice.js";
 import { jobApiSlice } from './api/jobApiSlice.js';
 import { donationApi } from './api/donationApiSlice.js';
+import { eventApiSlice } from './api/eventApiSlice.js';
 
 const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
     [notificationsApi.reducerPath]: notificationsApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [jobApiSlice.reducerPath]: jobApiSlice.reducer,
-    [donationApi.reducerPath]: donationApi.reducer
+    [donationApi.reducerPath]: donationApi.reducer,
+    [eventApiSlice.reducerPath]: eventApiSlice.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -19,7 +21,8 @@ const store = configureStore({
       notificationsApi.middleware, 
       authApi.middleware,
       jobApiSlice.middleware,
-      donationApi.middleware
+      donationApi.middleware,
+      eventApiSlice.middleware
     ),
 });
 

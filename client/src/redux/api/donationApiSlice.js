@@ -1,16 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-const baseQueryWithAuth = fetchBaseQuery({
-  baseUrl: 'http://localhost:8080/api/',
-  prepareHeaders: (headers, { url }) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
-      
-    }
-    return headers;
-  },
-});
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithAuth } from './baseQuery';
 
 export const donationApi = createApi({
   reducerPath: "donationApi",
@@ -18,21 +7,18 @@ export const donationApi = createApi({
   tagTypes: ["Donations"],
   endpoints: (builder) => ({
     fetchDonations: builder.query({
-      query: () => "/donations",
+      query: () => "/api/donations",
       providesTags: ["Donations"],
     }),
     fetchDonationById: builder.query({
-      query: (donationId) => `/donation/${donationId}`,
+      query: (donationId) => `/api/donation/${donationId}`,
     }),
     getMyDonations: builder.query({
-      query: () => ({
-        url: "/donations/history",
-      }),
+      query: () => "/api/donations/history",
     }),
-    
     createDonation: builder.mutation({
       query: (donation) => ({
-        url: "/donations",
+        url: "/api/donations",
         method: "POST",
         body: donation,
       }),
@@ -41,5 +27,5 @@ export const donationApi = createApi({
   }),
 });
 
-export const { useFetchDonationsQuery,useGetMyDonationsQuery,
+export const { useFetchDonationsQuery, useGetMyDonationsQuery,
   useFetchDonationByIdQuery, useCreateDonationMutation } = donationApi;
