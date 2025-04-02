@@ -1,5 +1,7 @@
 package com.alumnihub.AlumniHub.jwt;
 
+import com.alumnihub.AlumniHub.model.User;
+import com.alumnihub.AlumniHub.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -7,12 +9,12 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,12 +22,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class JwtTokenValidator extends OncePerRequestFilter {
 
     @Autowired
     private TokenBlacklistService tokenBlacklistService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -50,12 +57,24 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                     return;
                 }
 
-                String email = String.valueOf(claims.get("email"));
+                String email = claims.get("email", String.class);
 
-                // Create an authenticated token (authorities can be extracted if needed)
-                Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, null);
+                if (email == null) {
+                    throw new BadCredentialsException("Invalid Token: Missing email claim");
+                }
 
-                // Set authentication in the security context
+                // Fetch user role from database
+                Optional<User> user = userRepository.findByEmail(email);
+                if (user.isEmpty()) {
+                    throw new BadCredentialsException("Invalid Token: User not found");
+                }
+
+                String role = user.get().getRole().toString();
+
+                // Create authentication token with the role from database
+                SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(email, null,
+                        List.of(authority));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (Exception e) {
