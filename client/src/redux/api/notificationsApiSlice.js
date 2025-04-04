@@ -7,7 +7,8 @@ export const notificationsApi = createApi({
   tagTypes: ["Notifications"],
   endpoints: (builder) => ({
     getNotifications: builder.query({
-      query: () => '/api/notification/get-all-notification',
+      query: () => '/api/notifications',
+      transformResponse: (response) => response.data
     }),
     markAsRead: builder.mutation({
       query: (notificationId) => ({

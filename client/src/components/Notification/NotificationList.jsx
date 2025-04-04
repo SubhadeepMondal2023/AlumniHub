@@ -1,29 +1,31 @@
-import React from "react";
-import { Col, Container, Row, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Col, Container, Row, Button, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
 import "../../css/notification.css";
 import { useGetNotificationsQuery, useMarkAsReadMutation, useDeleteNotificationMutation } from "../../redux/api/notificationsApiSlice";
+import { useGetMyProfileQuery } from "../../redux/api/authSlice";
 
 const NotificationItem = ({ item, isAdmin, onMarkAsRead, onMarkAsUnread, onDelete }) => {
   return (
     <Row className="align-items-center notification-item mb-4">
       <Col xs={12} md={8} className="notification-content">
-        <h5 className="fw-bold">{item.Message}</h5>
-        <p className="text-muted">Date: {new Date(item.NotificationDate).toLocaleString()}</p>
-        <p className={`status ${item.Status.toLowerCase()}`}>Status: {item.Status}</p>
+        <h5 className="fw-bold">{item.title}</h5>
+        <p className="text-muted">Date: {new Date(item.createdAt).toLocaleString()}</p>
+        <p className={`status ${item.status.toLowerCase()}`}>Status: {item.status}</p>
+        <p className="notification-description">{item.description}</p>
       </Col>
       <Col xs="auto" className="text-center">
-        {item.Status === "Unread" ? (
-          <Button variant="primary" className="mark-read-button me-2" onClick={() => onMarkAsRead(item.NotificationID)}>
+        {item.status === "UNREAD" ? (
+          <Button variant="primary" className="mark-read-button me-2" onClick={() => onMarkAsRead(item.notificationId)}>
             Mark as Read
           </Button>
         ) : (
-          <Button variant="warning" className="mark-read-button me-2" onClick={() => onMarkAsUnread(item.NotificationID)}>
+          <Button variant="warning" className="mark-read-button me-2" onClick={() => onMarkAsUnread(item.notificationId)}>
             Mark as Unread
           </Button>
         )}
         {isAdmin && (
-          <Button variant="danger" className="delete-button" onClick={() => onDelete(item.NotificationID)}>
+          <Button variant="danger" className="delete-button" onClick={() => onDelete(item.notificationId)}>
             Delete
           </Button>
         )}
@@ -41,13 +43,20 @@ NotificationItem.propTypes = {
 };
 
 const NotificationList = () => {
-  const isAdmin = true;
-  const { data: notifications, isLoading, isError } = useGetNotificationsQuery();
+  const [error, setError] = useState(null);
+  const { data: profileData } = useGetMyProfileQuery();
+  const isAdmin = profileData?.data?.role === "ADMIN";
+  const { data: notifications, isLoading, isError, error: queryError } = useGetNotificationsQuery();
   const [markAsRead] = useMarkAsReadMutation();
   const [deleteNotification] = useDeleteNotificationMutation();
 
   const handleMarkAsRead = async (id) => {
-    await markAsRead(id);
+    try {
+      await markAsRead(id);
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+      setError('Failed to mark notification as read. Please try again.');
+    }
   };
 
   const handleMarkAsUnread = async (id) => {
@@ -55,11 +64,17 @@ const NotificationList = () => {
   };
 
   const handleDeleteNotification = async (id) => {
-    await deleteNotification(id);
+    try {
+      setError(null);
+      await deleteNotification(id);
+    } catch (error) {
+      console.error('Failed to delete notification:', error);
+      setError(error.data?.message || 'Failed to delete notification. You may not have permission to delete this notification.');
+    }
   };
 
   if (isLoading) return <p>Loading notifications...</p>;
-  if (isError) return <p>Error loading notifications.</p>;
+  if (isError) return <p>Error loading notifications: {queryError?.data?.message || 'Unknown error'}</p>;
 
   return (
     <section className="notifications-section light">
@@ -73,9 +88,26 @@ const NotificationList = () => {
           </Col>
         </Row>
 
+        {error && (
+          <Row className="mb-4">
+            <Col>
+              <Alert variant="danger" onClose={() => setError(null)} dismissible>
+                {error}
+              </Alert>
+            </Col>
+          </Row>
+        )}
+
         {notifications?.length > 0 ? (
           notifications.map((item) => (
-            <NotificationItem key={item.NotificationID} item={item} isAdmin={isAdmin} onMarkAsRead={handleMarkAsRead} onMarkAsUnread={handleMarkAsUnread} onDelete={handleDeleteNotification} />
+            <NotificationItem 
+              key={item.notificationId} 
+              item={item} 
+              isAdmin={isAdmin} 
+              onMarkAsRead={handleMarkAsRead} 
+              onMarkAsUnread={handleMarkAsUnread} 
+              onDelete={handleDeleteNotification} 
+            />
           ))
         ) : (
           <Row className="text-center">
