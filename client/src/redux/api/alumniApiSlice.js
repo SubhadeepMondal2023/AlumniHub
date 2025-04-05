@@ -18,8 +18,15 @@ export const alumniApi = createApi({
   tagTypes: ["Alumni"],
   endpoints: (builder) => ({
     fetchAlumni: builder.query({
-      query: () => {
-        return `/alumni`;
+      query: (filters) => {
+        const params = new URLSearchParams();
+        if (filters?.designation) params.append('designation', filters.designation);
+        if (filters?.location) params.append('location', filters.location);
+        if (filters?.degree) params.append('degree', filters.degree);
+        if (filters?.currentCompany) params.append('currentCompany', filters.currentCompany);
+        if (filters?.yoe) params.append('yoe', filters.yoe);
+        if (filters?.searchByName) params.append('searchByName', filters.searchByName);
+        return `/alumni?${params.toString()}`;
       },
     }),
     deleteAlumni: builder.mutation({

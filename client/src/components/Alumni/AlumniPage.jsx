@@ -4,12 +4,12 @@ import AlumniCard from "../Alumni/AlumniCard";
 import Pagination from "../common/Pagination";
 import { useFetchAlumniQuery } from "../../redux/api/alumniApiSlice";
 import Loader from "../../utils/Loader.jsx";
-import { BsGeoAltFill, BsBuilding, BsBriefcaseFill, BsMortarboardFill, BsCalendar3, BsClockFill, BsGlobe } from "react-icons/bs";
+import { BsGeoAltFill, BsBuilding, BsBriefcaseFill, BsMortarboardFill, BsCalendar3, BsClockFill, BsGlobe, BsSearch } from "react-icons/bs";
 
 import { getUniqueFilterOptions, applyFilters } from "../../utils/customFilter.js";
 
 
-const filterKeys = ["designation", "location", "currentCompany", "yoe"];
+const filterKeys = ["designation", "location", "currentCompany", "yoe", "searchByName"];
 
 const AlumniPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -100,7 +100,7 @@ const FilterInput = ({ label, value, options, onChange }) => {
         {label === "degree" && <BsMortarboardFill className="text-warning me-2" />}
         {label === "currentCompany" && <BsBuilding className="text-info me-2" />}
         {label === "yoe" && <BsClockFill className="text-secondary me-2" />}
-        {label === "searchByName" && <Search className="text-dark me-2" />}
+        {label === "searchByName" && <BsSearch className="text-dark me-2" />}
         {label.charAt(0).toUpperCase() + label.slice(1)}
       </Form.Label>
       {label === "yoe" || label === "searchByName" ? (
