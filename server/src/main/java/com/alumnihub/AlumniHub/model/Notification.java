@@ -4,15 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Getter;
-import lombok.Setter;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "Notification")
@@ -22,16 +14,33 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "NotificationID")
+    @Column(name = "NotificationID", nullable = false)
     private Long notificationId;
-    
-    @Column(name = "Message", nullable = false, length = 255)
-    private String message;
 
-    @Column(name = "IsRead", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
-    private boolean isRead = false;
+    @Column(name = "Title", nullable = false)
+    private String title;
 
-    @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore // Prevent infinite recursion
-    private List<NotificationUser> users = new ArrayList<>();
+    @Column(name = "Description", nullable = false)
+    private String description;
+
+    @Column(name = "Status", nullable = false)
+    private String status;
+
+    @Column(name = "CreatedAt")
+    private Timestamp createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY) // Many notifications for one user
+    @JoinColumn(name = "UserId", nullable = false) // FK userId
+    private User user;
+
+    @Override
+    public String toString() {
+        return "Notification{" +
+                "notificationId=" + notificationId +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }

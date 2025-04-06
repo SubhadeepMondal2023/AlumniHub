@@ -1,79 +1,73 @@
 package com.alumnihub.AlumniHub.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.alumnihub.AlumniHub.model.Notification;
+import com.alumnihub.AlumniHub.model.User;
+import com.alumnihub.AlumniHub.service.NotificationService;
+import com.alumnihub.AlumniHub.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.alumnihub.AlumniHub.model.Notification;
-import com.alumnihub.AlumniHub.service.NotificationService;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
-@CrossOrigin
-@RequestMapping("/notification")
+@RequiredArgsConstructor
+@RequestMapping("/api/notifications")
+@CrossOrigin(origins = "http://localhost:5173")
 public class NotificationController {
 
     @Autowired
     private NotificationService notificationService;
 
-    @GetMapping("/get-all-notification")
-    public ResponseEntity<?> getAllNotification() {
-        try {
-            Map<String, Object> map = new HashMap<>();
-            map.put("success", true);
-            map.put("data", notificationService.getAllNotification());
-            return ResponseEntity.status(HttpStatus.OK).body(map);
+    @Autowired
+    private UserService userService;
 
-        } catch (Exception e) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("success", false);
-            map.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
-        }
-    }
-    // add route for read un read notification
-
-    @PostMapping("/create-notification")
-    public ResponseEntity<?> createNotification(@RequestBody Notification notification) {
+    private Optional<User> authenticate(String token) {
         try {
-            Map<String, Object> map = new HashMap<>();
-            map.put("success", true);
-            map.put("data", notificationService.createNotification(notification));
-            return ResponseEntity.status(HttpStatus.OK).body(map);
+            return userService.getUserFromToken(token);
         } catch (Exception e) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("success", false);
-            map.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+            return Optional.empty();
         }
     }
 
-    @DeleteMapping("/delete-notification/{notificationId}")
-    public ResponseEntity<?> deleteNotification(@PathVariable Long notificationId) {
-        try {
-            notificationService.deleteNotification(notificationId);
-            Map<String, Object> map = new HashMap<>();
-            map.put("success", true);
-            map.put("data", "Notification deleted successfully");
-            return ResponseEntity.status(HttpStatus.OK).body(map);
-        } catch (Exception e) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("success", false);
-            map.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getUserNotifications(@RequestHeader("Authorization") String token) {
+        Optional<User> user = authenticate(token);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "Unauthorized"));
         }
+
+        List<Notification> notifications = notificationService.getNotificationsByUser(user.get().getUserId());
+        return ResponseEntity.ok(Map.of("success", true, "data", notifications));
     }
 
-    @PutMapping("/{notificationId}/read")
-    public ResponseEntity<?> markNotificationAsRead(@PathVariable Long notificationId) {
+    // ✅ Delete Notification (only user's own notifications)
+    @DeleteMapping("/{notificationId}")
+    public ResponseEntity<Map<String, Object>> deleteNotification(@RequestHeader("Authorization") String token,
+                                                                  @PathVariable Long notificationId) {
+        Optional<User> user = authenticate(token);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "Unauthorized"));
+        }
+
         try {
-            Notification updatedNotification = notificationService.markAsRead(notificationId);
-            return ResponseEntity.ok(updatedNotification);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            boolean deleted = notificationService.deleteNotification(notificationId, user.get().getUserId());
+            if (deleted) {
+                return ResponseEntity.ok(Map.of("success", true, "message", "Notification deleted successfully"));
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("success", false, "message", "You are not allowed to delete this notification"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 }

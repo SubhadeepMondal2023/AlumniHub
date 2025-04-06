@@ -32,6 +32,9 @@ public class JobApplicationService {
     public Optional<JobApplication> getJobApplicationById(Long applicationId) {
         return jobApplicationRepository.findById(applicationId);
     }
+    public List<JobApplication> getJobApplicationsByUser( Long userId) {
+        return jobApplicationRepository.findAllByUser_UserId(userId);
+    }
 
     public JobApplication createJobApplication(Long jobId, User user, JobApplication jobApplication) {
         JobPost job = jobPostRepository.findById(jobId)

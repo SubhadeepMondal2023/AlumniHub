@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -38,6 +40,17 @@ public class JobApplicationController {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+    @GetMapping("/{userId}/applications")
+    public ResponseEntity<Map<String, Object>> getJobApplicationsByUser(@PathVariable Long userId) {
+        Optional<User> user = userService.getUser(userId);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", "User not found"));
+        }
+
+        List<JobApplication> jobApplications = jobApplicationService.getJobApplicationsByUser(user.get().getUserId());
+        return ResponseEntity.ok(Map.of("success", true, "data", jobApplications));
     }
 
     @PostMapping("/{jobId}/apply")
@@ -79,51 +92,56 @@ public ResponseEntity<String> applyToJob(@RequestHeader("Authorization") String 
 
 
     @GetMapping("/{jobId}/application-status")
-    public ResponseEntity<String> getApplicationStatus(@RequestHeader("Authorization") String token,
-                                                       @PathVariable Long jobId) {
+    public ResponseEntity<Map<String, Object>> getApplicationStatus(@RequestHeader("Authorization") String token,
+            @PathVariable Long jobId) {
 
-       Optional<User> user = authenticate(token);
-       
-       if (user.isEmpty()) {
-           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
-       }
-       
-       JobPost jobPost = jobPostRepository.findById(jobId)
-           .orElseThrow(() -> new NotFoundException("Job not found"));
+        Optional<User> user = authenticate(token);
 
-       Optional<JobApplication> applicationOptional =
-           jobApplicationService.getApplicationByJobAndUser(jobId, user.get().getUserId());
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
+        }
 
-       if (applicationOptional.isPresent()) {
-           String status = applicationOptional.get().getApplicationStatus().name();
-           return ResponseEntity.ok(status);
-       } else {
-           return ResponseEntity.notFound().build();
-       }
-   }
+        JobPost jobPost = jobPostRepository.findById(jobId)
+                .orElseThrow(() -> new NotFoundException("Job not found"));
 
-   @DeleteMapping("/{jobId}/withdraw-application")
-   public ResponseEntity<String> withdrawApplication(@RequestHeader("Authorization") String token,
-                                                     @PathVariable Long jobId) {
+        Optional<JobApplication> applicationOptional = jobApplicationService.getApplicationByJobAndUser(jobId,
+                user.get().getUserId());
 
-       Optional<User> user = authenticate(token);
+        if (applicationOptional.isPresent()) {
+            String status = applicationOptional.get().getApplicationStatus().name();
+            return ResponseEntity.ok(Map.of("success", true, "data", status));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-       if (user.isEmpty()) {
-           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
-       }
+    @DeleteMapping("/{jobId}/withdraw-application")
+    public ResponseEntity<Map<String, Object>> withdrawApplication(@RequestHeader("Authorization") String token,
+            @PathVariable Long jobId) {
 
-       JobPost jobPost = jobPostRepository.findById(jobId)
-           .orElseThrow(() -> new NotFoundException("Job not found"));
+        try {
+            Optional<User> user = authenticate(token);
 
-       Optional<JobApplication> applicationOptional =
-           jobApplicationService.getApplicationByJobAndUser(jobId, user.get().getUserId());
+            if (user.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
+            }
 
-       if (applicationOptional.isPresent()) {
-           // Withdraw application
-           jobApplicationService.deleteJobApplication(applicationOptional.get().getApplicationId());
-           return ResponseEntity.ok("Successfully withdrew your application.");
-       } else {
-           return ResponseEntity.notFound().build();
-       }
-   }
+            JobPost jobPost = jobPostRepository.findById(jobId)
+                    .orElseThrow(() -> new NotFoundException("Job not found"));
+
+            Optional<JobApplication> applicationOptional = jobApplicationService.getApplicationByJobAndUser(jobId,
+                    user.get().getUserId());
+
+            if (applicationOptional.isPresent()) {
+                // Withdraw application
+                jobApplicationService.deleteJobApplication(applicationOptional.get().getApplicationId());
+                return ResponseEntity.ok(Map.of("success", true, "message", "Application withdrawn successfully"));
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
 }

@@ -17,6 +17,8 @@ import moment from 'moment';
 import Loader from '../../utils/Loader.jsx';
 import useToastNotification from '../../customHooks/Toast/useToastNotification.jsx';
 import CustomToast from '../../customHooks/Toast/CustomToast.jsx';
+
+
 function JobPostDetails() {
     const { jobId } = useParams();
     const { data: job, isLoading, isError, error } = useFetchJobByIdQuery(jobId);
@@ -131,7 +133,6 @@ function JobPostDetails() {
                         </Accordion.Body>
                     </Accordion.Item>
                 </Accordion>
-
 
                 <Modal show={showModal} onHide={() => setShowModal(false)} centered>
                     <Modal.Header closeButton>

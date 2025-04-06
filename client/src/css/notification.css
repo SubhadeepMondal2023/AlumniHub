@@ -50,6 +50,13 @@
   opacity: 0.8;
 }
 
+.notification-description {
+  margin-top: 10px;
+  color: #666;
+  line-height: 1.5;
+  font-size: 15px;
+}
+
 .status {
   font-weight: bold;
   display: inline-block;

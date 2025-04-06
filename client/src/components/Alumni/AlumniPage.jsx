@@ -1,92 +1,65 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import AlumniCard from "../Alumni/AlumniCard";
 import Pagination from "../common/Pagination";
 import { useFetchAlumniQuery } from "../../redux/api/alumniApiSlice";
-import { TextField } from "@mui/material";
-import Autocomplete from "@mui/material/Autocomplete";
-import Loader from "../../utils/Loader";
-import { applyFilters, getUniqueFilterOptions } from "../../utils/customFilter";
+import Loader from "../../utils/Loader.jsx";
+import { BsGeoAltFill, BsBuilding, BsBriefcaseFill, BsMortarboardFill, BsCalendar3, BsClockFill, BsGlobe, BsSearch } from "react-icons/bs";
+
+import { getUniqueFilterOptions, applyFilters } from "../../utils/customFilter.js";
+
+
+const filterKeys = ["designation", "location", "currentCompany", "yoe", "searchByName"];
 
 const AlumniPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showContactActions, setShowContactActions] = useState(false);
-  const [data, setData] = useState([]);
   const [filters, setFilters] = useState({
     designation: "",
     location: "",
-    yoe: "",
     degree: "",
     currentCompany: "",
+    yoe: "",
     searchByName: "",
   });
 
   const { data: alumniData, isLoading, isError } = useFetchAlumniQuery(filters);
+  
+  const data = useMemo(() => alumniData?.data || [], [alumniData]);
 
-  useEffect(() => {
-    if (alumniData) {
-      setData(alumniData.data);
-    }
-  }, [alumniData]);
-
-  const handleFilterChange = (field, value) => {
+  const handleFilterChange = useCallback((field, value) => {
     setFilters((prev) => ({
       ...prev,
       [field]: value,
     }));
-  };
+  }, []);
 
-  const filterKeys = ["designation", "location", "degree", "currentCompany"];
-  const filterOptions = getUniqueFilterOptions(data, filterKeys);
-  const filteredAlumni = applyFilters(data, filters);
-
-  const totalPages = Math.ceil(filteredAlumni.length / 5);
-  const alumniToDisplay = filteredAlumni.slice((currentPage - 1) * 5, currentPage * 5);
+  const filterOptions = useMemo(() => getUniqueFilterOptions(data, filterKeys), [data]);
+  const filteredAlumni = useMemo(() => applyFilters(data, filters), [data, filters]);
+  const totalPages = Math.ceil(filteredAlumni.length / 6);
+  const alumniToDisplay = useMemo(() => filteredAlumni.slice((currentPage - 1) * 6, currentPage * 6), [filteredAlumni, currentPage]);
 
   return isLoading ? (
     <Loader />
   ) : (
     <Container>
-      <h1 className="text-center my-5" style={{ color: "black" }}>
-        Alumni Details
-      </h1>
+      <h1 className="text-center my-5 text-dark">Alumni Details</h1>
 
-      <Row className="mb-4 d-flex align-items-center">
+      {/* Filter Section */}
+      <Row className="mb-4 d-flex justify-content-center align-items-center">
         {filterKeys.map((key) => (
           <Col xs={6} md={2} key={key}>
-            <Autocomplete
-              size="small"
-              options={filterOptions[key]}
-              getOptionLabel={(option) => option || ""}
+            <FilterInput
+              label={key}
               value={filters[key]}
-              onChange={(event, value) => handleFilterChange(key, value || "")}
-              renderInput={(params) => <TextField {...params} label={key.charAt(0).toUpperCase() + key.slice(1)} variant="outlined" />}
+              options={filterOptions[key]}
+              onChange={(value) => handleFilterChange(key, value)}
             />
           </Col>
         ))}
-        <Col xs={6} md={2}>
-          <TextField
-            size="small"
-            type="number"
-            label="Years of Exp"
-            variant="outlined"
-            value={filters.yoe}
-            onChange={(e) => handleFilterChange("yoe", e.target.value)}
-            fullWidth
-          />
-        </Col>
-        <Col xs={6} md={2}>
-          <TextField
-            size="small"
-            label="Search by Name"
-            variant="outlined"
-            value={filters.searchByName}
-            onChange={(e) => handleFilterChange("searchByName", e.target.value)}
-            fullWidth
-          />
-        </Col>
       </Row>
 
+      {/* Alumni Cards */}
       <Row>
         {isError ? (
           <p>Error fetching data.</p>
@@ -99,6 +72,7 @@ const AlumniPage = () => {
         )}
       </Row>
 
+      {/* Pagination */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
@@ -107,6 +81,7 @@ const AlumniPage = () => {
         disablePrev={currentPage <= 1}
       />
 
+      {/* Contact Alumni Button */}
       <div className="text-center mt-4">
         <Button variant="info" onClick={() => setShowContactActions(!showContactActions)}>
           {showContactActions ? "Hide Contact Details" : "Contact Alumni"}
@@ -115,5 +90,33 @@ const AlumniPage = () => {
     </Container>
   );
 };
+
+const FilterInput = ({ label, value, options, onChange }) => {
+  return (
+    <Form.Group controlId={`filter-${label}`}>
+      <Form.Label className="fw-bold">
+        {label === "designation" && <BsBriefcaseFill className="text-primary me-2" />}
+        {label === "location" && <BsGeoAltFill className="text-danger me-2" />}
+        {label === "degree" && <BsMortarboardFill className="text-warning me-2" />}
+        {label === "currentCompany" && <BsBuilding className="text-info me-2" />}
+        {label === "yoe" && <BsClockFill className="text-secondary me-2" />}
+        {label === "searchByName" && <BsSearch className="text-dark me-2" />}
+        {label.charAt(0).toUpperCase() + label.slice(1)}
+      </Form.Label>
+      {label === "yoe" || label === "searchByName" ? (
+        <Form.Control type={label === "yoe" ? "number" : "text"} placeholder={`Enter ${label}`} value={value} onChange={(e) => onChange(e.target.value)} />
+      ) : (
+        <Form.Control as="select" value={value} onChange={(e) => onChange(e.target.value)}>
+          <option value="">All</option>
+          {options.map((option, index) => (
+            <option key={index} value={option}>{option}</option>
+          ))}
+        </Form.Control>
+      )}
+    </Form.Group>
+  );
+};
+
+
 
 export default AlumniPage;
