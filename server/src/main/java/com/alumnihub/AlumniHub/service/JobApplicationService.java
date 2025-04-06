@@ -37,28 +37,33 @@ public class JobApplicationService {
     }
 
     public JobApplication createJobApplication(Long jobId, User user, JobApplication jobApplication) {
-        // Check if job exists
         JobPost job = jobPostRepository.findById(jobId)
                 .orElseThrow(() -> new NotFoundException("Job not found"));
 
-        // Set user and job to the job application
+
+        if (!jobApplicationRepository.findByJob_JobIdAndUser_UserId(jobId, user.getUserId()).isEmpty()) {
+            throw new IllegalStateException("User has already applied to this job.");
+        }
+    
         jobApplication.setUser(user);
         jobApplication.setJob(job);
         jobApplication.setApplicationDate(LocalDate.now());
-        jobApplication.setApplicationStatus(ApplicationStatus.APPLIED); // Set default status
-
-        // Save the application
+        jobApplication.setApplicationStatus(ApplicationStatus.APPLIED);
+    
         return jobApplicationRepository.save(jobApplication);
     }
+    
 
     // Optional: Check if a user has already applied for a job
     public boolean hasApplied(Long jobId, Long userId) {
-        return jobApplicationRepository.findByJob_JobIdAndUser_UserId(jobId, userId).isPresent();
+        return !jobApplicationRepository.findByJob_JobIdAndUser_UserId(jobId, userId).isEmpty();
     }
-
+    
     public Optional<JobApplication> getApplicationByJobAndUser(Long jobId, Long userId) {
-        return jobApplicationRepository.findByJob_JobIdAndUser_UserId(jobId, userId);
+        List<JobApplication> applications = jobApplicationRepository.findByJob_JobIdAndUser_UserId(jobId, userId);
+        return applications.isEmpty() ? Optional.empty() : Optional.of(applications.get(0));
     }
+    
 
     public void deleteJobApplication(Long applicationId) {
         jobApplicationRepository.deleteById(applicationId);
