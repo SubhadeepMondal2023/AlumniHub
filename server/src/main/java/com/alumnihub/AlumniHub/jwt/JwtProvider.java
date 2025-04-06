@@ -1,8 +1,8 @@
 package com.alumnihub.AlumniHub.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.alumnihub.AlumniHub.model.User;
+import com.alumnihub.AlumniHub.repository.UserRepository;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -10,36 +10,56 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class JwtProvider {
 
     private final SecretKey key = Keys.hmacShaKeyFor(JwtConstant.JWT_SECRET.getBytes(StandardCharsets.UTF_8));
+    private final UserRepository userRepository;
+
+    public JwtProvider(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public String generateToken(Authentication auth) {
-        String email = auth.getName(); // Extract the email from Authentication object
+        String email = auth.getName();
+
         return Jwts.builder()
-                .setSubject(email) // Set email as the subject
-                .claim("email", email) // Add email claim
+                .setSubject(email)
+                .claim("email", email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 7*24*3600000)) // 1 hour validity
-                .signWith(key, SignatureAlgorithm.HS256) // Use the consistent signing key
+                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String getEmailFromJwtToken(String jwt) {
+    public Claims extractClaims(String jwt) {
         try {
-            Claims claims = Jwts
-            .parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(jwt)
-            .getBody();
-            return claims.get("email", String.class);
-        } catch (Exception e) {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(jwt)
+                    .getBody();
+        } catch (JwtException e) {
             System.err.println("Error parsing JWT: " + e.getMessage());
-            return null;
+            throw new RuntimeException("Invalid JWT token", e);
         }
     }
 
+    public String getEmailFromJwtToken(String jwt) {
+        return extractClaims(jwt).get("email", String.class);
+    }
+
+    public String getRoleFromJwtToken(String jwt) {
+        String email = getEmailFromJwtToken(jwt);
+        
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new RuntimeException("User not found!");
+        }
+        
+        return user.get().getRole().toString(); // Fetching role from database
+    }
 }

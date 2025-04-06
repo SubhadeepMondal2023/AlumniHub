@@ -1,5 +1,6 @@
 package com.alumnihub.AlumniHub.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,26 +15,28 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.alumnihub.AlumniHub.jwt.JwtTokenValidator;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class AppConfig {
 
+    @Value("${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:8081}") // Default for React & Flutter web
+    private String allowedOrigins;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtTokenValidator jwtTokenValidator) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless authentication
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable dynamic CORS
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Use stateless sessions
                 .authorizeHttpRequests(auth -> auth
-                        //.requestMatchers("/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll() // Allow public access to login and register
-                        .requestMatchers("/api/**").authenticated() // Protect all other API endpoints
-                        .anyRequest().permitAll() // Allow other non-API requests
+                        .requestMatchers("/auth/**").permitAll() 
+                        .requestMatchers("/api/**").authenticated() 
+                        .anyRequest().permitAll() 
                 )
                 .addFilterBefore(jwtTokenValidator, BasicAuthenticationFilter.class) // Add custom JWT validation filter
                 .httpBasic(withDefaults()); // Optional: Enable basic authentication for testing (can remove in production)
@@ -44,7 +47,7 @@ public class AppConfig {
     private CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             CorsConfiguration cfg = new CorsConfiguration();
-            cfg.setAllowedOrigins(Collections.singletonList("http://localhost:5173")); // React app URL
+            cfg.setAllowedOrigins(Arrays.asList(allowedOrigins.split(","))); // Support multiple frontend origins
             cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
             cfg.setAllowedHeaders(List.of("Authorization", "Content-Type"));
             cfg.setExposedHeaders(List.of("Authorization"));

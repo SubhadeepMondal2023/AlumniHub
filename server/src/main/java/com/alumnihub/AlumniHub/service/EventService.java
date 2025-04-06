@@ -6,6 +6,9 @@ import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.repository.AttendeeRepository;
 import com.alumnihub.AlumniHub.repository.EventRepository;
 import com.alumnihub.AlumniHub.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -56,23 +59,29 @@ public class EventService {
         return eventRepository.findAll();
     }
 
+    @Transactional
     public void deleteEvent(Long eventId) {
         Optional<Event> eventOpt = eventRepository.findById(eventId);
         if (eventOpt.isPresent()) {
             Event event = eventOpt.get();
-
+    
             // 🔔 Notify Attendees about Cancellation
             List<Attendee> attendees = attendeeRepository.findByEventId(eventId);
             for (Attendee attendee : attendees) {
                 notificationService.sendNotificationToUser(attendee.getUser(),
                         "Event Cancelled", "The event '" + event.getEventName() + "' has been cancelled.");
             }
-
+    
+            // Delete attendees first
+            attendeeRepository.deleteByEventId(eventId);
+    
+            // Now delete the event
             eventRepository.deleteById(eventId);
         } else {
             throw new RuntimeException("Event not found");
         }
     }
+    
 
     public Optional<Event> updateEvent(Long eventId, Event eventDetails) {
         return eventRepository.findById(eventId).map(event -> {

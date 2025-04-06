@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,20 +23,18 @@ public class EventController {
     @Autowired
     private UserService userService;
 
+    private boolean isAdmin(User user) {
+        return "admin".equalsIgnoreCase(user.getRole().toString());
+    }
+
     @GetMapping("/{eventId}")
     public ResponseEntity<?> getEventById(@PathVariable Long eventId) {
         try {
             Optional<Event> event = eventService.getEventById(eventId);
-            if (event.isPresent()) {
-                Map<String, Object> map = Map.of("success", true, "data", event.get());
-                return ResponseEntity.status(HttpStatus.OK).body(map);
-            } else {
-                Map<String, Object> map = Map.of("success", false, "message", "Event not found");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
-            }
+            return event.map(value -> ResponseEntity.ok(Map.of("success", true, "data", value)))
+                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("success", false, "message", "Event not found")));
         } catch (Exception e) {
-            Map<String, Object> map = Map.of("success", false, "message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 
@@ -45,64 +42,37 @@ public class EventController {
     public ResponseEntity<?> createEvent(@RequestHeader("Authorization") String token, @RequestBody Event event) {
         try {
             Optional<User> user = userService.getUserFromToken(token);
-            if (user.isPresent()) {
+            if (user.isPresent() && isAdmin(user.get())) {
                 event.setCreatedBy(user.get());
                 Event createdEvent = eventService.createEvent(event);
-                Map<String, Object> map = Map.of(
-                        "success", true,
-                        "data", createdEvent);
-                return ResponseEntity.status(HttpStatus.CREATED).body(map);
-            } else {
-                Map<String, Object> map = Map.of(
-                        "success", false,
-                        "message", "User not found");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(map);
+                return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("success", true, "data", createdEvent));
             }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("success", false, "message", "Access denied"));
         } catch (Exception e) {
-            Map<String, Object> map = Map.of(
-                    "success", false,
-                    "message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 
     @GetMapping
     public ResponseEntity<?> getAllEvents() {
         try {
-            Map<String, Object> map = Map.of("success", true, "data", eventService.getAllEvents());
-            return ResponseEntity.status(HttpStatus.OK).body(map);
+            return ResponseEntity.ok(Map.of("success", true, "data", eventService.getAllEvents()));
         } catch (Exception e) {
-            Map<String, Object> map = Map.of("success", false, "message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 
     @DeleteMapping("/{eventId}")
-    public ResponseEntity<?> deleteEvent(@PathVariable Long eventId) {
+    public ResponseEntity<?> deleteEvent(@RequestHeader("Authorization") String token, @PathVariable Long eventId) {
         try {
-            eventService.deleteEvent(eventId);
-            Map<String, Object> map = Map.of("success", true, "message", "Event deleted successfully");
-            return ResponseEntity.status(HttpStatus.OK).body(map);
-        } catch (Exception e) {
-            Map<String, Object> map = Map.of("success", false, "message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
-        }
-    }
-
-    @PutMapping("/{eventId}")
-    public ResponseEntity<?> updateEvent(@PathVariable Long eventId, @RequestBody Event eventDetails) {
-        try {
-            Optional<Event> updatedEvent = eventService.updateEvent(eventId, eventDetails);
-            if (updatedEvent.isPresent()) {
-                Map<String, Object> map = Map.of("success", true, "data", updatedEvent.get());
-                return ResponseEntity.status(HttpStatus.OK).body(map);
-            } else {
-                Map<String, Object> map = Map.of("success", false, "message", "Event not found");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
+            Optional<User> user = userService.getUserFromToken(token);
+            if (user.isPresent() && isAdmin(user.get())) {
+                eventService.deleteEvent(eventId);
+                return ResponseEntity.ok(Map.of("success", true, "message", "Event deleted successfully"));
             }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("success", false, "message", "Access denied"));
         } catch (Exception e) {
-            Map<String, Object> map = Map.of("success", false, "message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 
@@ -112,58 +82,12 @@ public class EventController {
             Optional<User> user = userService.getUserFromToken(token);
             if (user.isPresent()) {
                 Optional<Event> event = eventService.attendEvent(eventId, user.get().getUserId());
-                if (event.isPresent()) {
-                    Map<String, Object> map = Map.of("success", true, "data", event.get());
-                    return ResponseEntity.status(HttpStatus.OK).body(map);
-                } else {
-                    Map<String, Object> map = Map.of("success", false, "message", "Event not found");
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
-                }
-            } else {
-                Map<String, Object> map = Map.of(
-                        "success", false,
-                        "message", "User not found");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(map);
+                return event.map(value -> ResponseEntity.ok(Map.of("success", true, "data", value)))
+                        .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("success", false, "message", "Event not found")));
             }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "User not found"));
         } catch (Exception e) {
-            Map<String, Object> map = Map.of("success", false, "message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
-        }
-    }
-
-    @GetMapping("/{eventId}/attendees")
-    public ResponseEntity<?> getEventAttendees(@PathVariable Long eventId) {
-        try {
-            List<Attendee> attendees = eventService.getEventAttendees(eventId);
-            if (!attendees.isEmpty()) {
-                Map<String, Object> map = Map.of("success", true, "data", attendees);
-                return ResponseEntity.status(HttpStatus.OK).body(map);
-            } else {
-                Map<String, Object> map = Map.of("success", false, "message", "No attendees found for this event");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
-            }
-        } catch (Exception e) {
-            Map<String, Object> map = Map.of("success", false, "message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
-        }
-    }
-
-    @GetMapping("/my-events")
-    public ResponseEntity<?> getMyEvents(@RequestHeader("Authorization") String token) {
-        try {
-            Optional<User> user = userService.getUserFromToken(token);
-            if (user.isPresent()) {
-                Map<String, Object> map = Map.of("success", true, "data",
-                        eventService.getMyEvents(user.get().getUserId()));
-                return ResponseEntity.status(HttpStatus.OK).body(map);
-            } else {
-                Map<String, Object> map = Map.of("success", false, "message", "User not found");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(map);
-            }
-        } catch (Exception e) {
-            Map<String, Object> map = Map.of("success", false, "message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("success", false, "message", e.getMessage()));
         }
     }
 }
-
