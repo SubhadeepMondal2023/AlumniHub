@@ -41,36 +41,42 @@ public class JobApplicationController {
     }
 
     @PostMapping("/{jobId}/apply")
-    public ResponseEntity<String> applyToJob(@RequestHeader("Authorization") String token, 
-                                              @PathVariable Long jobId) {
-        
-        Optional<User> user = authenticate(token);
-        
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
-        }
+public ResponseEntity<String> applyToJob(@RequestHeader("Authorization") String token, 
+                                         @PathVariable Long jobId) {
+    
+    Optional<User> user = authenticate(token);
+    
+    if (user.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+    }
 
-        JobApplication jobApplication = new JobApplication();
+    JobApplication jobApplication = new JobApplication();
+    
+    // Set default application status and date
+    jobApplication.setApplicationStatus(ApplicationStatus.APPLIED);
+    jobApplication.setApplicationDate(LocalDate.now());
+    
+    try {
+        JobApplication createdApplication = jobApplicationService.createJobApplication(jobId, user.get(), jobApplication);
         
-        // Set default application status and date
-        jobApplication.setApplicationStatus(ApplicationStatus.APPLIED);
-        jobApplication.setApplicationDate(LocalDate.now());
-        
-        try {
-            JobApplication createdApplication = jobApplicationService.createJobApplication(jobId, user.get(), jobApplication);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            "Successfully applied to the job with Application ID: " + createdApplication.getApplicationId());
             
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                "Successfully applied to the job with Application ID: " + createdApplication.getApplicationId());
-                
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                "You have already applied for this job.");
+            
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 "An error occurred while applying for the job.");
-                
         }
     }
+
 
     @GetMapping("/{jobId}/application-status")
     public ResponseEntity<String> getApplicationStatus(@RequestHeader("Authorization") String token,
