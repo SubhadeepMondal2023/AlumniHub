@@ -24,7 +24,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class AppConfig {
 
-    @Value("${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:8081}") // Default for React & Flutter web
+    @Value("${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:8081,https://alumni-hub-rose.vercel.app}") // Default for React & Flutter web
     private String allowedOrigins;
 
     @Bean
