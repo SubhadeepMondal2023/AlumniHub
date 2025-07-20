@@ -54,13 +54,15 @@ public class JobApplicationController {
     }
 
     @PostMapping("/{jobId}/apply")
-public ResponseEntity<String> applyToJob(@RequestHeader("Authorization") String token, 
+public ResponseEntity<Map<String, Object>> applyToJob(@RequestHeader("Authorization") String token, 
                                          @PathVariable Long jobId) {
     
     Optional<User> user = authenticate(token);
     
     if (user.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+            Map.of("success", false, "message", "User not found")
+        );
     }
 
     JobApplication jobApplication = new JobApplication();
@@ -73,20 +75,25 @@ public ResponseEntity<String> applyToJob(@RequestHeader("Authorization") String 
         JobApplication createdApplication = jobApplicationService.createJobApplication(jobId, user.get(), jobApplication);
         
         return ResponseEntity.status(HttpStatus.CREATED).body(
-            "Successfully applied to the job with Application ID: " + createdApplication.getApplicationId());
+            Map.of("success", true, "data", "Application created successfully for job: " + createdApplication.getJob().getJobId())
+        );
             
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                Map.of("success", false, "message", "Job not found")
+            );
             
         } catch (IllegalStateException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                "You have already applied for this job.");
+                Map.of("success", false, "message", "You have already applied for this job")
+            );
             
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                "An error occurred while applying for the job.");
+                Map.of("success", false, "message", "Failed to create application")    
+            );
         }
     }
 
