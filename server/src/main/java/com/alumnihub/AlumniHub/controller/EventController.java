@@ -1,6 +1,5 @@
 package com.alumnihub.AlumniHub.controller;
 
-import com.alumnihub.AlumniHub.model.Attendee;
 import com.alumnihub.AlumniHub.model.Event;
 import com.alumnihub.AlumniHub.model.User;
 import com.alumnihub.AlumniHub.service.EventService;
