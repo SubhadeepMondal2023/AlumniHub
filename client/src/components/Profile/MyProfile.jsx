@@ -13,7 +13,7 @@ import { useGetMyEventsQuery, useGetAttendingEventsQuery } from "../../redux/api
 
 const MyProfile = () => {
   const { isLoading, isError, data } = useGetMyProfileQuery();
-  
+
   const [deleteProfile, { isLoading: isDeleting, isError: isDeleteError, error: deleteError, isSuccess }] = useDeleteProfileMutation();
   const [userData, setUserData] = useState(null);
   const [jobTableData, setJobTableData] = useState([]);
@@ -33,28 +33,31 @@ const MyProfile = () => {
     if (data) setUserData(data.data);
     if (donationData) {
       setDonationTableData(donationData.data.map(donation => ({
-        "Donation ID": donation.donationId, 
+        "Donation ID": donation.donationId,
         "Donation Date": donation.donationDate,
         "Amount": donation.amount,
         "Purpose": donation.purpose,
         "Transaction ID": donation.transactionId
       })));
     }
-    if (jobData) {    
+    if (jobData) {
       setJobTableData(jobData.data.map(job => ({
+        "Application ID": job.applicationId,
         "Job ID": job.job.jobId,
         "Job Title": job.job.jobTitle,
         "Company": job.job.company,
         "Location": job.job.location,
         "Applied Date": job.applicationDate,
         "Status": job.applicationStatus,
-        "Action": <Button size="sm" variant="primary" onClick={() => withdrawApplication(job.job.jobId)}>Withdraw</Button>
+        "Action": <Button size="sm" variant="primary" onClick={() => withdrawApplication(job.applicationId).unwrap()}>
+          {isWithdrawLoading ? <Spinner animation="border" size="sm" /> : "Withdraw"}
+        </Button>
       })));
     }
     if (myEventsData || attendingEventsData) {
       const myEvents = myEventsData?.data || [];
       const attendingEvents = attendingEventsData?.data || [];
-      
+
       // Combine both arrays and remove duplicates based on event ID
       const allEvents = [...myEvents, ...attendingEvents];
       const uniqueEvents = Array.from(new Set(allEvents.map(event => event.id)))
@@ -102,6 +105,7 @@ const MyProfile = () => {
             <img src={userData.profileImage} alt="Profile" className="w-32 h-32 rounded-full border-4 border-aquamarine shadow-sm" />
           </div>
           <h2 className="text-2xl font-bold mt-4">{`${userData.firstName} ${userData.lastName}`}</h2>
+          <p className="text-muted">{userData.role}</p>
           <p className="text-muted">{userData.bio}</p>
 
           <div className="mt-4 text-left">
@@ -124,7 +128,7 @@ const MyProfile = () => {
               <HeartFill /> My Donations
             </Button>
             <Button variant="outline-info" onClick={() => handleTableData(
-              <TableData theads={["Job ID", "Job Title", "Company", "Location", "Applied Date", "Status", "Action"]} data={jobTableData} />
+              <TableData theads={["Application ID", "Job ID", "Job Title", "Company", "Location", "Applied Date", "Status", "Action"]} data={jobTableData} />
             )}>
               <BriefcaseFill /> Applications
             </Button>

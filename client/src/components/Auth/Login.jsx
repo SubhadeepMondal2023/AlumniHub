@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Input from "../../components/common/Input.jsx";
 import { Button, Spinner } from 'react-bootstrap';
 import '../../css/login.css';
+import '../../css/auth.css';
 import { Link, useNavigate } from 'react-router-dom';
 import SocialLoginButton from '../common/SocialLoginButton.jsx';
 import { Bounce, toast, ToastContainer } from 'react-toastify';
@@ -10,44 +11,32 @@ import { useLoginUserMutation } from '../../redux/api/authSlice.js';
 const Login = () => {
 	const [Email, setEmail] = useState('');
 	const [Password, setPassword] = useState('');
+	const [errors, setErrors] = useState({});
 	const [loginUser, { isLoading, error, data }] = useLoginUserMutation();
 	const navigate = useNavigate();
+	
 	const handleLogin = () => {
-		if(Email.length == 0 || Password.length == 0){
-			toast.error('Please enter email and password', {
-				position: "top-center",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: false,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-				theme: "colored",
-				transition: Bounce,
-				});
+		const newErrors = {};
+		if(Email.length === 0) newErrors.email = "Email is required";
+		if(Password.length === 0) newErrors.password = "Password is required";
+		
+		if(Object.keys(newErrors).length > 0) {
+			setErrors(newErrors);
 			return;
 		}
 		
 		loginUser({ email: Email, password: Password }).unwrap();
-
 	};
+
 	useEffect(() => {
 		if (error) {
-			toast.error(error?.data?.message, {
-				position: "top-center",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: false,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-				theme: "colored",
-				transition: Bounce,
-			});
+			setErrors({ submit: error?.error });
+			
 		} else if(data){
 			navigate("/");
 		}
 	}, [error,data]);
+
 	return (
 		<div className="login-page">
 			<ToastContainer />
@@ -58,14 +47,22 @@ const Login = () => {
 						type="text"
 						placeholder="" 
 						FieldName="Email"
-						onChange={(e) => setEmail(e.target.value)} 
+						onChange={(e) => {
+							setEmail(e.target.value);
+							setErrors(prev => ({...prev, email: ''}));
+						}} 
 						name="Email" />
+					{errors.email && <p className="error-message">{errors.email}</p>}
+					
 					<Input
 						type="password"
 						placeholder=""
 						FieldName="Password"
 						name="Password"
-						onChange={(e) => setPassword(e.target.value)}
+						onChange={(e) => {
+							setPassword(e.target.value);
+							setErrors(prev => ({...prev, password: ''}));
+						}}
 						Component={
 							<Link to="/forgot-password" 
 							onMouseOver={(e) => {
@@ -81,6 +78,8 @@ const Login = () => {
 							</Link>
 						}
 					/>
+					{errors.password && <p className="error-message">{errors.password}</p>}
+					{errors.submit && <p className="error-message">{errors.submit}</p>}
 
 					<div className="login-links"></div>
 					<Button size='md' onClick={handleLogin} disabled={isLoading}>

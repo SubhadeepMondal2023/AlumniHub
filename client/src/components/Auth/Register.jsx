@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Input from "../../components/common/Input.jsx";
 import { Button, Spinner } from 'react-bootstrap';
 import '../../css/login.css';
+import '../../css/auth.css';
 import { Link, useNavigate } from 'react-router-dom';
 import SocialLoginButton from '../common/SocialLoginButton.jsx';
 import { useRegisterUserSendOtpMutation } from '../../redux/api/authSlice.js';
@@ -82,7 +83,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                     />
-                    {errors.firstName && <p className="error-text text-warning p-0">{errors.firstName}</p>}
+                    {errors.firstName && <p className="error-message">{errors.firstName}</p>}
 
                     <Input
                         type="text"
@@ -93,7 +94,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                     />
-                    {errors.lastName && <p className="error-text text-warning p-0">{errors.lastName}</p>}
+                    {errors.lastName && <p className="error-message">{errors.lastName}</p>}
 
                     <Input
                         type="text"
@@ -104,7 +105,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                     />
-                    {errors.email && <p className="error-text text-warning p-0">{errors.email}</p>}
+                    {errors.email && <p className="error-message">{errors.email}</p>}
 
                     <Input
                         type="number"
@@ -115,7 +116,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                     />
-                    {errors.yearOfGraduation && <p className="error-text text-warning p-0">{errors.yearOfGraduation}</p>}
+                    {errors.yearOfGraduation && <p className="error-message">{errors.yearOfGraduation}</p>}
 
                     <Input
                         type="password"
@@ -126,7 +127,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                     />
-                    {errors.password && <p className="error-text text-warning p-0">{errors.password}</p>}
+                    {errors.password && <p className="error-message">{errors.password}</p>}
 
                     <Input
                         type="password"
@@ -137,7 +138,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                     />
-                    {errors.confirmPassword && <p className="error-text text-warning p-0">{errors.confirmPassword}</p>}
+                    {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
 
                     <Button disabled={isLoading} variant="primary" type="submit">
                         {isLoading ? (
