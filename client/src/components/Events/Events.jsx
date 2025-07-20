@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../css/events.css';
+import '../../css/Events.css';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useGetMyProfileQuery } from '../../redux/api/authSlice';
