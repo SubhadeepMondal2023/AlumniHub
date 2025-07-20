@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQueryWithAuth } from './baseQuery';
+import { baseQueryWithAuth } from './baseQuery.js';
 
 export const donationApi = createApi({
   reducerPath: "donationApi",

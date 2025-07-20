@@ -45,8 +45,8 @@ export const jobApiSlice = createApi({
       }),
     }),
     withdrawApplication: builder.mutation({
-      query: (jobId) => ({
-        url: `/api/jobs/${jobId}/withdraw-application`,
+      query: (applicationId) => ({
+        url: `/api/jobs/${applicationId}/withdraw-application`,
         method: 'DELETE',
         invalidatesTags: ['applications'],
       })
