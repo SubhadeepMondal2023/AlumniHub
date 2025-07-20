@@ -1,3 +1,4 @@
+
 # AlumniHub
 
 AlumniHub is a platform connecting alumni with their alma mater, providing opportunities for networking, events, donations, and career advancement.
@@ -9,6 +10,12 @@ AlumniHub is a platform connecting alumni with their alma mater, providing oppor
 - Job Postings and Applications
 - Donation System
 - Real-time Notifications
+
+## Screenshots
+![Screenshot 1](/images/screenshot1.png)
+![Screenshot 2](/images/screenshot2.png)
+![Screenshot 3](/images/screenshot3.png)
+
 
 ## Tech Stack
 - **Frontend:** React, Redux
