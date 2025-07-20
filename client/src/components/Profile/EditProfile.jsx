@@ -54,6 +54,7 @@ const EditProfile = () => {
             navigate('/myprofile');
         }
     }, [isSuccess]);
+    
     return (
         <Container className="mt-5">
             <h1 className="text-center mb-4 text-black">Edit Profile</h1>

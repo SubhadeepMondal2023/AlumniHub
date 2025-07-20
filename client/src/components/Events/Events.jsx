@@ -4,12 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useGetMyProfileQuery } from '../../redux/api/authSlice';
 import { useGetEventsQuery, useAttendEventMutation } from '../../redux/api/eventApiSlice';
+import Loader from '../../utils/Loader';
+import { BsGeoAltFill, BsBuilding, BsBriefcaseFill, BsMortarboardFill, BsCalendar3, BsClockFill, BsGlobe } from "react-icons/bs";
+import { Spinner } from 'react-bootstrap';
 
 const Events = () => {
   const navigate = useNavigate();
   const { data: userData } = useGetMyProfileQuery();
   const { data: eventsData, error, isLoading, refetch } = useGetEventsQuery();
-  const [attendEvent] = useAttendEventMutation();
+  const [attendEvent, { isLoading: isAttendLoading }] = useAttendEventMutation();
   const [showAttendees, setShowAttendees] = useState({});
 
   const toggleAttendees = (eventId) => {
@@ -31,7 +34,7 @@ const Events = () => {
     }
   };
 
-  if (isLoading) return <div className="events-container"><div className="loading">Loading events...</div></div>;
+  if (isLoading) return <Loader />;
   if (error) return <div className="events-container"><div className="error"><p>Error loading events</p></div></div>;
 
   return (
@@ -45,17 +48,18 @@ const Events = () => {
               <div className="event-content">
                 <h2 className="event-title">{event.eventName}</h2>
                 <div className="event-details">
-                  <p><strong>Date:</strong> {new Date(event.eventDateAndTime).toLocaleDateString()}</p>
-                  <p><strong>Time:</strong> {new Date(event.eventDateAndTime).toLocaleTimeString()}</p>
-                  <p><strong>Venue:</strong> {event.venue}</p>
-                  <p><strong>Description:</strong> {event.eventDescription}</p>
-                  <p><strong>Organized by:</strong> {event.createdBy.firstName} {event.createdBy.lastName}</p>
-                  <p><strong>Status:</strong> {event.eventStatus}</p>
+                  <p><BsCalendar3 className="me-2 text-primary" /><strong>Date:</strong> {new Date(event.eventDateAndTime).toLocaleDateString()}</p>
+                  <p><BsClockFill className="me-2 text-secondary" /><strong>Time:</strong> {new Date(event.eventDateAndTime).toLocaleTimeString()}</p>
+                  <p><BsGeoAltFill className="me-2 text-danger" /><strong>Venue:</strong> {event.venue}</p>
+                  <p><BsGlobe className="me-2 text-dark" /><strong>Description:</strong> {event.eventDescription}</p>
+                  <p><BsBuilding className="me-2 text-info" /><strong>Organized by:</strong> {event.createdBy.firstName} {event.createdBy.lastName}</p>
+                  <p><BsBriefcaseFill className="me-2 text-success" /><strong>Status:</strong> {event.eventStatus}</p>
                 </div>
+
                 <div className="event-footer">
                   <div className="event-actions">
-                    <button className={`attend-button ${isAttendee ? 'disabled' : ''}`} onClick={() => handleAttendEvent(event.id)} disabled={isAttendee}>
-                      {isAttendee ? 'Already Attending' : 'Attend Event'}
+                    <button className={`attend-button ${isAttendee || isAttendLoading ? 'disabled' : ''}`} onClick={() => handleAttendEvent(event.id)} disabled={isAttendee || isAttendLoading}>
+                      {isAttendee ? 'Already Attending' : isAttendLoading ? <Spinner animation="border" size="sm" /> : 'Attend'}
                     </button>
                     <button className="view-attendees-button" onClick={() => toggleAttendees(event.id)}>
                       {showAttendees[event.id] ? 'Hide Attendees' : 'View Attendees'}
