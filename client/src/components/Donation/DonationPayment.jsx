@@ -1,63 +1,72 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../../css/donationPayment.css';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Container, Row, Col, Modal } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col, Modal, Spinner } from 'react-bootstrap';
+import { useCreateDonationMutation } from '../../redux/api/donationApiSlice';
 
 const DonationPayment = () => {
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('');
-  const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
   const [cardDetails, setCardDetails] = useState({ cardNumber: '', cvv: '', expiryMonth: '', expiryYear: '' });
+  const [createDonation, { isLoading: isDonationLoading, isSuccess: isDonationSuccess, isError: isDonationError, error: donationError }] = useCreateDonationMutation();
   const [upiDetails, setUpiDetails] = useState({ upiId: '' });
   const [error, setError] = useState('');
   const [amount, setAmount] = useState(5000);
 
   const handlePayment = () => {
     setError(null);
-  
+
     if (!paymentMethod) {
       setError('Please select a payment method.');
       return;
     }
-  
+
     if (paymentMethod === 'card') {
       const { cardNumber, cvv, expiryMonth, expiryYear } = cardDetails;
-  
+
       if (!cardNumber || cardNumber.length !== 16 || isNaN(cardNumber)) {
         setError('Please enter a valid 16-digit card number.');
         return;
       }
-  
-      if (!expiryMonth || !expiryYear || isNaN(expiryMonth) || isNaN(expiryYear) || 
-          expiryMonth < 1 || expiryMonth > 12 || expiryYear < new Date().getFullYear()) {
+
+      if (!expiryMonth || !expiryYear || isNaN(expiryMonth) || isNaN(expiryYear) ||
+        expiryMonth < 1 || expiryMonth > 12 || expiryYear < new Date().getFullYear()) {
         setError('Please enter a valid expiry date.');
         return;
       }
-  
+
       if (!cvv || cvv.length !== 3 || isNaN(cvv)) {
         setError('Please enter a valid 3-digit CVV.');
         return;
       }
-  
+
       console.log('Card Details:', cardDetails);
     } else if (paymentMethod === 'upi') {
       const { upiId } = upiDetails;
-  
+
       const upiRegex = /^[a-zA-Z0-9.\-_]+@[a-zA-Z]+$/;
       if (!upiId || !upiRegex.test(upiId)) {
         setError('Please enter a valid UPI ID.');
         return;
       }
-  
-      console.log('UPI Details:', upiDetails);
+
     }
-  
-    setTimeout(() => {
-      setIsPaymentSuccess(true);
-      setTimeout(() => navigate('/donation'), 3000);
-    }, 1000);
+
+    createDonation({
+      amount,
+      purpose: 'General Purpose Donation',
+      transactionId: '1234567890'
+    }).unwrap();
+
   };
-  
+
+  useEffect(() => {
+    if (isDonationSuccess) {
+      navigate('/donation');
+    } else if (isDonationError) {
+      setError(donationError.data.message);
+    }
+  }, [isDonationSuccess, isDonationError, donationError]);
 
   return (
     <Container className="donation-payment">
@@ -81,7 +90,7 @@ const DonationPayment = () => {
             </Form.Group>
           </Row>
 
-          {!isPaymentSuccess ? (
+          {!isDonationSuccess ? (
             <Row>
               <Col>
                 <Form>
@@ -116,8 +125,8 @@ const DonationPayment = () => {
                     <Form.Group controlId="cardNumber" className="mb-3">
                       <Form.Label>Card Number</Form.Label>
                       <Form.Control type="text" onChange={
-                        (e)=> setCardDetails((prev) => {
-                          return {...prev, cardNumber: e.target.value}
+                        (e) => setCardDetails((prev) => {
+                          return { ...prev, cardNumber: e.target.value }
                         })
                       } placeholder="Enter card number" />
                     </Form.Group>
@@ -127,15 +136,15 @@ const DonationPayment = () => {
                       <Row>
                         <Col>
                           <Form.Control type="text" onChange={
-                            (e)=> setCardDetails((prev) => {
-                              return {...prev, expiryMonth: e.target.value}
+                            (e) => setCardDetails((prev) => {
+                              return { ...prev, expiryMonth: e.target.value }
                             })
                           } placeholder="MM" />
                         </Col>
                         <Col>
                           <Form.Control type="text" onChange={
-                            (e)=> setCardDetails((prev) => {
-                              return {...prev, expiryYear: e.target.value}
+                            (e) => setCardDetails((prev) => {
+                              return { ...prev, expiryYear: e.target.value }
                             })
                           } placeholder="YYYY" />
                         </Col>
@@ -145,8 +154,8 @@ const DonationPayment = () => {
                     <Form.Group controlId="cardCvv" className="mb-3">
                       <Form.Label>CVV</Form.Label>
                       <Form.Control type="password" onChange={
-                        (e)=> setCardDetails((prev) => {
-                          return {...prev, cvv: e.target.value}
+                        (e) => setCardDetails((prev) => {
+                          return { ...prev, cvv: e.target.value }
                         })
                       } placeholder="Enter CVV" />
                     </Form.Group>
@@ -156,8 +165,8 @@ const DonationPayment = () => {
                     <Form.Group controlId="upiId" className="mb-3">
                       <Form.Label>UPI ID</Form.Label>
                       <Form.Control type="text" placeholder="Enter UPI ID" onChange={
-                        (e)=> setUpiDetails((prev) => {
-                          return {...prev, upiId: e.target.value}
+                        (e) => setUpiDetails((prev) => {
+                          return { ...prev, upiId: e.target.value }
                         })
                       } />
                     </Form.Group>
@@ -168,7 +177,7 @@ const DonationPayment = () => {
             </Row>
 
           ) : (
-            <Modal show={isPaymentSuccess} centered>
+            <Modal show={isDonationSuccess} centered>
               <Modal.Body className="text-center">
                 <h4 className="mt-3">Payment Successful!</h4>
                 <p className='text-dark'>Your transaction id is 439fagsbik$984hcc</p>
@@ -180,10 +189,15 @@ const DonationPayment = () => {
           {error && <p className="text-danger">{error}</p>}
           <Button
             variant="primary"
+            
             className="w-100 mt-3"
             onClick={handlePayment}
           >
-            Pay {amount}
+            {isDonationLoading ? (
+              <Spinner animation="border" size="sm" />
+            ) : (
+              `Pay Rs. ${amount}`
+            )}
           </Button>
         </Col>
       </Row>

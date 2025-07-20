@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Spinner } from 'react-bootstrap';
 import '../../css/verify-otp.css';
+import '../../css/auth.css';
 import { useRegisterUserSendOtpMutation, useRegisterUserVerifyOtpMutation } from '../../redux/api/authSlice';
 import { useNavigate } from 'react-router-dom';
 
@@ -82,7 +83,7 @@ const VerifyOTP = () => {
                             />
                         ))}
                     </div>
-                    {error && <p className="error-text text-warning">{error}</p>}
+                    {error && <p className="error-message">{error}</p>}
                     <Button disabled={isLoading} variant="primary" type="submit">
                         {isLoading ? (
                             <>
