@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const baseQueryWithAuth = fetchBaseQuery({
-  baseUrl: 'http://localhost:8080/api/',
+  baseUrl: 'https://alumnihub-production.up.railway.app/api',
   prepareHeaders: (headers, { url }) => {
     const token = localStorage.getItem('token');
     if (token) {
