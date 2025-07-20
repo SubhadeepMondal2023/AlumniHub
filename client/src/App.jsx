@@ -12,7 +12,6 @@ import AlumniPage from './components/Alumni/AlumniPage.jsx';
 import TheTeam from './components/The Team/TheTeam.jsx';
 import DonationPayment from './components/Donation/DonationPayment.jsx';
 import Events from './components/Events/Events.jsx';
-import Reunion from './components/Events/reunion.jsx';
 import VerifyOTP from './components/Auth/VerifyOTP.jsx';
 import EditProfile from './components/Profile/EditProfile.jsx';
 import ProtectedRoute from './utils/ProtectedRoute.jsx';
@@ -44,7 +43,6 @@ function App() {
         <Route path="/alumni" element={<ProtectedRoute element={AlumniPage} />} />
         <Route path="/team" element={<TheTeam />} />
         <Route path="/events" element={<Events />} />
-        <Route path="/reunion" element={<Reunion />} />
         <Route path="/services/job" element={<ProtectedRoute element={JobComponent} />} />
         <Route path='/services/internship' element={<ProtectedRoute element={InternshipComponent} />}/>
         <Route path='/job/:jobId' element={<ProtectedRoute element={JobPostDetails} />} />
